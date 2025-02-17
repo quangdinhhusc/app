@@ -115,8 +115,32 @@ st.title("Titanic Survival Prediction")
 
 # Demo dự đoán
 st.subheader("Prediction")
+
 # Tạo form nhập liệu
-# ...
+pclass = st.selectbox("Pclass", [1, 2, 3])
+sex = st.selectbox("Sex", ["male", "female"])
+age = st.number_input("Age", min_value=0, max_value=100, value=25)
+sibsp = st.number_input("SibSp", min_value=0, value=0)
+parch = st.number_input("Parch", min_value=0, value=0)
+fare = st.number_input("Fare", min_value=0, value=0.0)
+embarked = st.selectbox("Embarked", ["S", "C", "Q"])
+
+# Tạo DataFrame từ dữ liệu nhập vào
+data = {
+    "Pclass": [pclass],
+    "Sex": [sex],
+    "Age": [age],
+    "SibSp": [sibsp],
+    "Parch": [parch],
+    "Fare": [fare],
+    "Embarked": [embarked],
+}
+input_df = pd.DataFrame(data)
+
+# Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
+# ... (bạn cần thực hiện các bước tiền xử lý tương tự như khi huấn luyện mô hình)
 
 # Dự đoán kết quả
-# ...
+if st.button("Predict"):
+    prediction = model.predict(input_df)
+    st.write(f"Prediction: {prediction[0]}")
