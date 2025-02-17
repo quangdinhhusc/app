@@ -197,6 +197,10 @@ if submit_button:
     # Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
     # ... (bạn cần thực hiện các bước tiền xử lý tương tự như khi huấn luyện mô hình)
     # ... (trong Streamlit app)
+    # Xử lý giá trị mới (nếu có)
+    for col in train_features:
+        if col not in input_df.columns:
+            input_df[col] = 0
 
     input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True) #one-hot encoding
 
