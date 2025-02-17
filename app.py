@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-import mlflow.sklearn
+import mlflow
 # Load the data
 url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
 data = pd.read_csv(url)
