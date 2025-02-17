@@ -37,8 +37,8 @@ st.write("Dữ liệu sau khi tiền xử lý:")
 st.write(data)
 
 # Chia tập dữ liệu
-X = new_data.drop('Survived', axis=1)
-y = new_data['Survived']
+X = data.drop('Survived', axis=1)
+y = data['Survived']
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
 X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
 
