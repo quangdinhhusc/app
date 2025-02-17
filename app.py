@@ -28,7 +28,7 @@ st.write(data)
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
 st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
-new_data = df.dropna(thresh=2, inplace=True)
+new_data = data.dropna(thresh=2, inplace=True)
 new_data['Age'].fillna(data['Age'].median(), inplace=True)
 new_data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
 new_data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
