@@ -141,23 +141,23 @@ st.title("Titanic Survival Prediction")
 # st.write("Metrics:")
 # st.write(metrics)
 
-# # Demo dự đoán
-# st.subheader("Prediction")
+# Demo dự đoán
+st.subheader("Prediction")
 
-# # ...existing code...
+# ...existing code...
 
-# # Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
-# input_df = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
+# Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
+input_df = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
 
-# # Đảm bảo các cột của input_df khớp với các cột của train_df
-# missing_cols = set(train_df.drop("Survived", axis=1).columns) - set(input_df.columns)
-# for col in missing_cols:
-#     input_df[col] = 0
-# input_df = input_df[train_df.drop("Survived", axis=1).columns]
+# Đảm bảo các cột của input_df khớp với các cột của train_df
+missing_cols = set(train_df.drop("Survived", axis=1).columns) - set(input_df.columns)
+for col in missing_cols:
+    input_df[col] = 0
+input_df = input_df[train_df.drop("Survived", axis=1).columns]
 
-# # Dự đoán kết quả
-# if st.button("Predict"):
-#     prediction = model.predict(input_df)
-#     st.write(f"Prediction: {prediction[0]}")
+# Dự đoán kết quả
+if st.button("Predict"):
+    prediction = model.predict(input_df)
+    st.write(f"Prediction: {prediction[0]}")
 
-# # ...existing code...
+# ...existing code...
