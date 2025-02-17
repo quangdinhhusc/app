@@ -208,7 +208,7 @@ if submit_button:
     input_df = input_df[train_features] # Sắp xếp theo thứ tự khi train
 
     # Dự đoán kết quả
-    prediction = model.predict(input_df)[0]
+    prediction = model.predict_proba(input_df)[0]
 
     if prediction[1] > 0.5:
         prodiction = 1
