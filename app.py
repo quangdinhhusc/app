@@ -27,18 +27,19 @@ st.write(data)
 
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
-
-data['Age'].fillna(data['Age'].median(), inplace=True)
-data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
-data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
+st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
+new_data = df.dropna(thresh=2, inplace=True)
+new_data['Age'].fillna(data['Age'].median(), inplace=True)
+new_data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
+new_data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
 
 # Hiển thị dữ liệu sau khi tiền xử lý
 st.write("Dữ liệu sau khi tiền xử lý:")
 st.write(data)
 
 # Chia tập dữ liệu
-X = data.drop('Survived', axis=1)
-y = data['Survived']
+X = new_data.drop('Survived', axis=1)
+y = new_data['Survived']
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
 X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
 
