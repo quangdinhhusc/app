@@ -63,29 +63,29 @@ params = {
 
 # Huấn luyện mô hình
 def train_model(train_df, val_df, params):
-    # with mlflow.start_run():
-        # # Ghi lại các tham số
-        # mlflow.log_params(params)
+    with mlflow.start_run():
+        # Ghi lại các tham số
+        mlflow.log_params(params)
 
         # Huấn luyện mô hình
         model = LinearRegression(**params)
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
 
-        # # Đánh giá mô hình trên tập validation
-        # y_pred = model.predict(val_df.drop("Survived", axis=1))
-        # mse = mean_squared_error(val_df["Survived"], y_pred)
-        # r2 = r2_score(val_df["Survived"], y_pred)
+        # Đánh giá mô hình trên tập validation
+        y_pred = model.predict(val_df.drop("Survived", axis=1))
+        mse = mean_squared_error(val_df["Survived"], y_pred)
+        r2 = r2_score(val_df["Survived"], y_pred)
 
-        # # Ghi lại các metrics
-        # mlflow.log_metric("mse", mse)
-        # mlflow.log_metric("r2", r2)
+        # Ghi lại các metrics
+        mlflow.log_metric("mse", mse)
+        mlflow.log_metric("r2", r2)
 
-        # # Lưu mô hình
-        # mlflow.sklearn.log_model(model, "model")
+        # Lưu mô hình
+        mlflow.sklearn.log_model(model, "model")
 
-        # # Cross-validation
-        # cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
-        # mlflow.log_metric("cv_mse", -cv_scores.mean())
+        # Cross-validation
+        cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
+        mlflow.log_metric("cv_mse", -cv_scores.mean())
 
         return model
 
@@ -100,6 +100,34 @@ except Exception as e:
     print(f"train_df: {train_df.info()}")
     print(f"val_df: {val_df.info()}")
     print(f"params: {params}")
+
+
+# Cross-validation
+cv_scores = cross_val_score(model, X_train, y_train, cv=5)
+st.write(f"Độ chính xác trung bình sau Cross-Validation: {cv_scores.mean():.2f}")
+
+# Đánh giá mô hình trên tập validation
+y_valid_pred = model.predict(X_valid)
+valid_accuracy = accuracy_score(y_valid, y_valid_pred)
+st.write(f"Độ chính xác trên tập Validation: {valid_accuracy:.2f}")
+
+
+# Đánh giá mô hình trên tập test
+y_test_pred = model.predict(X_test)
+test_accuracy = accuracy_score(y_test, y_test_pred)
+st.write(f"Độ chính xác trên tập Test: {test_accuracy:.2f}")
+
+# Hiển thị biểu đồ phân phối độ tuổi
+st.subheader("Phân phối độ tuổi của hành khách")
+fig, ax = plt.subplots()
+sns.histplot(data['Age'].dropna(), kde=True, ax=ax)
+st.pyplot(fig)
+
+# Hiển thị biểu đồ tương quan giữa các đặc trưng
+st.subheader("Tương quan giữa các đặc trưng")
+fig, ax = plt.subplots()
+sns.heatmap(data_cleaned.corr(), annot=True, cmap='coolwarm', ax=ax)
+st.pyplot(fig)
 
 st.title("Titanic Survival Prediction")
 
