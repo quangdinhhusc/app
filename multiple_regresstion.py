@@ -141,23 +141,55 @@ st.title("Titanic Survival Prediction")
 # st.write("Metrics:")
 # st.write(metrics)
 
-# Demo dự đoán
-st.subheader("Prediction")
+# # Demo dự đoán
+# st.subheader("Prediction")
 
-# ...existing code...
+# # ...existing code...
 
-# Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
-input_df = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
+# # Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
+# input_df = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
 
-# Đảm bảo các cột của input_df khớp với các cột của train_df
-missing_cols = set(train_df.drop("Survived", axis=1).columns) - set(input_df.columns)
-for col in missing_cols:
-    input_df[col] = 0
-input_df = input_df[train_df.drop("Survived", axis=1).columns]
+# # Đảm bảo các cột của input_df khớp với các cột của train_df
+# missing_cols = set(train_df.drop("Survived", axis=1).columns) - set(input_df.columns)
+# for col in missing_cols:
+#     input_df[col] = 0
+# input_df = input_df[train_df.drop("Survived", axis=1).columns]
 
-# Dự đoán kết quả
-if st.button("Predict"):
+# # Dự đoán kết quả
+# if st.button("Predict"):
+#     prediction = model.predict(input_df)
+#     st.write(f"Prediction: {prediction[0]}")
+
+# # ...existing code...
+st.sidebar.title("Prediction")
+
+# Tạo form nhập liệu trong sidebar
+with st.sidebar.form("input_form"):
+    pclass = st.selectbox("Pclass", [1, 2, 3])
+    sex = st.selectbox("Sex", ["male", "female"])
+    age = st.number_input("Age", min_value=0, max_value=100, value=25)
+    sibsp = st.number_input("SibSp", min_value=0, value=0)
+    parch = st.number_input("Parch", min_value=0, value=0)
+    fare = st.number_input("Fare", min_value=0, value=0.0)
+    embarked = st.selectbox("Embarked", ["S", "C", "Q"])
+    submit_button = st.form_submit_button("Predict")
+
+if submit_button:
+    # Tạo DataFrame từ dữ liệu nhập vào
+    data = {
+        "Pclass": [pclass],
+        "Sex": [sex],
+        "Age": [age],
+        "SibSp": [sibsp],
+        "Parch": [parch],
+        "Fare": [fare],
+        "Embarked": [embarked],
+    }
+    input_df = pd.DataFrame(data)
+
+    # Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
+    # ... (bạn cần thực hiện các bước tiền xử lý tương tự như khi huấn luyện mô hình)
+
+    # Dự đoán kết quả
     prediction = model.predict(input_df)
     st.write(f"Prediction: {prediction[0]}")
-
-# ...existing code...
