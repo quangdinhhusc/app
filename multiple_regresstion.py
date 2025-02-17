@@ -56,41 +56,41 @@ test_ratio = 0.15
 random_state = 42
 train_df, val_df, test_df = split_data(data_cleaned, train_ratio, val_ratio, test_ratio, random_state)
 
+# Định nghĩa các tham số
+params = {
+    "fit_intercept": True
+}
+
 # Huấn luyện mô hình
 def train_model(train_df, val_df, params):
-    with mlflow.start_run():
-        # Ghi lại các tham số
-        mlflow.log_params(params)
+    # with mlflow.start_run():
+        # # Ghi lại các tham số
+        # mlflow.log_params(params)
 
         # Huấn luyện mô hình
         model = LinearRegression(**params)
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
 
-        # Đánh giá mô hình trên tập validation
-        y_pred = model.predict(val_df.drop("Survived", axis=1))
-        mse = mean_squared_error(val_df["Survived"], y_pred)
-        r2 = r2_score(val_df["Survived"], y_pred)
+        # # Đánh giá mô hình trên tập validation
+        # y_pred = model.predict(val_df.drop("Survived", axis=1))
+        # mse = mean_squared_error(val_df["Survived"], y_pred)
+        # r2 = r2_score(val_df["Survived"], y_pred)
 
-        # Ghi lại các metrics
-        mlflow.log_metric("mse", mse)
-        mlflow.log_metric("r2", r2)
+        # # Ghi lại các metrics
+        # mlflow.log_metric("mse", mse)
+        # mlflow.log_metric("r2", r2)
 
-        # Lưu mô hình
-        mlflow.sklearn.log_model(model, "model")
+        # # Lưu mô hình
+        # mlflow.sklearn.log_model(model, "model")
 
-        # Cross-validation
-        cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
-        mlflow.log_metric("cv_mse", -cv_scores.mean())
+        # # Cross-validation
+        # cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
+        # mlflow.log_metric("cv_mse", -cv_scores.mean())
 
         return model
 
 # Khởi tạo MLflow
-mlflow.set_tracking_uri("runs:/mlruns") # Lưu trữ logs tại thư mục mlruns
-
-# Định nghĩa các tham số
-params = {
-    "fit_intercept": True
-}
+# mlflow.set_tracking_uri("runs:/mlruns") # Lưu trữ logs tại thư mục mlruns
 
 # Huấn luyện mô hình
 try:
