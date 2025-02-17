@@ -23,7 +23,7 @@ st.write(data)
 st.subheader("Tiền xử lý dữ liệu")
 
 # Xóa các dòng có ít nhất 2 cột chứa giá trị null
-thresh_value = data.shape[1] - 2
+thresh_value = data.shape[1] - 1
 df_cleaned = data.dropna(thresh=thresh_value)
 st.write("- Xóa các dòng có ít nhất 2 cột chứa giá trị null.")
 st.write(f"Số dòng sau khi xóa: {df_cleaned.shape[0]}")
