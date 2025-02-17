@@ -209,13 +209,11 @@ if submit_button:
 
     # Dự đoán kết quả
     prediction = model.predict(input_df)
-    
-    if prediction[1] > 0.5:
-        prediction = 1
+
+    if prediction > 0.5:
         message = "Sống sót"
     else:
-        prediction = 0
         message = "Không sống sót"
 
-    st.sidebar.write(f"Kết quả: {message} ({prediction})")
+    st.sidebar.write(f"Kết quả: {message}")
     st.sidebar.write(f"Xác suất sống sót: {prediction[1]:.2f}")
