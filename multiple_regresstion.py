@@ -103,7 +103,10 @@ except Exception as e:
 
 
 # Cross-validation
-cv_scores = cross_val_score(train_model(train_df, val_df, params), train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
+cv_scores = cross_val_score(train_model(train_df, val_df, params), 
+                            train_df.drop("Survived", axis=1), 
+                            train_df["Survived"], cv=5, 
+                            scoring="neg_mean_squared_error")
 st.write(f"Độ chính xác trung bình sau Cross-Validation: {cv_scores.mean():.2f}")
 
 # Đánh giá mô hình trên tập validation
@@ -160,6 +163,9 @@ st.title("Titanic Survival Prediction")
 #     prediction = model.predict(input_df)
 #     st.write(f"Prediction: {prediction[0]}")
 
+# Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
+train_features = train_df.drop("Survived", axis=1).columns.tolist()  # Giả sử "Survived" là cột mục tiêu
+
 # # ...existing code...
 st.sidebar.title("Prediction")
 
@@ -190,6 +196,12 @@ if submit_button:
 
     # Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
     # ... (bạn cần thực hiện các bước tiền xử lý tương tự như khi huấn luyện mô hình)
+    # ... (trong Streamlit app)
+
+    input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True) #one-hot encoding
+
+    # Đảm bảo thứ tự cột giống như khi train
+    input_df = input_df[train_features] # Sắp xếp theo thứ tự khi train
 
     # Dự đoán kết quả
     prediction = model.predict(input_df)
