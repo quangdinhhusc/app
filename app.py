@@ -28,10 +28,9 @@ st.write(data)
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
 st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
-new_data = data.dropna(thresh=2, inplace=True)
-new_data['Age'].fillna(data['Age'].median(), inplace=True)
-new_data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
-new_data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
+data['Age'].fillna(data['Age'].median(), inplace=True)
+data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
+data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
 
 # Hiển thị dữ liệu sau khi tiền xử lý
 st.write("Dữ liệu sau khi tiền xử lý:")
