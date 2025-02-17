@@ -177,7 +177,7 @@ with st.sidebar.form("input_form"):
     age = st.number_input("Tuổi", min_value=0, max_value=100, value=25)
     sibsp = st.number_input("Anh Chị Em", min_value=0, value=0)
     parch = st.number_input("Bố Mẹ Con Cái", min_value=0, value=0)
-    fare = st.number_input("Giá Vé", min_value=1000, value=0)  # Đã sửa lỗi ở đây
+    fare = st.number_input("Giá Vé", min_value=0, value=0)  # Đã sửa lỗi ở đây
     embarked = st.selectbox("Cảng", ["Southampton", "Cherbourg", "Queenstown"])
     submit_button = st.form_submit_button("Dự Đoán")
 
