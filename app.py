@@ -27,7 +27,7 @@ st.write(data)
 
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
-data = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
+
 data['Age'].fillna(data['Age'].median(), inplace=True)
 data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
 data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
