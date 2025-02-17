@@ -104,14 +104,14 @@ except Exception as e:
 st.title("Titanic Survival Prediction")
 
 # Chọn model từ MLflow
-model_uri = "runs:/mlruns/0/model" # Thay đổi ID của run nếu cần
-model = mlflow.sklearn.load_model(model_uri)
+# model_uri = "runs:/mlruns/0/model" # Thay đổi ID của run nếu cần
+# model = mlflow.sklearn.load_model(model_uri)
 
 # Hiển thị các metrics
-run = mlflow.get_run(model_uri.split("/")[2])
-metrics = run.data.metrics
-st.write("Metrics:")
-st.write(metrics)
+# run = mlflow.get_run(model_uri.split("/")[2])
+# metrics = run.data.metrics
+# st.write("Metrics:")
+# st.write(metrics)
 
 # Demo dự đoán
 st.subheader("Prediction")
