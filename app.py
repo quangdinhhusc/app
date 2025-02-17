@@ -16,6 +16,9 @@ data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
 data.drop(['Name', 'Ticket', 'Cabin'], axis=1, inplace=True)
 data = pd.get_dummies(data, columns=['Sex', 'Embarked'])
 
+st.wirte("Data")
+st.write(data.head())
+
 # Split data
 x = data.drop('Survived', axis=1)
 y = data['Survived']
@@ -23,7 +26,7 @@ y = data['Survived']
 X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.5, random_state=42)
 
-new_data_split = pd.DataFrame(list(new_data.items()), columns=['Data Set', 'Size'])
+new_data_split = pd.DataFrame(list(data.items()), columns=['Data Set', 'Size'])
 
 st.title("Titanic Data Processing and Logging with MLflow")
 st.table(new_data_split)
