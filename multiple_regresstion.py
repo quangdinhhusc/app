@@ -93,13 +93,7 @@ def train_model(train_df, val_df, params):
 # mlflow.set_tracking_uri("runs:/mlruns") # Lưu trữ logs tại thư mục mlruns
 
 # Huấn luyện mô hình
-try:
-    model = train_model(train_df, val_df, params)
-except Exception as e:
-    print(f"Error training model: {e}")
-    print(f"train_df: {train_df.info()}")
-    print(f"val_df: {val_df.info()}")
-    print(f"params: {params}")
+model = train_model(train_df, val_df, params)
 
 
 # Cross-validation
