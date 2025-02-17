@@ -78,7 +78,7 @@ st.pyplot(fig)
 
 # Hiển thị biểu đồ tương quan giữa các đặc trưng
 st.subheader("Ma trận tương quan giữa các đặc trưng")
-corr = data.corr()
+corr = data_cleaned.corr()
 fig, ax = plt.subplots()
 sns.heatmap(corr, annot=True, cmap='coolwarm', ax=ax)
 st.pyplot(fig)
