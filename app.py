@@ -7,48 +7,56 @@ import mlflow
 url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
 data = pd.read_csv(url)
 
-# xử lý dữ liệu
-data = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
+# Tiền xử lý dữ liệu (ví dụ)
 data['Age'].fillna(data['Age'].median(), inplace=True)
 data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
-data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
+data.drop(['Name', 'Ticket', 'Cabin'], axis=1, inplace=True)
+data = pd.get_dummies(data, columns=['Sex', 'Embarked'])
 
-# đưa dữ liệu vào X và y
+# Chọn đặc trưng và target
 X = data.drop('Survived', axis=1)
 y = data['Survived']
-# chia dữ liệu thành train 70, test 15, valid 15
+
+# Chia dữ l
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
 X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
-# Start an MLflow run
-esp = mlflow.set_experiment("Data Titanic")
+
 with mlflow.start_run():
-    # Define the model
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    
-    # Log model parameters
-    mlflow.log_param("n_estimators", 100)
-    mlflow.log_param("random_state", 42)
-    
-    # Perform cross-validation on the training set
-    cv_scores = cross_val_score(model, X_train, y_train, cv=5)
-    mlflow.log_metric("cv_accuracy_mean", cv_scores.mean())
-    mlflow.log_metric("cv_accuracy_std", cv_scores.std())
-    
-    # Train the model on the full training set
+    # Khai báo các tham số
+    n_estimators = st.sidebar.slider("n_estimators", 10, 200, 100)
+    max_depth = st.sidebar.slider("max_depth", 2, 20, 10)
+
+    # Huấn luyện mô hình
+    model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42)
     model.fit(X_train, y_train)
-    
-    # Evaluate the model on the validation set
-    y_valid_pred = model.predict(X_valid)
-    valid_accuracy = accuracy_score(y_valid, y_valid_pred)
-    mlflow.log_metric("valid_accuracy", valid_accuracy)
-    
-    # Log the model
-    mlflow.sklearn.log_model(model, "random_forest_model")
-    
-    # Evaluate the model on the test set
-    y_test_pred = model.predict(X_test)
-    test_accuracy = accuracy_score(y_test, y_test_pred)
-    mlflow.log_metric("test_accuracy", test_accuracy)
-    
-    print(f"Validation Accuracy: {valid_accuracy}")
-    print(f"Test Accuracy: {test_accuracy}")
+
+    # Dự đoán và đánh giá
+    y_pred = model.predict(X_valid)
+    accuracy = accuracy_score(y_valid, y_pred)
+
+    # Logging vào MLflow
+    mlflow.log_param("n_estimators", n_estimators)
+    mlflow.log_param("max_depth", max_depth)
+    mlflow.log_metric("accuracy", accuracy)
+
+    # Lưu model
+    mlflow.sklearn.log_model(model, "random-forest-model")
+
+# Load model từ MLflow
+model = mlflow.sklearn.load_model("random-forest-model")
+
+# Dự đoán trên tập test
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+
+st.write(f"Độ chính xác trên tập test: {accuracy}")
+
+st.title("Kết quả huấn luyện mô hình Random Forest")
+
+# Hiển thị các thông số và metric
+st.write(f"n_estimators: {n_estimators}")
+st.write(f"max_depth: {max_depth}")
+st.write(f"Độ chính xác trên tập validation: {accuracy}")
+
+# Vẽ biểu đồ (ví dụ)
+st.bar_chart(pd.Series(y_pred).value_counts())
