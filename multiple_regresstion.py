@@ -93,11 +93,17 @@ def train_model(train_df, val_df, params):
 # mlflow.set_tracking_uri("runs:/mlruns") # Lưu trữ logs tại thư mục mlruns
 
 # Huấn luyện mô hình
-model = train_model(train_df, val_df, params)
+try:
+    model = train_model(train_df, val_df, params)
+except Exception as e:
+    print(f"Error training model: {e}")
+    print(f"train_df: {train_df.info()}")
+    print(f"val_df: {val_df.info()}")
+    print(f"params: {params}")
 
 
 # Cross-validation
-cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
+cv_scores = cross_val_score(train_model(train_df, val_df, params), train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
 st.write(f"Độ chính xác trung bình sau Cross-Validation: {cv_scores.mean():.2f}")
 
 # Đánh giá mô hình trên tập validation
