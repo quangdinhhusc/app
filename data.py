@@ -24,7 +24,6 @@ st.subheader("Tiền xử lý dữ liệu")
 st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
 st.write("- Điền dữ liệu Embarked null thành giá trị mode của Embarked.")
 # xử lý dữ liệu
-data = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
 data['Age'] = data['Age'].fillna(data['Age'].median())
 data['Embarked'] = data['Embarked'].fillna(data['Embarked'].mode()[0])
 data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
