@@ -8,29 +8,19 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import cross_val_score
 
-
-
-def load_data(url):
-    df = pd.read_csv(url)
-    # Tiền xử lý dữ liệu nếu cần (ví dụ: xử lý giá trị thiếu, chuyển đổi kiểu dữ liệu)
-    return df
-
-def split_data(df, train_ratio, val_ratio, test_ratio, random_state):
-    train_val_df, test_df = train_test_split(df, test_size=test_ratio, random_state=random_state)
-    train_df, val_df = train_test_split(train_val_df, test_size=val_ratio/(train_ratio+val_ratio), random_state=random_state)
-    return train_df, val_df, test_df
-
 # Tải dữ liệu
 data_url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv" # Link dữ liệu Titanic
-df = load_data(data_url)
+df = data_url
+st.subheader("Dữ liệu Titanic")
+st.write(df)
+
+# Tiền xử lý dữ liệu
 
 # Chia tập dữ liệu
-train_ratio = 0.7
-val_ratio = 0.15
-test_ratio = 0.15
-random_state = 42
-train_df, val_df, test_df = split_data(df, train_ratio, val_ratio, test_ratio, random_state)
+X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
+X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
 
+# Huấn luyện mô hình
 def train_model(train_df, val_df, params):
     with mlflow.start_run():
         # Ghi lại các tham số
@@ -67,7 +57,7 @@ params = {
 }
 
 # Huấn luyện mô hình
-model = train_model(train_df, val_df, params)
+model = train_model(X_train, y_train, params)
 
 st.title("Titanic Survival Prediction")
 
