@@ -208,12 +208,14 @@ if submit_button:
     input_df = input_df[train_features] # Sắp xếp theo thứ tự khi train
 
     # Dự đoán kết quả
-    prediction = model.predict(input_df)
+    prediction = model.predict(input_df)[0]
 
-    if prediction > 0.5:
+    if prediction[1] > 0.5:
+        prodiction = 1
         message = "Sống sót"
     else:
+        prodiction = 0
         message = "Không sống sót"
 
     st.sidebar.write(f"Kết quả: {message}")
-    st.sidebar.write(f"Xác suất sống sót: {prediction:.2f}")
+    st.sidebar.write(f"Xác suất sống sót: {prediction[1]:.2f}")
