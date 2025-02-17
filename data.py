@@ -21,22 +21,29 @@ st.write(data)
 
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
+
+# Xóa các dòng có ít nhất 2 cột chứa giá trị null
+thresh_value = data.shape[1] - 2
+df_cleaned = data.dropna(thresh=thresh_value)
+st.write("- Xóa các dòng có ít nhất 2 cột chứa giá trị null.")
+st.write(f"Số dòng sau khi xóa: {df_cleaned.shape[0]}")
+
 st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
 st.write("- Điền dữ liệu Embarked null thành giá trị mode của Embarked.")
 # xử lý dữ liệu
-data = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
-data['Age'] = data['Age'].fillna(data['Age'].median())
-data['Embarked'] = data['Embarked'].fillna(data['Embarked'].mode()[0])
-data = pd.get_dummies(data, columns=['Sex', 'Embarked'], drop_first=True)
+data_cleaned = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
+data_cleaned['Age'] = data_cleaned['Age'].fillna(data_cleaned['Age'].median())
+data_cleaned['Embarked'] = data_cleaned['Embarked'].fillna(data_cleaned['Embarked'].mode()[0])
+data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
 
 # Hiển thị dữ liệu sau khi tiền xử lý
 st.write("Dữ liệu sau khi tiền xử lý:")
-st.write(data)
+st.write(data_cleaned)
 
 # Chia tập dữ liệu
 # đưa dữ liệu vào X và y
-X = data.drop('Survived', axis=1)
-y = data['Survived']
+X = data_cleaned.drop('Survived', axis=1)
+y = data_cleaned['Survived']
 # chia dữ liệu thành train 70, test 15, valid 15
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
 X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
