@@ -7,20 +7,47 @@ import mlflow.sklearn
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import cross_val_score
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-# Tải dữ liệu
-data_url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv" # Link dữ liệu Titanic
-df = data_url
-st.subheader("Dữ liệu Titanic")
-st.write(df)
+
+# Tiêu đề ứng dụng
+st.title("Ứng dụng Titanic với Streamlit")
+st.write("""
+## Phân tích dữ liệu và huấn luyện mô hình Multiple Rgresstion
+""")
+url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+data = pd.read_csv(url)
+
+# Hiển thị dữ liệu gốc
+st.subheader("Dữ liệu Titanic gốc")
+st.write(data)
 
 # Tiền xử lý dữ liệu
+st.subheader("Tiền xử lý dữ liệu")
+
+# Xóa các dòng có ít nhất 2 cột chứa giá trị null
+thresh_value = data.shape[1] - 1
+df_cleaned = data.dropna(thresh=thresh_value)
+st.write("- Xóa các dòng có ít nhất 2 cột chứa giá trị null.")
+st.write(f"Số dòng sau khi xóa: {df_cleaned.shape[0]}")
+
+st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
+st.write("- Điền dữ liệu Embarked null thành giá trị mode của Embarked.")
+# xử lý dữ liệu
+data_cleaned = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
+data_cleaned['Age'] = data_cleaned['Age'].fillna(data_cleaned['Age'].median())
+data_cleaned['Embarked'] = data_cleaned['Embarked'].fillna(data_cleaned['Embarked'].mode()[0])
+data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
+
+# Hiển thị dữ liệu sau khi tiền xử lý
+st.write("Dữ liệu sau khi tiền xử lý:")
+st.write(data_cleaned)
 
 # Chia tập dữ liệu
 # đưa dữ liệu vào X và y
-X = df.drop('Survived', axis=1)
-y = df['Survived']
-
+X = data_cleaned.drop('Survived', axis=1)
+y = data_cleaned['Survived']
 # chia dữ liệu thành train 70, test 15, valid 15
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
 X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
