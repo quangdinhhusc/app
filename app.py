@@ -11,14 +11,17 @@ url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic
 data = pd.read_csv(url)
 
 # Data cleaning (handling missing Age values)
-new_data = data.dropna(subset=['Age'])
+data['Age'].fillna(data['Age'].median(), inplace=True)
+data['Embarked'].fillna(data['Embarked'].mode()[0], inplace=True)
+data.drop(['Name', 'Ticket', 'Cabin'], axis=1, inplace=True)
+data = pd.get_dummies(data, columns=['Sex', 'Embarked'])
 
 # Split data
-x = new_data.drop('Survived', axis=1)
-y = new_data['Survived']
+x = data.drop('Survived', axis=1)
+y = data['Survived']
 
-X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
-X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.5, random_state=42)
 
 new_data_split = pd.DataFrame(list(new_data.items()), columns=['Data Set', 'Size'])
 
