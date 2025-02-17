@@ -54,7 +54,7 @@ train_ratio = 0.7
 val_ratio = 0.15
 test_ratio = 0.15
 random_state = 42
-train_df, val_df, test_df = split_data(df, train_ratio, val_ratio, test_ratio, random_state)
+train_df, val_df, test_df = split_data(data_cleaned, train_ratio, val_ratio, test_ratio, random_state)
 
 # Huấn luyện mô hình
 def train_model(train_df, val_df, params):
