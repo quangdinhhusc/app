@@ -93,7 +93,13 @@ params = {
 }
 
 # Huấn luyện mô hình
-model = train_model(train_df, val_df, params)
+try:
+    model = train_model(train_df, val_df, params)
+except Exception as e:
+    print(f"Error training model: {e}")
+    print(f"train_df: {train_df.info()}")
+    print(f"val_df: {val_df.info()}")
+    print(f"params: {params}")
 
 st.title("Titanic Survival Prediction")
 
