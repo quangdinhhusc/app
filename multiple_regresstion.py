@@ -103,18 +103,18 @@ except Exception as e:
 
 
 # Cross-validation
-cv_scores = cross_val_score(model, X_train, y_train, cv=5)
+cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
 st.write(f"Độ chính xác trung bình sau Cross-Validation: {cv_scores.mean():.2f}")
 
 # Đánh giá mô hình trên tập validation
-y_valid_pred = model.predict(X_valid)
-valid_accuracy = accuracy_score(y_valid, y_valid_pred)
+y_pred = model.predict(val_df.drop("Survived", axis=1))
+valid_accuracy = r2_score(val_df["Survived"], y_pred)
 st.write(f"Độ chính xác trên tập Validation: {valid_accuracy:.2f}")
 
 
 # Đánh giá mô hình trên tập test
-y_test_pred = model.predict(X_test)
-test_accuracy = accuracy_score(y_test, y_test_pred)
+y_test_pred = model.predict(test_df.drop("Survived", axis=1))
+test_accuracy = r2_score(test_df["Survived"], y_test_pred)
 st.write(f"Độ chính xác trên tập Test: {test_accuracy:.2f}")
 
 # Hiển thị biểu đồ phân phối độ tuổi
