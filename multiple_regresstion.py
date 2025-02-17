@@ -45,12 +45,16 @@ st.write("Dữ liệu sau khi tiền xử lý:")
 st.write(data_cleaned)
 
 # Chia tập dữ liệu
-# đưa dữ liệu vào X và y
-X = data_cleaned.drop('Survived', axis=1)
-y = data_cleaned['Survived']
-# chia dữ liệu thành train 70, test 15, valid 15
-X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
-X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+def split_data(df, train_ratio, val_ratio, test_ratio, random_state):
+    train_val_df, test_df = train_test_split(df, test_size=test_ratio, random_state=random_state)
+    train_df, val_df = train_test_split(train_val_df, test_size=val_ratio/(train_ratio+val_ratio), random_state=random_state)
+    return train_df, val_df, test_df
+# Chia tập dữ liệu
+train_ratio = 0.7
+val_ratio = 0.15
+test_ratio = 0.15
+random_state = 42
+train_df, val_df, test_df = split_data(df, train_ratio, val_ratio, test_ratio, random_state)
 
 # Huấn luyện mô hình
 def train_model(train_df, val_df, params):
@@ -89,7 +93,7 @@ params = {
 }
 
 # Huấn luyện mô hình
-model = train_model(X_train, y_train, params)
+model = train_model(train_df, val_df, params)
 
 st.title("Titanic Survival Prediction")
 
