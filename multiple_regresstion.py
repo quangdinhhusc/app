@@ -134,6 +134,10 @@ st.pyplot(fig)
 
 # Hiển thị biểu đồ tương quan giữa các đặc trưng
 st.subheader("Tương quan giữa các đặc trưng")
+st.write("Mô hình có vẻ tập trung vào các yếu tố quan trọng như hạng vé, giới tính và giá vé, những yếu tố có tương quan mạnh với khả năng sống sót.")
+st.write("Các yếu tố như tuổi, số anh chị em, số bố mẹ con cái và cảng lên tàu có tương quan ít với khả năng sống sót.")
+st.write("Mô hình Multiple Regression có thể chưa phải là mô hình tối ưu cho bài toán này. Có thể có những yếu tố khác chưa được xem xét hoặc có những mô hình phức tạp hơn có thể cho kết quả tốt hơn.")
+
 fig, ax = plt.subplots()
 sns.heatmap(data_cleaned.corr(), annot=True, cmap='coolwarm', ax=ax)
 st.pyplot(fig)
