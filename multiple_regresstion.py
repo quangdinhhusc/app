@@ -35,6 +35,22 @@ st.write(f"Số dòng sau khi xóa: {df_cleaned.shape[0]}")
 
 st.write("- Xóa một số cột giá trị có thể gây ảnh hưởng (như chứa nhiều dữ liệu bị nhiễu, dữ liệu không nhất quá,...) đến quá trình huấn luyện model")
 data_cleaned = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
+st.write(f"""1. PassengerId:
+- Đây là một định danh duy nhất cho mỗi hành khách và không mang thông tin có giá trị dự đoán về khả năng sống sót.
+- Việc đưa PassengerId vào mô hình có thể gây nhầm lẫn hoặc làm giảm hiệu suất của mô hình.
+
+2. Name:
+- Tên hành khách thường là dữ liệu dạng text và rất đa dạng.
+- Mặc dù có thể trích xuất một số thông tin (ví dụ: tước hiệu), nhưng việc xử lý tên phức tạp và không chắc chắn mang lại lợi ích đáng kể cho mô hình.
+- Trong trường hợp này, chúng ta đơn giản hóa bằng cách loại bỏ cột Name.
+
+3. Ticket:
+- Số vé cũng là một định danh và không có mối quan hệ rõ ràng với khả năng sống sót.
+
+4. Cabin:
+- Cột Cabin chứa nhiều giá trị bị thiếu (NaN).
+- Việc xử lý các giá trị thiếu này có thể phức tạp.
+- Hơn nữa, thông tin về cabin có thể không phải là yếu tố quyết định đến khả năng sống sót""")
 
 st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
 data_cleaned['Age'] = data_cleaned['Age'].fillna(data_cleaned['Age'].median())
