@@ -128,6 +128,7 @@ st.write(f"Độ chính xác trên tập Test: {test_accuracy:.2f}")
 
 # Hiển thị biểu đồ phân phối độ tuổi
 st.subheader("Phân phối độ tuổi của hành khách")
+st.write("- Trong dữ liệu cho thấy phần lớn khách hàng nằm trong độ tuổi từ 20 đến 40.")
 fig, ax = plt.subplots()
 sns.histplot(data['Age'].dropna(), kde=True, ax=ax)
 st.pyplot(fig)
