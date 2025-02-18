@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 
 # Tiêu đề ứng dụng
 st.title("Ứng dụng Titanic với Streamlit")
+
 st.write("""
 ## Phân tích dữ liệu và huấn luyện mô hình Multiple Rgresstion
 """)
@@ -32,12 +33,16 @@ df_cleaned = data.dropna(thresh=thresh_value)
 st.write("- Xóa các dòng có ít nhất 2 cột chứa giá trị null.")
 st.write(f"Số dòng sau khi xóa: {df_cleaned.shape[0]}")
 
-st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
-st.write("- Điền dữ liệu Embarked null thành giá trị mode của Embarked.")
-# xử lý dữ liệu
+st.write("- Xóa một số cột giá trị có thể gây ảnh hưởng (như chứa nhiều dữ liệu bị nhiễu, dữ liệu không nhất quá,...) đến quá trình huấn luyện model")
 data_cleaned = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
+
+st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
 data_cleaned['Age'] = data_cleaned['Age'].fillna(data_cleaned['Age'].median())
+
+st.write("- Điền dữ liệu Embarked null thành giá trị mode của Embarked.")
 data_cleaned['Embarked'] = data_cleaned['Embarked'].fillna(data_cleaned['Embarked'].mode()[0])
+
+st.write("- Chuẩn hóa các cột về các giá trị để giúp cho quá trình huấn luyện.")
 data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
 
 # Hiển thị dữ liệu sau khi tiền xử lý
@@ -49,6 +54,7 @@ def split_data(df, train_ratio, val_ratio, test_ratio, random_state):
     train_val_df, test_df = train_test_split(df, test_size=test_ratio, random_state=random_state)
     train_df, val_df = train_test_split(train_val_df, test_size=val_ratio/(train_ratio+val_ratio), random_state=random_state)
     return train_df, val_df, test_df
+
 # Chia tập dữ liệu
 train_ratio = 0.7
 val_ratio = 0.15
