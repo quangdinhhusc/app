@@ -138,8 +138,6 @@ fig, ax = plt.subplots()
 sns.heatmap(data_cleaned.corr(), annot=True, cmap='coolwarm', ax=ax)
 st.pyplot(fig)
 
-st.title("Titanic Survival Prediction")
-
 # Chọn model từ MLflow
 # model_uri = "runs:/mlruns/0/model" # Thay đổi ID của run nếu cần
 # model = mlflow.sklearn.load_model(model_uri)
@@ -173,7 +171,7 @@ st.title("Titanic Survival Prediction")
 train_features = train_df.drop("Survived", axis=1).columns.tolist()  # Giả sử "Survived" là cột mục tiêu
 
 # # ...existing code...
-st.sidebar.title("Prediction")
+st.sidebar.title("Titanic Survival Prediction")
 
 # Tạo form nhập liệu trong sidebar
 
