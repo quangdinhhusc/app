@@ -237,10 +237,10 @@ if submit_button:
 
     if prediction > 0.5:
         prodiction = 1
-        message = "Sống sót"
+        message = "Sống sót 😇"
     else:
         prodiction = 0
-        message = "Không sống sót"
+        message = "Không sống sót ☠️"
 
     st.sidebar.write(f"Kết quả: {message}")
     st.sidebar.write(f"Xác suất sống sót: {prediction}")
