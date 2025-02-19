@@ -243,4 +243,4 @@ if submit_button:
         message = "Không sống sót ☠️"
 
     st.sidebar.write(f"Kết quả: {message}")
-    st.sidebar.write(f"Xác suất sống sót: {prediction}")
+    # st.sidebar.write(f"Xác suất sống sót: {prediction}")
