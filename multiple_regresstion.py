@@ -61,6 +61,9 @@ data_cleaned['Embarked'] = data_cleaned['Embarked'].fillna(data_cleaned['Embarke
 st.write("- Chuẩn hóa các cột về các giá trị để giúp cho quá trình huấn luyện.")
 data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
 
+data_cleaned['Fare'] = data_cleaned['Fare'].round().astype(int)
+
+
 # Hiển thị dữ liệu sau khi tiền xử lý
 st.write("Dữ liệu sau khi tiền xử lý:")
 st.write(data_cleaned)
