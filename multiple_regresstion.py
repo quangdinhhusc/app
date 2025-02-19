@@ -59,8 +59,9 @@ st.write("- Điền dữ liệu Embarked null thành giá trị mode của 
 data_cleaned['Embarked'] = data_cleaned['Embarked'].fillna(data_cleaned['Embarked'].mode()[0])
 
 st.write("- Chuẩn hóa các cột về các giá trị để giúp cho quá trình huấn luyện.")
-data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
-
+# data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
+data_cleaned['Embarked'] = data_cleaned['Embarked'].map({'S': 1, 'C': 2, 'Q': 3})
+data_cleaned['Sex'] = data_cleaned['Sex'].map({'male': 0, 'female': 1})
 data_cleaned['Fare'] = data_cleaned['Fare'].round().astype(int)
 
 
