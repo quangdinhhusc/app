@@ -19,4 +19,4 @@ y = y.astype(np.uint8)
 st.title("MNIST Classification with Streamlit & MLFlow")
 
 st.sidebar.header("Model Selection")
-model_name = st.sidebar.radio(["Decision Tree", "SVM"])
+model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
