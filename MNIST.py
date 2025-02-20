@@ -50,3 +50,8 @@ st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
 val_ratio = st.slider("Tỷ lệ dữ liệu validation", min_value=0.1, max_value=0.9, value=0.5, step=0.1)
 x_val, x_test, y_val, y_test = train_test_split(x_test, y_test, test_size=1-val_ratio, random_state=42)
 
+# In ra số lượng của các tập train, test và val
+st.subheader("Số lượng của các tập dữ liệu")
+st.write("Số lượng dữ liệu train: ", len(x_train))
+st.write("Số lượng dữ liệu validation: ", len(x_val))
+st.write("Số lượng dữ liệu test: ", len(x_test))
