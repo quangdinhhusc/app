@@ -76,7 +76,6 @@ error_report = pd.DataFrame({
     'Giá trị thiếu': missing_values,
     'Outlier': [outlier_count.get(col, 0) for col in data.columns]
 })
-error_report.index = None
                 # Hiển thị báo cáo lỗi
 st.table(error_report)
 
