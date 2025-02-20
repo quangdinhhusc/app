@@ -12,6 +12,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # thêm phần tùy chọn xóa các cột dữ liệu huấn luyện
+# thêm biểu đồ hiển thị số dữ liệu bị lỗi của mỗi cột
+
 # thêm phần tùy chọn các tập dữ liệu train, val, test
 # Thêm tùy chọn chọn model
 # Thêm tùy chọn dự đoán
@@ -117,9 +119,18 @@ def split_data(df, train_ratio, val_ratio, test_ratio, random_state):
     return train_df, val_df, test_df
 
 # Chia tập dữ liệu
-train_ratio = 0.7
-val_ratio = 0.15
-test_ratio = 0.15
+# Tự chọn tỉ lệ của các tập dữ liệu
+train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
+val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
+test_ratio = float(input("Nhập tỉ lệ của tập kiểm tra (0-1): "))
+
+# Đảm bảo rằng tổng tỉ lệ không vượt quá 1
+while train_ratio + val_ratio + test_ratio != 1:
+    print("Tổng tỉ lệ vượt quá 1. Vui lòng nhập lại!")
+    train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
+    val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
+    test_ratio = float(input("Nhập tỉ lệ của tập kiểm tra (0-1): "))
+    
 random_state = 42
 train_df, val_df, test_df = split_data(data_cleaned, train_ratio, val_ratio, test_ratio, random_state)
 
