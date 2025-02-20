@@ -11,6 +11,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import cross_val_score
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy.stats import zscore
 
 # thêm phần tùy chọn xóa các cột dữ liệu huấn luyện (xong)
 # thêm biểu đồ hiển thị số dữ liệu bị lỗi của mỗi cột 
@@ -65,7 +66,7 @@ missing_values = data.isnull().sum()
 duplicate_count = data.duplicated().sum()
                 # Kiểm tra giá trị quá lớn (outlier) bằng Z-score
 outlier_count = {
-    col: (abs(iscode(data[col], nan_policy='omit')) > 3).sum()
+    col: (abs(zcore(data[col], nan_policy='omit')) > 3).sum()
     for col in data.select_dtypes(include=['number']).columns
 }
 
@@ -81,7 +82,7 @@ st.table(error_report)
 
                 # Hiển thị số lượng dữ liệu trùng lặp
 st.write(f"🔁 **Số lượng dòng bị trùng lặp:** {duplicate_count}")      
-st.write(len(df))     
+st.write(len(data))     
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
 
