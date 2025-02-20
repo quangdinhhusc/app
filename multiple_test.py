@@ -11,11 +11,10 @@ from sklearn.model_selection import cross_val_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# thêm phần tùy chọn xóa các cột dữ liệu huấn luyện
-# thêm biểu đồ hiển thị số dữ liệu bị lỗi của mỗi cột
-
-# thêm phần tùy chọn các tập dữ liệu train, val, test
-# Thêm tùy chọn chọn model
+# thêm phần tùy chọn xóa các cột dữ liệu huấn luyện (xong)
+# thêm biểu đồ hiển thị số dữ liệu bị lỗi của mỗi cột 
+# thêm phần tùy chọn các tập dữ liệu train, val, test (xong)
+# Thêm tùy chọn chọn model 
 # Thêm tùy chọn dự đoán
 # Thêm tùy chọn hiển thị biểu đồ
 # Thêm tùy chọn hiển thị các metrics
@@ -54,6 +53,15 @@ if uploaded_file is not None:
 # Hiển thị dữ liệu gốc
 st.subheader("Dữ liệu gốc")
 st.write(data)
+
+# Tạo biểu đồ hiển thị số dữ liệu bị lỗi của mỗi cột
+st.subheader("Biểu đồ số dữ liệu bị lỗi của mỗi cột")
+fig, ax = plt.subplots()
+sns.countplot(x=data.isnull().sum().index, y=data.isnull().sum().values, ax=ax)
+ax.set_title("Số dữ liệu bị lỗi của mỗi cột")
+ax.set_xlabel("Tên cột")
+ax.set_ylabel("Số dữ liệu bị lỗi")
+st.pyplot(fig)
 
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
