@@ -17,3 +17,6 @@ y = y.astype(np.uint8)
 
 # Streamlit app
 st.title("MNIST Classification with Streamlit & MLFlow")
+
+st.sidebar.header("Model Selection")
+model_name = st.sidebar.radio("Choose Model", ["Decision Tree", "SVM"])
