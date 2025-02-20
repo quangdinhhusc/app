@@ -257,11 +257,12 @@ if submit_button:
     # ... (bạn cần thực hiện các bước tiền xử lý tương tự như khi huấn luyện mô hình)
     # ... (trong Streamlit app)
     # Xử lý giá trị mới (nếu có)
+
+    input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True) #one-hot encoding
+
     for col in train_features:
         if col not in input_df.columns:
             input_df[col] = 0
-
-    input_df = pd.get_dummies(input_df, columns=["Giới Tính", "Cảng"], drop_first=True) #one-hot encoding
 
     # Đảm bảo thứ tự cột giống như khi train
     input_df = input_df[train_features] # Sắp xếp theo thứ tự khi train
