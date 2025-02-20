@@ -234,4 +234,20 @@ if submit_button:
     for col in train_features:
         if col not in input_df.columns:
             input_df[col] = 0
+        input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True) #one-hot encoding
 
+    # Đảm bảo thứ tự cột giống như khi train
+    input_df = input_df[train_features] # Sắp xếp theo thứ tự khi train
+
+    # Dự đoán kết quả
+    prediction = model.predict(input_df)[0]
+
+    if prediction > 0.5:
+        prodiction = 1
+        message = "Sống sót 😇"
+    else:
+        prodiction = 0
+        message = "Không sống sót ☠️"
+
+    st.sidebar.write(f"Kết quả: {message}")
+    # st.sidebar.write(f"Xác suất sống sót: {prediction}")
