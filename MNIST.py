@@ -8,7 +8,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, confusion_matrix
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
+import numpy as np # type: ignore
 
 # Load MNIST dataset
 mnist = fetch_openml('mnist_784', version=1)
@@ -62,6 +62,3 @@ if st.sidebar.button("Train Model"):
         # Save model to MLFlow
         mlflow.sklearn.log_model(model, "model")
 
-# Run the Streamlit app
-if __name__ == "__main__":
-    st.write("Click the button in the sidebar to train the model.")
