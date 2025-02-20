@@ -122,7 +122,7 @@ def split_data(df, train_ratio, val_ratio, test_ratio, random_state):
 # Tự chọn tỉ lệ của các tập dữ liệu
 train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
 val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
-test_ratio = float(input("Nhập tỉ lệ của tập kiểm tra (0-1): "))
+test_ratio = 100 - train_ratio - val_ratio
 
 # Đảm bảo rằng tổng tỉ lệ không vượt quá 1
 while train_ratio + val_ratio + test_ratio != 1:
