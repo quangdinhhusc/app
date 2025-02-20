@@ -105,7 +105,7 @@ st.sidebar.subheader("Demo dự đoán chữ viết tay")
 st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
 # Tạo phần nhập hình ảnh
-uploaded_file = st.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
+uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
 
 # Xử lý hình ảnh
 if uploaded_file is not None:
