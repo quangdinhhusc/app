@@ -135,13 +135,16 @@ test_ratio = 100 - train_ratio - val_ratio
 #     train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
 #     val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
 #     test_ratio = float(input("Nhập tỉ lệ của tập kiểm tra (0-1): "))
+# Tính toán số lượng của mỗi tập
+total_data = len(data_cleaned)
+train_size = int(total_data * train_ratio / 100)
+val_size = int(total_data * val_ratio / 100)
+test_size = total_data - train_size - val_size
 
-
-# Hiển thị tỉ lệ của các tập dữ liệu
-st.write("Tỉ lệ của các tập dữ liệu:")
-st.write("Tập huấn luyện:", train_ratio.shape[0], "%")
-st.write("Tập xác thực:", val_ratio.shape[0], "%")
-st.write("Tập kiểm tra:", test_ratio.shape[0], "%")
+st.write("Số lượng của các tập dữ liệu:")
+st.write("Tập huấn luyện:", train_size)
+st.write("Tập xác thực:", val_size)
+st.write("Tập kiểm tra:", test_size)
 
     
 random_state = 42
