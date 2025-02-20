@@ -222,13 +222,6 @@ y_test_pred = model.predict(test_df.drop("Survived", axis=1))
 test_accuracy = r2_score(test_df["Survived"], y_test_pred)
 st.write(f"Độ chính xác trên tập Test: {test_accuracy:.2f}")
 
-# Hiển thị biểu đồ phân phối độ tuổi
-st.subheader("Phân phối độ tuổi của hành khách")
-st.write("- Trong dữ liệu cho thấy phần lớn khách hàng nằm trong độ tuổi từ 20 đến 40.")
-fig, ax = plt.subplots()
-sns.histplot(data['Age'].dropna(), kde=True, ax=ax)
-st.pyplot(fig)
-
 # Hiển thị biểu đồ tương quan giữa các đặc trưng
 st.subheader("Tương quan giữa các đặc trưng")
 st.write("- Mô hình có vẻ tập trung vào các yếu tố quan trọng như hạng vé, giới tính và giá vé, những yếu tố có tương quan mạnh với khả năng sống sót.")
