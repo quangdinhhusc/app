@@ -75,6 +75,7 @@ st.table(error_report)
 st.write(f"**Số lượng dòng bị trùng lặp:** {duplicate_count}")      
 st.write(len(data))  
 
+
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
 
