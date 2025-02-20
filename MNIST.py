@@ -24,10 +24,10 @@ st.write(X.head())
 st.write("Số lượng dữ liệu:", len(X))
 st.write("Số lượng thuộc tính:", len(X.columns))
 
-st.write("Bảng dữ liệu số lượng dữ liệu lỗi hoặc NULL của các cột:")
-st.write(X.isnull().sum())
-st.write("Tỷ lệ dữ liệu lỗi hoặc NULL của các cột:")
-st.write(X.isnull().mean())
+# st.write("Bảng dữ liệu số lượng dữ liệu lỗi hoặc NULL của các cột:")
+# st.write(X.isnull().sum())
+# st.write("Tỷ lệ dữ liệu lỗi hoặc NULL của các cột:")
+# st.write(X.isnull().mean())
 
 
 st.sidebar.header("Model Selection")
