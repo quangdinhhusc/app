@@ -71,21 +71,22 @@ st.write("Dữ liệu sau khi tiền xử lý:")
 st.write(data_cleaned)
 
 # Tùy chỉnh tỉ lệ của các tập dữ liệu
-st.subheader("Tùy chỉnh tỉ lệ của các tập dữ liệu")
-col1, col2, col3 = st.columns(3)
+# Đưa phần chia tỉ lệ các tập sang thang bên
+st.sidebar.subheader("Tùy chỉnh tỉ lệ của các tập dữ liệu")
+col1, col2, col3 = st.sidebar.columns(3)
 
 with col1:
-    train_ratio = st.number_input("Tỷ lệ dữ liệu train", min_value=0.0, max_value=1.0, value=0.7)
+    train_ratio = st.sidebar.number_input("Tỷ lệ dữ liệu train", min_value=0.0, max_value=1.0, value=0.7)
 
 with col2:
-    val_ratio = st.number_input("Tỷ lệ dữ liệu val", min_value=0.0, max_value=1.0, value=0.15)
+    val_ratio = st.sidebar.number_input("Tỷ lệ dữ liệu val", min_value=0.0, max_value=1.0, value=0.15)
 
 with col3:
-    test_ratio = st.number_input("Tỷ lệ dữ liệu test", min_value=0.0, max_value=1.0, value=0.15)
+    test_ratio = st.sidebar.number_input("Tỷ lệ dữ liệu test", min_value=0.0, max_value=1.0, value=0.15)
 
 # Đảm bảo tổng tỷ lệ bằng 1
 if train_ratio + val_ratio + test_ratio != 1:
-    st.error("Tổng tỷ lệ phải bằng 1")
+    st.sidebar.error("Tổng tỷ lệ phải bằng 1")
 else:
     # Chia tập dữ liệu
     train_df, val_df, test_df = split_data(data_cleaned, train_ratio, val_ratio, test_ratio, random_state=42)
