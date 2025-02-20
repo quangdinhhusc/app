@@ -21,23 +21,6 @@ st.title("MNIST Classification with Streamlit & MLFlow")
 st.sidebar.header("Model Selection")
 model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
 
-# st.title("Chọn tỉ lệ của các tập dữ liệu")
-# train_ratio = st.slider("Tập huấn luyện", 0, 90, 70)
-# a = 100 - train_ratio
-# val_ratio = st.slider("Tập xác thực", 0, a, 5)
-
-# # Tính toán tỉ lệ của tập kiểm tra
-# test_ratio = 100 - train_ratio - val_ratio
-# total_data = len(mnist["data"])
-# train_size = int(total_data * train_ratio / 100)
-# val_size = int(total_data * val_ratio / 100)
-# test_size = total_data - train_size - val_size
-
-# st.write("Số lượng của các tập dữ liệu:")
-# st.write("Tập huấn luyện:", train_size)
-# st.write("Tập xác thực:", val_size)
-# st.write("Tập kiểm tra:", test_size)
-
 st.subheader("Tùy chọn chia dữ liệu train")
 train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=70, step=1)
 test_ratio = 100 - train_ratio
@@ -58,3 +41,40 @@ st.subheader("Số lượng của các tập dữ liệu")
 st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
+
+# Train and evaluate model
+if st.sidebar.button("Train Model"):
+    with mlflow.start_run():
+        if model_name == "Decision Tree":
+            model = DecisionTreeClassifier()
+        elif model_name == "SVM":
+            model = SVC()
+
+        model.fit(x_train, y_train)
+        y_pred = model.predict(x_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        cm = confusion_matrix(y_test, y_pred)
+
+        # Log parameters and metrics to MLFlow
+        mlflow.log_param("model", model_name)
+        mlflow.log_metric("accuracy", accuracy)
+
+        # Display results in Streamlit
+        st.write(f"Model: {model_name}")
+        st.write(f"Accuracy: {accuracy:.2f}")
+
+        st.write("Confusion Matrix:")
+        st.write(cm)
+
+        # Plot confusion matrix
+        fig, ax = plt.subplots()
+        ax.matshow(cm, cmap=plt.cm.Blues)
+        for i in range(cm.shape[0]):
+            for j in range(cm.shape[1]):
+                ax.text(j, i, cm[i, j], ha="center", va="center")
+        plt.xlabel("Predicted label")
+        plt.ylabel("True label")
+        st.pyplot(fig)
+
+        # Save model to MLFlow
+        mlflow.sklearn.log_model(model, "model")
