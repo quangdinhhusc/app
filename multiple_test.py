@@ -130,11 +130,13 @@ val_ratio = st.slider("Tập xác thực", 0, a, 15)
 test_ratio = 100 - train_ratio - val_ratio
 
 # Đảm bảo rằng tổng tỉ lệ không vượt quá 1
-while train_ratio + val_ratio + test_ratio != 1:
-    print("Tổng tỉ lệ vượt quá 1. Vui lòng nhập lại!")
-    train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
-    val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
-    test_ratio = float(input("Nhập tỉ lệ của tập kiểm tra (0-1): "))
+# while train_ratio + val_ratio + test_ratio != 1:
+#     print("Tổng tỉ lệ vượt quá 1. Vui lòng nhập lại!")
+#     train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
+#     val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
+#     test_ratio = float(input("Nhập tỉ lệ của tập kiểm tra (0-1): "))
+
+
 # Hiển thị tỉ lệ của các tập dữ liệu
 st.write("Tỉ lệ của các tập dữ liệu:")
 st.write("Tập huấn luyện:", train_ratio.shape[0], "%")
