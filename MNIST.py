@@ -98,4 +98,5 @@ if st.sidebar.button("Train Model"):
 
         # Save model to MLFlow
         mlflow.sklearn.log_model(model, "model")
+        
 
