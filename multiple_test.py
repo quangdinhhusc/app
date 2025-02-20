@@ -78,7 +78,7 @@ error_report = pd.DataFrame({
 })
 
                 # Hiển thị báo cáo lỗi
-st.dataframe(error_report.values)
+st.dataframe(error_report)
 
                 # Hiển thị số lượng dữ liệu trùng lặp
 st.write(f"**Số lượng dòng bị trùng lặp:** {duplicate_count}")      
