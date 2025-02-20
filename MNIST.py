@@ -39,15 +39,17 @@ model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
 # st.write("Tập kiểm tra:", test_size)
 
 st.subheader("Tùy chọn chia dữ liệu train")
-train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=10)
+train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=1)
 test_ratio = 100 - train_ratio
+
+a = 100 - train_ratio
 
 # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
 x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=test_ratio/100, random_state=42)
 
 # Tạo phần tùy chọn chia dữ liệu test thành validation và test
 st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
-val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=10, max_value=90, value=50, step=10)
+val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=10, max_value=a, value=50, step=1)
 
 x_val, x_test, y_val, y_test = train_test_split(x_test, y_test, test_size=(100-val_ratio)/100, random_state=42)
 
