@@ -1,4 +1,5 @@
 
+from inspect import iscode
 import streamlit as st
 import mlflow.sklearn
 import pandas as pd
@@ -62,7 +63,25 @@ missing_values = data.isnull().sum()
 
 # Kiểm tra dữ liệu trùng lặp
 duplicate_count = data.duplicated().sum()
+                # Kiểm tra giá trị quá lớn (outlier) bằng Z-score
+outlier_count = {
+    col: (abs(iscode(data[col], nan_policy='omit')) > 3).sum()
+    for col in data.select_dtypes(include=['number']).columns
+}
 
+                # Tạo báo cáo lỗi
+error_report = pd.DataFrame({
+    'Cột': data.columns,
+    'Giá trị thiếu': missing_values,
+    'Outlier': [outlier_count.get(col, 0) for col in data.columns]
+})
+
+                # Hiển thị báo cáo lỗi
+st.table(error_report)
+
+                # Hiển thị số lượng dữ liệu trùng lặp
+st.write(f"🔁 **Số lượng dòng bị trùng lặp:** {duplicate_count}")      
+st.write(len(df))     
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
 
