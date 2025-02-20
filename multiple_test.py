@@ -54,6 +54,9 @@ if uploaded_file is not None:
 st.subheader("Dữ liệu gốc")
 st.write(data)
 
+# Hiển thị bảng chứa số lượng dữ liệu bị thiếu hoặc null của các cột
+st.subheader("Số lượng dữ liệu bị thiếu hoặc null của các cột")
+st.write(data.isnull().sum())
 # Tạo biểu đồ hiển thị số dữ liệu bị lỗi của mỗi cột
 # st.subheader("Biểu đồ số dữ liệu bị lỗi của mỗi cột")
 # fig, ax = plt.subplots()
