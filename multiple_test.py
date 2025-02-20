@@ -76,9 +76,9 @@ error_report = pd.DataFrame({
     'Giá trị thiếu': missing_values,
     'Outlier': [outlier_count.get(col, 0) for col in data.columns]
 })
-
+error_report.index.name = None
                 # Hiển thị báo cáo lỗi
-st.table(error_report.values)
+st.table(error_report)
 
                 # Hiển thị số lượng dữ liệu trùng lặp
 st.write(f"**Số lượng dòng bị trùng lặp:** {duplicate_count}")      
