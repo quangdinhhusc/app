@@ -48,6 +48,33 @@ if uploaded_file is not None:
 st.subheader("Dữ liệu Titanic gốc")
 st.write(data)
 
+# Hiển thị bảng chứa số lượng dữ liệu bị thiếu hoặc null của các cột
+st.subheader("Kiểm tra lỗi dữ liệu")
+
+# Kiểm tra giá trị thiếu
+missing_values = data.isnull().sum()
+
+# Kiểm tra dữ liệu trùng lặp
+duplicate_count = data.duplicated().sum()
+                # Kiểm tra giá trị quá lớn (outlier) bằng Z-score
+outlier_count = {
+        col: (abs(zscore(data[col], nan_policy='omit')) > 3).sum()
+        for col in data.select_dtypes(include=['number']).columns
+    }
+
+# Tạo báo cáo lỗi
+error_report = pd.DataFrame({
+    'Cột': data.columns,
+    'Giá trị thiếu': missing_values,
+    'Outlier': [outlier_count.get(col, 0) for col in data.columns]
+})
+                # Hiển thị báo cáo lỗi
+st.table(error_report)
+
+                # Hiển thị số lượng dữ liệu trùng lặp
+st.write(f"**Số lượng dòng bị trùng lặp:** {duplicate_count}")      
+st.write(len(data))  
+
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
 
