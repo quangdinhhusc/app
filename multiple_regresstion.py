@@ -10,6 +10,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import cross_val_score
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy.stats import zscore
 
 
 # Tiêu đề ứng dụng
