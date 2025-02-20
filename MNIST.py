@@ -1,3 +1,4 @@
+from tkinter import Image
 import streamlit as st
 import mlflow
 import mlflow.sklearn
@@ -100,3 +101,23 @@ if st.sidebar.button("Train Model"):
         # Save model to MLFlow
         mlflow.sklearn.log_model(model, "model")
 
+st.sidebar.subheader("Demo dự đoán chữ viết tay")
+st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+
+# Tạo phần nhập hình ảnh
+uploaded_file = st.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
+
+# Xử lý hình ảnh
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    image = image.resize((28, 28))
+    image = image.convert('L')
+    image = np.array(image)
+    image = image.reshape(1, 784)
+
+    # Dự đoán chữ viết tay
+    prediction = model.predict(image)
+
+    # Hiển thị kết quả
+    st.sidebar.write("Kết quả dự đoán:")
+    st.sidebar.write("Chữ viết tay:", prediction[0])
