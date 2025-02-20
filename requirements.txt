@@ -7,3 +7,13 @@ mlflow
 numpy
 scipy
 joblib
+tqdm
+opencv-python
+pillow
+tensorflow 
+keras
+nltk
+spacy
+transformers
+fastapi
+gradio
