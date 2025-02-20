@@ -20,10 +20,19 @@ import matplotlib.pyplot as plt
 # Thêm tùy chọn tùy chọn dữ liệu huấn luyên
 
 # Tiêu đề ứng dụng
-st.title("Ứng dụng với Streamlit")
+st.title("Ứng dụng Titanic với Streamlit")
 
-st.subheader("Upload dữ liệu")
+st.write("""
+## Phân tích dữ liệu và huấn luyện mô hình Multiple Rgresstion
+""")
+url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+data = pd.read_csv(url)
+
+st.subheader("Thay đổi dữ liệu")
+
+# Tạo một phần upload dữ liệu
 uploaded_file = st.file_uploader("Chọn file dữ liệu", type=["csv", "xlsx", "xls"])
+
 # Nếu người dùng chọn upload dữ liệu
 if uploaded_file is not None:
     # Đọc dữ liệu từ file
@@ -39,7 +48,10 @@ if uploaded_file is not None:
 
     # Hiển thị dữ liệu
     st.write("Dữ liệu đã được upload thành công!")
-    st.write(data.head())
+
+# Hiển thị dữ liệu gốc
+st.subheader("Dữ liệu gốc")
+st.write(data)
 
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
