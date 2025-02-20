@@ -1,4 +1,3 @@
-from tkinter import Image
 import streamlit as st
 import mlflow
 import mlflow.sklearn
@@ -10,6 +9,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from PIL import Image # type: ignore
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
 
 # Load MNIST dataset
