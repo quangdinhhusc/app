@@ -55,16 +55,13 @@ st.subheader("Dữ liệu gốc")
 st.write(data)
 
 # Hiển thị bảng chứa số lượng dữ liệu bị thiếu hoặc null của các cột
-st.subheader("Số lượng dữ liệu bị thiếu hoặc null của các cột")
-st.write(data.isnull().sum())
-# Tạo biểu đồ hiển thị số dữ liệu bị lỗi của mỗi cột
-# st.subheader("Biểu đồ số dữ liệu bị lỗi của mỗi cột")
-# fig, ax = plt.subplots()
-# sns.countplot(x=data.isnull().sum().index, y=data.isnull().sum().values, ax=ax)
-# ax.set_title("Số dữ liệu bị lỗi của mỗi cột")
-# ax.set_xlabel("Tên cột")
-# ax.set_ylabel("Số dữ liệu bị lỗi")
-# st.pyplot(fig)
+st.subheader("🚨 Kiểm tra lỗi dữ liệu")
+
+# Kiểm tra giá trị thiếu
+missing_values = data.isnull().sum()
+
+# Kiểm tra dữ liệu trùng lặp
+duplicate_count = data.duplicated().sum()
 
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
