@@ -66,8 +66,8 @@ missing_values = data.isnull().sum()
 duplicate_count = data.duplicated().sum()
                 # Kiểm tra giá trị quá lớn (outlier) bằng Z-score
 outlier_count = {
-        col: (abs(zscore(df[col], nan_policy='omit')) > 3).sum()
-        for col in df.select_dtypes(include=['number']).columns
+        col: (abs(zscore(data[col], nan_policy='omit')) > 3).sum()
+        for col in data.select_dtypes(include=['number']).columns
     }
 
 
