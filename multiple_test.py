@@ -57,7 +57,7 @@ st.subheader("Dữ liệu gốc")
 st.write(data)
 
 # Hiển thị bảng chứa số lượng dữ liệu bị thiếu hoặc null của các cột
-st.subheader("🚨 Kiểm tra lỗi dữ liệu")
+st.subheader("Kiểm tra lỗi dữ liệu")
 
 # Kiểm tra giá trị thiếu
 missing_values = data.isnull().sum()
@@ -70,8 +70,7 @@ outlier_count = {
         for col in data.select_dtypes(include=['number']).columns
     }
 
-
-                # Tạo báo cáo lỗi
+# Tạo báo cáo lỗi
 error_report = pd.DataFrame({
     'Cột': data.columns,
     'Giá trị thiếu': missing_values,
@@ -79,10 +78,10 @@ error_report = pd.DataFrame({
 })
 
                 # Hiển thị báo cáo lỗi
-st.table(error_report)
+st.dataframe(error_report.values)
 
                 # Hiển thị số lượng dữ liệu trùng lặp
-st.write(f"🔁 **Số lượng dòng bị trùng lặp:** {duplicate_count}")      
+st.write(f"**Số lượng dòng bị trùng lặp:** {duplicate_count}")      
 st.write(len(data))     
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
