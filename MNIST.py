@@ -20,8 +20,8 @@ df = fetch_openml('mnist_784', version=1)
 st.write("Số lượng dữ liệu:", len(df.data))
 st.write("Số lượng thuộc tính:", len(df.data.columns))
 
-# Loại bỏ các cột chứa giá trị toàn 0 hoặc NaN
-mnist = df.loc[:, (df.notnull() & (df != 0)).any(axis=0)]
+# Loại bỏ các thuộc tính chứa toàn bộ là giá trị 0 hoặc NaN
+mnist = df.drop(df.columns[(df.isnull() | (df == 0)).all()], axis=1)
 
 #chia dữ liệu thành X và y
 X, y = mnist["data"], mnist["target"]
