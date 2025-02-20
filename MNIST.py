@@ -40,6 +40,7 @@ model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
 
 st.subheader("Tùy chọn chia dữ liệu train")
 train_ratio = st.slider("Tỷ lệ dữ liệu train", min_value=0.1, max_value=0.9, value=0.8, step=0.1)
+test_ratio = 1 - train_ratio
 
 # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
 x_train, x_val, y_train, y_val = train_test_split(X, y, test_size=1-train_ratio, random_state=42)
