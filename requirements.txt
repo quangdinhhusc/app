@@ -4,5 +4,4 @@ matplotlib
 seaborn
 streamlit
 mlflow
-streamlit mlflow
-```
+streamlit
