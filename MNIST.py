@@ -43,4 +43,10 @@ train_ratio = st.slider("Tỷ lệ dữ liệu train", min_value=0.1, max_value=
 test_ratio = 1 - train_ratio
 
 # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
-x_train, x_val, y_train, y_val = train_test_split(X, y, test_size=1-train_ratio, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=test_ratio, random_state=42)
+
+# Tạo phần tùy chọn chia dữ liệu test thành validation và test
+st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
+val_ratio = st.slider("Tỷ lệ dữ liệu validation", min_value=0.1, max_value=0.9, value=0.5, step=0.1)
+x_val, x_test, y_val, y_test = train_test_split(x_test, y_test, test_size=1-val_ratio, random_state=42)
+
