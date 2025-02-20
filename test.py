@@ -39,11 +39,8 @@ if uploaded_file is not None:
 
     # Hiển thị dữ liệu
     st.write("Dữ liệu đã được upload thành công!")
-    st.write(uploaded_file)
+    st.write(data.head())
 
-# st.subheader("Dữ liệu Titanic gốc")
-# st.write(data)
-data = uploaded_file
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
 
