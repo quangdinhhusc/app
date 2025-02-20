@@ -1,3 +1,4 @@
+
 import streamlit as st
 import mlflow.sklearn
 import pandas as pd
@@ -59,11 +60,7 @@ st.write("- Điền dữ liệu Embarked null thành giá trị mode của 
 data_cleaned['Embarked'] = data_cleaned['Embarked'].fillna(data_cleaned['Embarked'].mode()[0])
 
 st.write("- Chuẩn hóa các cột về các giá trị để giúp cho quá trình huấn luyện.")
-# data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
-data_cleaned['Embarked'] = data_cleaned['Embarked'].map({'S': 1, 'C': 2, 'Q': 3})
-data_cleaned['Sex'] = data_cleaned['Sex'].map({'male': 0, 'female': 1})
-data_cleaned['Fare'] = data_cleaned['Fare'].round().astype(int)
-
+data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
 
 # Hiển thị dữ liệu sau khi tiền xử lý
 st.write("Dữ liệu sau khi tiền xử lý:")
@@ -202,13 +199,12 @@ st.sidebar.title("Titanic Survival Prediction")
 
 with st.sidebar.form("input_form"):
     pclass = st.selectbox("Hạng Vé", [1, 2, 3])
-    sex = st.selectbox("Giới Tính", ["0 (male)", "1 (female)"])
-    # sex = st.selectbox("Giới Tính", ["male", "female"])
+    sex = st.selectbox("Giới Tính", ["male", "female"])
     age = st.number_input("Tuổi", min_value=0, max_value=100, value=25)
     sibsp = st.number_input("Anh Chị Em", min_value=0, value=0)
     parch = st.number_input("Bố Mẹ Con Cái", min_value=0, value=0)
     fare = st.number_input("Giá Vé", min_value=0, value=0)  # Đã sửa lỗi ở đây
-    embarked = st.selectbox("Cảng", ["1 (Southampton)", "2 (Cherbourg)", "3 (Queenstown)"])
+    embarked = st.selectbox("Cảng", ["Southampton", "Cherbourg", "Queenstown"])
     submit_button = st.form_submit_button("Dự Đoán")
 
 if submit_button:
