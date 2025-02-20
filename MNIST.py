@@ -76,7 +76,7 @@ if st.sidebar.button("Train Model"):
         st.write(f"Accuracy: {accuracy:.2f}")
 
         st.write("Confusion Matrix:")
-        st.write(cm)
+        # st.write(cm)
 
         # Plot confusion matrix
         fig, ax = plt.subplots()
