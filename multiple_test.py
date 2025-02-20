@@ -123,7 +123,8 @@ def split_data(df, train_ratio, val_ratio, test_ratio, random_state):
 st.title("Chọn tỉ lệ của các tập dữ liệu")
 
 train_ratio = st.slider("Tập huấn luyện", 0, 100, 70)
-val_ratio = st.slider("Tập xác thực", 0, 100, 15)
+a = 100 - train_ratio
+val_ratio = st.slider("Tập xác thực", 0, a, 15)
 
 # Tính toán tỉ lệ của tập kiểm tra
 test_ratio = 100 - train_ratio - val_ratio
