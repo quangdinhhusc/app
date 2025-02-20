@@ -7,4 +7,3 @@ mlflow
 numpy
 scipy
 joblib
-tkinter
