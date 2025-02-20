@@ -18,8 +18,31 @@ st.title("Ứng dụng Titanic với Streamlit")
 st.write("""
 ## Phân tích dữ liệu và huấn luyện mô hình Multiple Rgresstion
 """)
+
+
 url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
 data = pd.read_csv(url)
+
+st.subheader("Thay đổi dữ liệu")
+
+# Tạo một phần upload dữ liệu
+uploaded_file = st.file_uploader("Chọn file dữ liệu", type=["csv", "xlsx", "xls"])
+
+# Nếu người dùng chọn upload dữ liệu
+if uploaded_file is not None:
+    # Đọc dữ liệu từ file
+    if uploaded_file.type == "text/csv":
+        data = pd.read_csv(uploaded_file)
+    elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        data = pd.read_excel(uploaded_file)
+    elif uploaded_file.type == "application/vnd.ms-excel":
+        data = pd.read_excel(uploaded_file)
+    else:
+        st.error("Loại file không được hỗ trợ")
+        st.stop()
+
+    # Hiển thị dữ liệu
+    st.write("Dữ liệu đã được upload thành công!")
 
 # Hiển thị dữ liệu gốc
 st.subheader("Dữ liệu Titanic gốc")
