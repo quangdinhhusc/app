@@ -26,6 +26,13 @@ st.subheader("Dữ liệu Titanic gốc")
 st.write(data)
 
 # Tiền xử lý dữ liệu
+# thêm phần tùy chọn xóa các cột dữ liệu huấn luyện
+# thêm phần tùy chọn các tập dữ liệu train, val, test
+# Thêm tùy chọn chọn model
+# Thêm tùy chọn dự đoán
+# Thêm tùy chọn hiển thị biểu đồ
+# Thêm tùy chọn hiển thị các metrics
+# Thêm tùy chọn tùy chọn dữ liệu huấn luyện
 st.subheader("Tiền xử lý dữ liệu")
 
 # Xóa các dòng có ít nhất 2 cột chứa giá trị null
@@ -72,7 +79,6 @@ st.write(data_cleaned)
 
 # Tùy chỉnh tỉ lệ của các tập dữ liệu
 # Đưa phần chia tỉ lệ các tập sang thang bên
-st.sidebar.title("Titanic Survival Prediction")
 
 st.sidebar.subheader("Tùy chỉnh tỉ lệ của các tập dữ liệu")
 col1, col2, col3 = st.sidebar.columns(3)
@@ -255,7 +261,7 @@ if submit_button:
         if col not in input_df.columns:
             input_df[col] = 0
 
-    input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True) #one-hot encoding
+    # input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True) #one-hot encoding
 
     # Đảm bảo thứ tự cột giống như khi train
     input_df = input_df[train_features] # Sắp xếp theo thứ tự khi train
