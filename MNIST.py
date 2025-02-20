@@ -8,7 +8,8 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, confusion_matrix
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np # type: ignore
+import numpy as np
+from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
 
 # Load MNIST dataset
 mnist = fetch_openml('mnist_784', version=1)
@@ -75,6 +76,16 @@ if st.sidebar.button("Train Model"):
         plt.xlabel("Predicted label")
         plt.ylabel("True label")
         st.pyplot(fig)
+
+        # Display classification report
+        st.write("Classification Report:")
+        st.write(classification_report(y_test, y_pred))
+
+        # Display precision, recall, f1-score
+        st.write("Precision: {:.2f}".format(precision_score(y_test, y_pred)))
+        st.write("Recall: {:.2f}".format(recall_score(y_test, y_pred)))
+        st.write("F1-score: {:.2f}".format(f1_score(y_test, y_pred)))
+
 
         # Save model to MLFlow
         mlflow.sklearn.log_model(model, "model")
