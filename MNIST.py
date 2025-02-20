@@ -29,6 +29,7 @@ st.write(X.isnull().sum())
 st.write("Tỷ lệ dữ liệu lỗi hoặc NULL của các cột:")
 st.write(X.isnull().mean())
 
+
 st.sidebar.header("Model Selection")
 model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
 
@@ -98,5 +99,4 @@ if st.sidebar.button("Train Model"):
 
         # Save model to MLFlow
         mlflow.sklearn.log_model(model, "model")
-        
 
