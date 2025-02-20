@@ -11,6 +11,13 @@ from sklearn.model_selection import cross_val_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# thêm phần tùy chọn xóa các cột dữ liệu huấn luyện
+# thêm phần tùy chọn các tập dữ liệu train, val, test
+# Thêm tùy chọn chọn model
+# Thêm tùy chọn dự đoán
+# Thêm tùy chọn hiển thị biểu đồ
+# Thêm tùy chọn hiển thị các metrics
+# Thêm tùy chọn tùy chọn dữ liệu huấn luyên
 
 # Tiêu đề ứng dụng
 st.title("Ứng dụng Titanic với Streamlit")
@@ -30,28 +37,9 @@ st.subheader("Tiền xử lý dữ liệu")
 
 # Xóa các dòng có ít nhất 2 cột chứa giá trị null
 thresh_value = data.shape[1] - 1
-df_cleaned = data.dropna(thresh=thresh_value)
+data_cleaned = data.dropna(thresh=thresh_value)
 st.write("- Xóa các dòng có ít nhất 2 cột chứa giá trị null.")
-st.write(f"Số dòng sau khi xóa: {df_cleaned.shape[0]}")
-
-st.write("- Xóa một số cột giá trị có thể gây ảnh hưởng (như chứa nhiều dữ liệu bị nhiễu, dữ liệu không nhất quá,...) đến quá trình huấn luyện model")
-data_cleaned = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
-st.write(f"""1. PassengerId:
-- Đây là một định danh duy nhất cho mỗi hành khách và không mang thông tin có giá trị dự đoán về khả năng sống sót.
-- Việc đưa PassengerId vào mô hình có thể gây nhầm lẫn hoặc làm giảm hiệu suất của mô hình.
-
-2. Name:
-- Tên hành khách thường là dữ liệu dạng text và rất đa dạng.
-- Mặc dù có thể trích xuất một số thông tin (ví dụ: tước hiệu), nhưng việc xử lý tên phức tạp và không chắc chắn mang lại lợi ích đáng kể cho mô hình.
-- Trong trường hợp này, chúng ta đơn giản hóa bằng cách loại bỏ cột Name.
-
-3. Ticket:
-- Số vé cũng là một định danh và không có mối quan hệ rõ ràng với khả năng sống sót.
-
-4. Cabin:
-- Cột Cabin chứa nhiều giá trị bị thiếu (NaN).
-- Việc xử lý các giá trị thiếu này có thể phức tạp.
-- Hơn nữa, thông tin về cabin có thể không phải là yếu tố quyết định đến khả năng sống sót""")
+st.write(f"Số dòng sau khi xóa: {data_cleaned.shape[0]}")
 
 st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
 data_cleaned['Age'] = data_cleaned['Age'].fillna(data_cleaned['Age'].median())
@@ -61,6 +49,41 @@ data_cleaned['Embarked'] = data_cleaned['Embarked'].fillna(data_cleaned['Embarke
 
 st.write("- Chuẩn hóa các cột về các giá trị để giúp cho quá trình huấn luyện.")
 data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
+
+
+st.write("- Xóa một số cột giá trị có thể gây ảnh hưởng (như chứa nhiều dữ liệu bị nhiễu, dữ liệu không nhất quá,...) đến quá trình huấn luyện model")
+# data_cleaned = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
+# st.write(f"""1. PassengerId:
+# - Đây là một định danh duy nhất cho mỗi hành khách và không mang thông tin có giá trị dự đoán về khả năng sống sót.
+# - Việc đưa PassengerId vào mô hình có thể gây nhầm lẫn hoặc làm giảm hiệu suất của mô hình.
+
+# 2. Name:
+# - Tên hành khách thường là dữ liệu dạng text và rất đa dạng.
+# - Mặc dù có thể trích xuất một số thông tin (ví dụ: tước hiệu), nhưng việc xử lý tên phức tạp và không chắc chắn mang lại lợi ích đáng kể cho mô hình.
+# - Trong trường hợp này, chúng ta đơn giản hóa bằng cách loại bỏ cột Name.
+
+# 3. Ticket:
+# - Số vé cũng là một định danh và không có mối quan hệ rõ ràng với khả năng sống sót.
+
+# 4. Cabin:
+# - Cột Cabin chứa nhiều giá trị bị thiếu (NaN).
+# - Việc xử lý các giá trị thiếu này có thể phức tạp.
+# - Hơn nữa, thông tin về cabin có thể không phải là yếu tố quyết định đến khả năng sống sót""")
+st.subheader("Tùy chọn xóa các cột dữ liệu huấn luyện")
+
+# Tạo một danh sách các cột dữ liệu huấn luyện
+columns = data_cleaned.columns.tolist()
+
+# Tạo một phần tùy chọn xóa các cột dữ liệu huấn luyện
+with st.form("delete_columns"):
+    delete_columns = st.multiselect("Chọn các cột dữ liệu huấn luyện để xóa", columns)
+    submit_button = st.form_submit_button("Xóa")
+
+# Nếu người dùng chọn xóa các cột dữ liệu huấn luyện
+if submit_button:
+    # Xóa các cột dữ liệu huấn luyện đã chọn
+    data_cleaned = data_cleaned.drop(delete_columns, axis=1)
+    st.write("Các cột dữ liệu huấn luyện đã được xóa thành công!")
 
 # Hiển thị dữ liệu sau khi tiền xử lý
 st.write("Dữ liệu sau khi tiền xử lý:")
@@ -244,5 +267,4 @@ if submit_button:
         message = "Không sống sót ☠️"
 
     st.sidebar.write(f"Kết quả: {message}")
-    st.sidebar.write(f"Xác suất sống sót: {prediction}")
     # st.sidebar.write(f"Xác suất sống sót: {prediction}")
