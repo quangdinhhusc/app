@@ -7,3 +7,5 @@ mlflow
 numpy
 scipy
 joblib
+python3-tkinter
+tkinter
