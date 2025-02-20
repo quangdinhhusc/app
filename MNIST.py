@@ -12,13 +12,21 @@ import numpy as np
 from PIL import Image # type: ignore
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
 
-# Load MNIST dataset
-mnist = fetch_openml('mnist_784', version=1)
-X, y = mnist["data"], mnist["target"]
-y = y.astype(np.uint8)
-
 # Streamlit app
 st.title("MNIST Classification with Streamlit & MLFlow")
+
+# Load MNIST dataset
+df = fetch_openml('mnist_784', version=1)
+df.data = df.data / 255.0
+st.write("Số lượng dữ liệu:", len(df.data))
+st.write("Số lượng thuộc tính:", len(df.columns))
+
+# Loại bỏ các cột chứa giá trị toàn 0 hoặc NaN
+mnist = df.loc[:, (df.notnull() & (df != 0)).any(axis=0)]
+
+#chia dữ liệu thành X và y
+X, y = mnist["data"], mnist["target"]
+y = y.astype(np.uint8)
 
 st.write("Bảng dữ liệu gốc:")
 st.write(mnist.data.head())
@@ -27,19 +35,14 @@ st.write(X.head())
 st.write("Số lượng dữ liệu:", len(X))
 st.write("Số lượng thuộc tính:", len(X.columns))
 
-# st.write("Bảng dữ liệu số lượng dữ liệu lỗi hoặc NULL của các cột:")
-# st.write(X.isnull().sum())
-# st.write("Tỷ lệ dữ liệu lỗi hoặc NULL của các cột:")
-# st.write(X.isnull().mean())
-
-
+# Chọn model
 st.sidebar.header("Model Selection")
 model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
 
+# Tạo phần tùy chọn chia dữ liệu train
 st.subheader("Tùy chọn chia dữ liệu train")
 train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=70, step=1)
 test_ratio = 100 - train_ratio
-
 a = 100 - train_ratio
 
 # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
