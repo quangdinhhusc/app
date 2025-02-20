@@ -32,7 +32,7 @@ st.write(data)
 # Thêm tùy chọn dự đoán
 # Thêm tùy chọn hiển thị biểu đồ
 # Thêm tùy chọn hiển thị các metrics
-# Thêm tùy chọn tùy chọn dữ liệu huấn luyện
+# Thêm tùy chọn tùy chọn dữ liệu huấn luyên
 st.subheader("Tiền xử lý dữ liệu")
 
 # Xóa các dòng có ít nhất 2 cột chứa giá trị null
@@ -261,7 +261,7 @@ if submit_button:
         if col not in input_df.columns:
             input_df[col] = 0
 
-    # input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True) #one-hot encoding
+    input_df = pd.get_dummies(input_df, columns=["Giới Tính", "Cảng"], drop_first=True) #one-hot encoding
 
     # Đảm bảo thứ tự cột giống như khi train
     input_df = input_df[train_features] # Sắp xếp theo thứ tự khi train
