@@ -19,6 +19,16 @@ y = y.astype(np.uint8)
 # Streamlit app
 st.title("MNIST Classification with Streamlit & MLFlow")
 
+st.write("Bảng dữ liệu gốc:")
+st.write(X)
+st.write("Số lượng dữ liệu:", len(X))
+st.write("Số lượng thuộc tính:", len(X.columns))
+
+st.write("Bảng dữ liệu số lượng dữ liệu lỗi hoặc NULL của các cột:")
+st.write(X.isnull().sum())
+st.write("Tỷ lệ dữ liệu lỗi hoặc NULL của các cột:")
+st.write(X.isnull().mean())
+
 st.sidebar.header("Model Selection")
 model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
 
@@ -77,15 +87,15 @@ if st.sidebar.button("Train Model"):
         plt.ylabel("True label")
         st.pyplot(fig)
 
-        # Display classification report
-        st.write("Classification Report:")
-        st.write(classification_report(y_test, y_pred))
+        # # Display classification report
+        # st.write("Classification Report:")
+        # st.write(classification_report(y_test, y_pred))
 
-        # Display precision, recall, f1-score
-        st.write("Precision: {:.2f}".format(precision_score(y_test, y_pred)))
-        st.write("Recall: {:.2f}".format(recall_score(y_test, y_pred)))
-        st.write("F1-score: {:.2f}".format(f1_score(y_test, y_pred)))
-
+        # # Display precision, recall, f1-score
+        # st.write("Precision: {:.2f}".format(precision_score(y_test, y_pred)))
+        # st.write("Recall: {:.2f}".format(recall_score(y_test, y_pred)))
+        # st.write("F1-score: {:.2f}".format(f1_score(y_test, y_pred)))
 
         # Save model to MLFlow
         mlflow.sklearn.log_model(model, "model")
+
