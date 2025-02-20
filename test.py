@@ -41,7 +41,6 @@ if uploaded_file is not None:
     st.write("Dữ liệu đã được upload thành công!")
     st.write(uploaded_file)
 
-# Hiển thị dữ liệu gốc
 # st.subheader("Dữ liệu Titanic gốc")
 # st.write(data)
 data = uploaded_file
