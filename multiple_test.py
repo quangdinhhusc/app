@@ -55,13 +55,13 @@ st.subheader("Dữ liệu gốc")
 st.write(data)
 
 # Tạo biểu đồ hiển thị số dữ liệu bị lỗi của mỗi cột
-st.subheader("Biểu đồ số dữ liệu bị lỗi của mỗi cột")
-fig, ax = plt.subplots()
-sns.countplot(x=data.isnull().sum().index, y=data.isnull().sum().values, ax=ax)
-ax.set_title("Số dữ liệu bị lỗi của mỗi cột")
-ax.set_xlabel("Tên cột")
-ax.set_ylabel("Số dữ liệu bị lỗi")
-st.pyplot(fig)
+# st.subheader("Biểu đồ số dữ liệu bị lỗi của mỗi cột")
+# fig, ax = plt.subplots()
+# sns.countplot(x=data.isnull().sum().index, y=data.isnull().sum().values, ax=ax)
+# ax.set_title("Số dữ liệu bị lỗi của mỗi cột")
+# ax.set_xlabel("Tên cột")
+# ax.set_ylabel("Số dữ liệu bị lỗi")
+# st.pyplot(fig)
 
 # Tiền xử lý dữ liệu
 st.subheader("Tiền xử lý dữ liệu")
