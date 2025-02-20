@@ -19,7 +19,6 @@ st.title("MNIST Classification with Streamlit & MLFlow")
 df = fetch_openml('mnist_784', version=1)
 df.data = df.data / 255.0
 st.write("Số lượng dữ liệu:", len(df.data))
-st.write("Số lượng thuộc tính:", len(df.columns))
 
 # Loại bỏ các cột chứa giá trị toàn 0 hoặc NaN
 mnist = df.loc[:, (df.notnull() & (df != 0)).any(axis=0)]
