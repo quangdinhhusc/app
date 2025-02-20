@@ -20,7 +20,7 @@ y = y.astype(np.uint8)
 st.title("MNIST Classification with Streamlit & MLFlow")
 
 st.write("Bảng dữ liệu gốc:")
-st.write(X)
+st.write(X.head())
 st.write("Số lượng dữ liệu:", len(X))
 st.write("Số lượng thuộc tính:", len(X.columns))
 
