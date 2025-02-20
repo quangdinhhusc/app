@@ -120,8 +120,12 @@ def split_data(df, train_ratio, val_ratio, test_ratio, random_state):
 
 # Chia tập dữ liệu
 # Tự chọn tỉ lệ của các tập dữ liệu
-train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
-val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
+st.title("Chọn tỉ lệ của các tập dữ liệu")
+
+train_ratio = st.slider("Tập huấn luyện", 0, 100, 70)
+val_ratio = st.slider("Tập xác thực", 0, 100, 15)
+
+# Tính toán tỉ lệ của tập kiểm tra
 test_ratio = 100 - train_ratio - val_ratio
 
 # Đảm bảo rằng tổng tỉ lệ không vượt quá 1
@@ -130,6 +134,12 @@ while train_ratio + val_ratio + test_ratio != 1:
     train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
     val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
     test_ratio = float(input("Nhập tỉ lệ của tập kiểm tra (0-1): "))
+# Hiển thị tỉ lệ của các tập dữ liệu
+st.write("Tỉ lệ của các tập dữ liệu:")
+st.write("Tập huấn luyện:", train_ratio.shape[0], "%")
+st.write("Tập xác thực:", val_ratio.shape[0], "%")
+st.write("Tập kiểm tra:", test_ratio.shape[0], "%")
+
     
 random_state = 42
 train_df, val_df, test_df = split_data(data_cleaned, train_ratio, val_ratio, test_ratio, random_state)
