@@ -72,6 +72,8 @@ st.write(data_cleaned)
 
 # Tùy chỉnh tỉ lệ của các tập dữ liệu
 # Đưa phần chia tỉ lệ các tập sang thang bên
+st.sidebar.title("Titanic Survival Prediction")
+
 st.sidebar.subheader("Tùy chỉnh tỉ lệ của các tập dữ liệu")
 col1, col2, col3 = st.sidebar.columns(3)
 
@@ -217,7 +219,7 @@ st.pyplot(fig)
 train_features = train_df.drop("Survived", axis=1).columns.tolist()  # Giả sử "Survived" là cột mục tiêu
 
 # # ...existing code...
-st.sidebar.title("Titanic Survival Prediction")
+
 
 # Tạo form nhập liệu trong sidebar
 
