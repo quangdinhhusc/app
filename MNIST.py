@@ -29,7 +29,6 @@ y = y.astype(np.uint8)
 
 st.write("Bảng dữ liệu gốc:")
 st.write(X.head())
-st.write(y.head())
 st.write("Số lượng dữ liệu:", len(X))
 st.write("Số lượng thuộc tính:", len(X.columns))
 
