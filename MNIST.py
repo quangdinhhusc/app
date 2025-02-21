@@ -104,10 +104,7 @@ if st.sidebar.button("Train Model"):
         st.pyplot(fig)
 
         # Display MLFlow metrics in Streamlit
-        st.subheader("MLFlow Metrics")
-        
-        
-        st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy"])
+        # st.subheader("MLFlow Metrics")
         # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy"])
         # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy:" + mlflow.active_run().info.run_id])
 
