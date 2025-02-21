@@ -1,5 +1,4 @@
 import streamlit as st
-import mlflow_streamlit
 import mlflow
 import mlflow.sklearn
 from sklearn.datasets import fetch_openml
@@ -106,11 +105,8 @@ if st.sidebar.button("Train Model"):
 
         # Display MLFlow metrics in Streamlit
         st.subheader("MLFlow Metrics")
-        # Hiển thị kết quả của các experiment trên Streamlit
-        experiments = mlflow_streamlit.get_experiments()
-        for experiment in experiments:
-            st.write("Experiment:", experiment.name)
-            st.write("Accuracy:", experiment.metrics["accuracy"])
+        
+        
 
         # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy"])
         # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy:" + mlflow.active_run().info.run_id])
