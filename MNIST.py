@@ -107,7 +107,7 @@ if st.sidebar.button("Train Model"):
         st.subheader("MLFlow Metrics")
         
         
-
+        st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy"])
         # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy"])
         # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy:" + mlflow.active_run().info.run_id])
 
