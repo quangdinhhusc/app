@@ -60,10 +60,9 @@ st.write("Số lượng dữ liệu test: ", len(x_test))
 
 # Train and evaluate model
 if st.sidebar.button("Train Model"):
-    with mlflow.start_run():
-        if model_name == "Decision Tree":
+    if model_name == "Decision Tree":
             model = DecisionTreeClassifier()
-        elif model_name == "SVM":
+    elif model_name == "SVM":
             param_grid = {
                 'C': [0.1, 1, 10],
                 'kernel': ['linear', 'rbf', 'poly'],
@@ -73,7 +72,7 @@ if st.sidebar.button("Train Model"):
             grid_search = GridSearchCV(SVC(), param_grid, cv=5)
             grid_search.fit(x_train, y_train)
             model = grid_search.best_estimator_
-
+    with mlflow.start_run():
         model.fit(x_train, y_train)
         y_pred = model.predict(x_test)
         accuracy = accuracy_score(y_test, y_pred)
