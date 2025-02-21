@@ -16,12 +16,12 @@ from sklearn.metrics import classification_report, precision_score, recall_score
 st.title("MNIST Classification with Streamlit & MLFlow")
 
 # Load MNIST dataset
-mnist = fetch_openml('mnist_784', version=1)
-st.write("Số lượng dữ liệu:", len(mnist.data))
-st.write("Số lượng thuộc tính:", len(mnist.data.columns))
+df = fetch_openml('mnist_784', version=1)
+st.write("Số lượng dữ liệu:", len(df.data))
+st.write("Số lượng thuộc tính:", len(df.data.columns))
 
 # Loại bỏ các thuộc tính chứa toàn bộ là giá trị 0 hoặc NaN
-# mnist = df.data.drop(df.data.columns[(df.data.isnull() | (df.data == 0)).all()], axis=1)
+mnist = df.data.drop(df.data.columns[(df.data.isnull() | (df.data == 0)).all()], axis=1)
 
 #chia dữ liệu thành X và y
 X, y = mnist["data"], mnist["target"]
