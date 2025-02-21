@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 from PIL import Image # type: ignore
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
+from sklearn.model_selection import GridSearchCV
 
 # Streamlit app
 st.title("MNIST Classification with Streamlit & MLFlow")
@@ -63,7 +64,15 @@ if st.sidebar.button("Train Model"):
         if model_name == "Decision Tree":
             model = DecisionTreeClassifier()
         elif model_name == "SVM":
-            model = SVC()
+            param_grid = {
+                'C': [0.1, 1, 10],
+                'kernel': ['linear', 'rbf', 'poly'],
+                'gamma': ['scale', 'auto'],
+                'degree': [1, 2, 3]
+            }
+            grid_search = GridSearchCV(SVC(), param_grid, cv=5)
+            grid_search.fit(x_train, y_train)
+            model = grid_search.best_estimator_
 
         model.fit(x_train, y_train)
         y_pred = model.predict(x_test)
@@ -74,7 +83,10 @@ if st.sidebar.button("Train Model"):
         mlflow.log_param("model", model_name)
         mlflow.log_metric("accuracy", accuracy)
 
-        # Display results in Streamlit
+        # Display MLFlow logs in Streamlit
+        st.subheader("MLFlow Logs")
+        st.write("Run ID:", mlflow.active_run().info.run_id)
+        st.write("Experiment ID:", mlflow.active_run().info.experiment_id)
         st.write(f"Model: {model_name}")
         st.write(f"Accuracy: {accuracy:.2f}")
 
@@ -90,6 +102,21 @@ if st.sidebar.button("Train Model"):
         plt.xlabel("Predicted label")
         plt.ylabel("True label")
         st.pyplot(fig)
+
+        # Display MLFlow metrics in Streamlit
+        st.subheader("MLFlow Metrics")
+        st.write("Accuracy:", mlflow.get_metric("accuracy"))
+
+        # Display MLFlow parameters in Streamlit
+        st.subheader("MLFlow Parameters")
+        st.write("Model:", mlflow.get_param("model"))
+
+        # Save model to MLFlow
+        mlflow.sklearn.log_model(model, "model")
+
+        # Display MLFlow model in Streamlit
+        st.subheader("MLFlow Model")
+        st.write("Model:", mlflow.get_model("model"))
 
         # # Display classification report
         # st.write("Classification Report:")
