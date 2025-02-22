@@ -73,20 +73,34 @@ st.write("Số lượng giá trị null trong dữ liệu:", len(null_counts))
 # value_counts = X.apply(lambda x: x.value_counts())
 # st.write("Số lượng của mỗi giá trị trong dữ liệu:", value_counts)
 
-# Tạo phần tùy chọn chia dữ liệu train
+# # Tạo phần tùy chọn chia dữ liệu train
+# st.subheader("Tùy chọn chia dữ liệu train")
+# train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=70, step=1)
+# test_ratio = 100 - train_ratio
+# a = 100 - train_ratio
+
+# # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
+# x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=test_ratio/100, random_state=42)
+
+# # Tạo phần tùy chọn chia dữ liệu test thành validation và test
+# st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
+# val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=0, max_value=a, value=10, step=1)
+
+# x_val, x_test, y_val, y_test = train_test_split(x_test, y_test, test_size=(100-val_ratio)/100, random_state=42)
+
 st.subheader("Tùy chọn chia dữ liệu train")
 train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=1)
-val_ratio = 100 - train_ratio
+test_ratio = 100 - train_ratio
 a = 100 - train_ratio
 
 # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
-x_train, x_val, y_train, y_val = train_test_split(X, y, val_ratio=val_ratio/100, random_state=42)
+x_train, x_val_test, y_train, y_val_test = train_test_split(X, y, test_size=test_ratio/100, random_state=42)
 
 # Tạo phần tùy chọn chia dữ liệu test thành validation và test
 st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
-val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value = a, max_value = a, value = 10, step = 1)
+val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=a, max_value=a, value=50, step=1)
 
-x_val, x_test, y_val, y_test = train_test_split(x_val, y_val, test_size=(100-val_ratio)/100, random_state=42)
+x_val, x_test, y_val, y_test = train_test_split(x_val_test, y_val_test, test_size=(100-val_ratio)/100, random_state=42)
 
 # In ra số lượng của các tập train, test và val
 st.subheader("Số lượng của các tập dữ liệu")
