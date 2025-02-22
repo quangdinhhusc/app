@@ -181,6 +181,7 @@ if uploaded_file is not None:
     # Dự đoán chữ viết tay
     prediction = model.predict(image)
 
+
     # Hiển thị kết quả
     st.sidebar.write("Kết quả dự đoán:")
     st.sidebar.write("Chữ viết tay:", prediction[0])
