@@ -47,19 +47,19 @@ st.pyplot(fig)
 
 # Kiểm tra giá trị null trong dữ liệu
 null_counts = X.isnull().sum()
-st.write("Số lượng giá trị null trong dữ liệu:", null_counts)
+st.write("Số lượng giá trị null trong dữ liệu:", len(null_counts))
 
-# Kiểm tra giá trị null hoặc NaN trong dữ liệu
-na_counts = X.isna().sum()
-st.write("Số lượng giá trị null hoặc NaN trong dữ liệu:", na_counts)
+# # Kiểm tra giá trị null hoặc NaN trong dữ liệu
+# na_counts = X.isna().sum()
+# st.write("Số lượng giá trị null hoặc NaN trong dữ liệu:", na_counts)
 
-# Kiểm tra giá trị vô hạn trong dữ liệu
-inf_counts = X.isinf().sum()
-st.write("Số lượng giá trị vô hạn trong dữ liệu:", inf_counts)
+# # Kiểm tra giá trị vô hạn trong dữ liệu
+# inf_counts = X.isinf().sum()
+# st.write("Số lượng giá trị vô hạn trong dữ liệu:", inf_counts)
 
-# Đếm số lượng của mỗi giá trị trong dữ liệu
-value_counts = X.apply(lambda x: x.value_counts())
-st.write("Số lượng của mỗi giá trị trong dữ liệu:", value_counts)
+# # Đếm số lượng của mỗi giá trị trong dữ liệu
+# value_counts = X.apply(lambda x: x.value_counts())
+# st.write("Số lượng của mỗi giá trị trong dữ liệu:", value_counts)
 
 # Tạo phần tùy chọn chia dữ liệu train
 st.subheader("Tùy chọn chia dữ liệu train")
