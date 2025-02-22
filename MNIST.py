@@ -31,8 +31,6 @@ y = y.astype(np.uint8)
 
 st.write("Bảng dữ liệu gốc:")
 st.write(X.head())
-st.write("Số lượng dữ liệu:", len(X))
-st.write("Số lượng thuộc tính:", len(X.columns))
 
 # Đếm số lượng nhãn trong tập dữ liệu
 label_counts = y.value_counts()
@@ -45,12 +43,19 @@ ax.set_ylabel("Số lượng")
 ax.set_title("Phân bố nhãn trong tập dữ liệu")
 st.pyplot(fig)
 
+# Loại bỏ giá trị null trong dữ liệu
+y = y.dropna()
+
+# Loại bỏ dữ liệu tương ứng với nhãn trống
+X = X[y.notnull()]
+
 # Đếm số lượng của mỗi nhãn trong dữ liệu
 label_counts = y.value_counts()
+st.write("Số lượng của mỗi nhãn trong dữ liệu:", label_counts)
 
-# Kiểm tra nhãn trống
-empty_labels = label_counts[label_counts == 0]
-st.write("Nhãn trống:", empty_labels)
+# Hiển thị dữ liệu sau khi loại bỏ nhãn trống
+st.write("Dữ liệu sau khi loại bỏ nhãn trống:")
+st.write(X.head())
 
 # Kiểm tra giá trị null trong dữ liệu
 null_counts = X.isnull().sum()
