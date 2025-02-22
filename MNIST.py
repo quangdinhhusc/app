@@ -1,3 +1,4 @@
+
 import streamlit as st
 import mlflow
 import mlflow.sklearn
@@ -9,7 +10,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from PIL import Image # type: ignore
+from PIL import Image
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV
 
@@ -33,9 +34,32 @@ st.write(X.head())
 st.write("Số lượng dữ liệu:", len(X))
 st.write("Số lượng thuộc tính:", len(X.columns))
 
-# Chọn model
-st.sidebar.header("Model Selection")
-model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
+# Đếm số lượng nhãn trong tập dữ liệu
+label_counts = y.value_counts()
+
+# Tạo biểu đồ phân bố nhãn
+fig, ax = plt.subplots()
+ax.bar(label_counts.index, label_counts.values)
+ax.set_xlabel("Nhãn")
+ax.set_ylabel("Số lượng")
+ax.set_title("Phân bố nhãn trong tập dữ liệu")
+st.pyplot(fig)
+
+# Kiểm tra giá trị null trong dữ liệu
+null_counts = X.isnull().sum()
+st.write("Số lượng giá trị null trong dữ liệu:", null_counts)
+
+# Kiểm tra giá trị null hoặc NaN trong dữ liệu
+na_counts = X.isna().sum()
+st.write("Số lượng giá trị null hoặc NaN trong dữ liệu:", na_counts)
+
+# Kiểm tra giá trị vô hạn trong dữ liệu
+inf_counts = X.isinf().sum()
+st.write("Số lượng giá trị vô hạn trong dữ liệu:", inf_counts)
+
+# Đếm số lượng của mỗi giá trị trong dữ liệu
+value_counts = X.apply(lambda x: x.value_counts())
+st.write("Số lượng của mỗi giá trị trong dữ liệu:", value_counts)
 
 # Tạo phần tùy chọn chia dữ liệu train
 st.subheader("Tùy chọn chia dữ liệu train")
@@ -58,16 +82,19 @@ st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
 
+# Chọn model
+st.sidebar.header("Model Selection")
+model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
+
 # Train and evaluate model
 if st.sidebar.button("Train Model"):
     if model_name == "Decision Tree":
             model = DecisionTreeClassifier()
     elif model_name == "SVM":
             param_grid = {
-                'C': [0.1, 1, 10],
-                'kernel': ['linear', 'rbf', 'poly'],
-                'gamma': ['scale', 'auto'],
-                'degree': [1, 2, 3]
+                'C': [0.1],
+                'kernel': ['linear'],
+                'gamma': [0.1]
             }
             grid_search = GridSearchCV(SVC(), param_grid, cv=5)
             grid_search.fit(x_train, y_train)
