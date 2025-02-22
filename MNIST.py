@@ -98,7 +98,7 @@ x_train, x_val_test, y_train, y_val_test = train_test_split(X, y, test_size=test
 
 # Tạo phần tùy chọn chia dữ liệu test thành validation và test
 st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
-val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=a, max_value=a, value=50, step=1)
+val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=0, max_value=a, value=a, step=1)
 
 x_val, x_test, y_val, y_test = train_test_split(x_val_test, y_val_test, test_size=(100-val_ratio)/100, random_state=42)
 
