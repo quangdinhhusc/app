@@ -45,6 +45,13 @@ ax.set_ylabel("Số lượng")
 ax.set_title("Phân bố nhãn trong tập dữ liệu")
 st.pyplot(fig)
 
+# Đếm số lượng của mỗi nhãn trong dữ liệu
+label_counts = y.value_counts()
+
+# Kiểm tra nhãn trống
+empty_labels = label_counts[label_counts == 0]
+st.write("Nhãn trống:", empty_labels)
+
 # Kiểm tra giá trị null trong dữ liệu
 null_counts = X.isnull().sum()
 st.write("Số lượng giá trị null trong dữ liệu:", len(null_counts))
