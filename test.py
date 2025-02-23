@@ -1,4 +1,6 @@
 
+import os
+import struct
 import streamlit as st
 import mlflow
 import mlflow.sklearn
@@ -13,53 +15,66 @@ import numpy as np
 from PIL import Image
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV
+import kagglehub
+
+
+
+
 
 # Streamlit app
 st.title("MNIST Classification with Streamlit & MLFlow")
 
-# Load MNIST dataset
-mnist = fetch_openml('mnist_784', version=1)
-st.write("Số lượng dữ liệu:", len(mnist.data))
-st.write("Số lượng thuộc tính:", len(mnist.data.columns))
+@st.cache_data  # Lưu cache để tránh load lại dữ liệu mỗi lần chạy lại Streamlit
+def get_sampled_pixels(images, sample_size=100_000):
+    return np.random.choice(images.flatten(), sample_size, replace=False)
 
-# Loại bỏ các thuộc tính chứa toàn bộ là giá trị 0 hoặc NaN
-# mnist = df.data.drop(df.data.columns[(df.data.isnull() | (df.data == 0)).all()], axis=1)
+@st.cache_data  # Cache danh sách ảnh ngẫu nhiên
+def get_random_indices(num_images, total_images):
+    return np.random.randint(0, total_images, size=num_images)
 
-#chia dữ liệu thành X và y
-X, y = mnist["data"], mnist["target"]
-y = y.astype(np.uint8)
+# Cấu hình Streamlit
+st.set_page_config(page_title="Phân loại ảnh", layout="wide")
+# Định nghĩa hàm để đọc file .idx
+def load_mnist_images(filename):
+    with open(filename, 'rb') as f:
+        magic, num, rows, cols = struct.unpack('>IIII', f.read(16))
+        images = np.fromfile(f, dtype=np.uint8).reshape(num, rows, cols)
+    return images
 
-st.write("Bảng dữ liệu gốc:")
-st.write(X.head())
+def load_mnist_labels(filename):
+    with open(filename, 'rb') as f:
+        magic, num = struct.unpack('>II', f.read(8))
+        labels = np.fromfile(f, dtype=np.uint8)
+    return labels
 
-# Đếm số lượng nhãn trong tập dữ liệu
-label_counts = y.value_counts()
+# Định nghĩa đường dẫn đến các file MNIST
+# Download latest version
+dataset_path = kagglehub.dataset_download("hojjatk/mnist-dataset")
+# dataset_path = os.path.dirname(os.path.abspath(__file__))
+train_images_path = os.path.join(dataset_path, "train-images.idx3-ubyte")
+train_labels_path = os.path.join(dataset_path, "train-labels.idx1-ubyte")
+test_images_path = os.path.join(dataset_path, "t10k-images.idx3-ubyte")
+test_labels_path = os.path.join(dataset_path, "t10k-labels.idx1-ubyte")
 
-# Tạo biểu đồ phân bố nhãn
-fig, ax = plt.subplots()
-ax.bar(label_counts.index, label_counts.values)
-ax.set_xlabel("Nhãn")
-ax.set_ylabel("Số lượng")
-ax.set_title("Phân bố nhãn trong tập dữ liệu")
-st.pyplot(fig)
+# Tải dữ liệu
+train_images = load_mnist_images(train_images_path)
+train_labels = load_mnist_labels(train_labels_path)
+test_images = load_mnist_images(test_images_path)
+test_labels = load_mnist_labels(test_labels_path)
 
-# Loại bỏ giá trị null trong dữ liệu
-y = y.dropna()
+# Flatten the images
+X_train = train_images.reshape(-1, 28 * 28)
+X_test = test_images.reshape(-1, 28 * 28)
+y_train = train_labels
+y_test = test_labels
 
-# Loại bỏ dữ liệu tương ứng với nhãn trống
-X = X[y.notnull()]
+# Normalize the data
+X_train = X_train / 255.0
+X_test = X_test / 255.0
 
-# Đếm số lượng của mỗi nhãn trong dữ liệu
-label_counts = y.value_counts()
-st.write("Số lượng của mỗi nhãn trong dữ liệu:", label_counts)
-
-# Hiển thị dữ liệu sau khi loại bỏ nhãn trống
-st.write("Dữ liệu sau khi loại bỏ nhãn trống:")
-st.write(X.head())
-
-# Kiểm tra giá trị null trong dữ liệu
-null_counts = X.isnull().sum()
-st.write("Số lượng giá trị null trong dữ liệu:", len(null_counts))
+# Tạo bộ dữ liệu
+train_data = (train_images, train_labels)
+test_data = (test_images, test_labels)
 
 # # Kiểm tra giá trị null hoặc NaN trong dữ liệu
 # na_counts = X.isna().sum()
@@ -94,7 +109,7 @@ test_ratio = 100 - train_ratio
 a = 100 - train_ratio
 
 # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
-x_train, x_val_test, y_train, y_val_test = train_test_split(X, y, test_size=test_ratio/100, random_state=42)
+x_train, x_val_test, y_train, y_val_test = train_test_split(X_train, y_train, test_size=test_ratio/100, random_state=42)
 
 # Tạo phần tùy chọn chia dữ liệu test thành validation và test
 st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
@@ -204,3 +219,4 @@ if uploaded_file is not None:
     # Hiển thị kết quả
     st.sidebar.write("Kết quả dự đoán:")
     st.sidebar.write("Chữ viết tay:", prediction[0])
+
