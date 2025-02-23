@@ -135,11 +135,11 @@ st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
 
 # Chọn model
-st.sidebar.header("Model Selection")
-model_name = st.sidebar.radio("", ["Decision Tree", "SVM"])
+st.header("Model Selection")
+model_name = st.radio("", ["Decision Tree", "SVM"])
 
 # Train and evaluate model
-if st.sidebar.button("Train Model"):
+if st.button("Train Model"):
     if model_name == "Decision Tree":
             model = DecisionTreeClassifier()
     elif model_name == "SVM":
@@ -211,28 +211,26 @@ if st.sidebar.button("Train Model"):
     # Huấn luyện mô hình
     model.fit(x_train, y_train)
     joblib.dump(model, "model.joblib")
-    st.sidebar.subheader("Demo dự đoán chữ viết tay")
-    st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
-
-    # Tạo phần nhập hình ảnh
-    uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
-
-    # Xử lý hình ảnh
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        image = image.resize((28, 28))
-        image = image.convert('L')
-        image = np.array(image)
-        image = image.reshape(1, 784)
-
-        # Dự đoán chữ viết tay
-        prediction = model.predict(image)
-
-
-        # Hiển thị kết quả
-        st.sidebar.write("Kết quả dự đoán:")
-        st.sidebar.write("Chữ viết tay:", prediction[0])
 
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
 st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+
+# Tạo phần nhập hình ảnh
+uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
+
+# Xử lý hình ảnh
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    image = image.resize((28, 28))
+    image = image.convert('L')
+    image = np.array(image)
+    image = image.reshape(1, 784)
+
+    # Dự đoán chữ viết tay
+    prediction = model.predict(image)
+
+
+    # Hiển thị kết quả
+    st.sidebar.write("Kết quả dự đoán:")
+    st.sidebar.write("Chữ viết tay:", prediction[0])
 
