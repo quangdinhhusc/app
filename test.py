@@ -1,7 +1,6 @@
 
 import os
 import struct
-import cv2
 import pickle
 import streamlit as st
 import mlflow
