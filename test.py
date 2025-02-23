@@ -73,11 +73,27 @@ train_labels = load_mnist_labels(train_labels_path)
 test_images = load_mnist_images(test_images_path)
 test_labels = load_mnist_labels(test_labels_path)
 
+st.wirte("Số lượng ảnh trong tập train:", len(train_images))
+st.wirte("Số lượng ảnh trong tập test:", len(test_images))
+st.wirte("Hình ảnh minh họa đầu tiên trong dữ liệu:", train_images.head())
+
 # Flatten the images
 X_train = train_images.reshape(-1, 28 * 28)
 X_test = test_images.reshape(-1, 28 * 28)
 y_train = train_labels
 y_test = test_labels
+
+# Đếm số lượng nhãn trong tập dữ liệu
+label_counts = y_train.value_counts()
+
+# Tạo biểu đồ phân bố nhãn
+fig, ax = plt.subplots()
+ax.bar(label_counts.index, label_counts.values)
+ax.set_xlabel("Nhãn")
+ax.set_ylabel("Số lượng")
+ax.set_title("Phân bố nhãn trong tập dữ liệu")
+st.pyplot(fig)
+
 
 # Normalize the data
 X_train = X_train.astype("float32") / 255.0
