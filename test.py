@@ -233,5 +233,6 @@ if st.sidebar.button("Train Model"):
         st.sidebar.write("Kết quả dự đoán:")
         st.sidebar.write("Chữ viết tay:", prediction[0])
 
-
+st.sidebar.subheader("Demo dự đoán chữ viết tay")
+st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
