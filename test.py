@@ -75,25 +75,11 @@ test_labels = load_mnist_labels(test_labels_path)
 
 st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
 st.write(f"Số lượng ảnh trong tập train: {len(test_images)}")
-st.write("5 hình ảnh đầu tiên trong dữ liệu:")
+st.subheader("Chọn ngẫu nhiên 10 ảnh từ tập huấn luyện để hiển thị***")
+num_images = 10
+random_indices = random.sample(range(len(train_images)), num_images)
+fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
 
-sns.set()
-fig, axs = plt.subplots(1, 5, figsize=(20, 4))
-
-for i in range(5):
-    axs[i].imshow(train_images[i], cmap='gray')
-    axs[i].set_title(f"Hình ảnh {i+1}")
-
-st.pyplot(fig)
-
-st.write("Bản phân bố dữ liệu trên các nhãn:")
-
-sns.set()
-plt.hist(train_labels, bins=10, edgecolor='black')
-plt.title('Bản phân bố dữ liệu trên các nhãn')
-plt.xlabel('Nhãn')
-plt.ylabel('Số lượng')
-st.pyplot(plt)
 
 # Flatten the images
 X_train = train_images.reshape(-1, 28 * 28)
@@ -101,6 +87,13 @@ X_test = test_images.reshape(-1, 28 * 28)
 y_train = train_labels
 y_test = test_labels
 
+# Biểu đồ phân phối nhãn dữ liệu
+fig, ax = plt.subplots(figsize=(6, 4))
+sns.barplot(x=list(Counter(y_train).keys()), y=list(Counter(y_train).values()), palette="Blues", ax=ax)
+ax.set_title("Phân phối nhãn trong tập huấn luyện")
+ax.set_xlabel("Nhãn")
+ax.set_ylabel("Số lượng")
+st.pyplot(fig)
 
 
 
