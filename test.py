@@ -231,9 +231,6 @@ if st.button("Train Model"):
         # Save model to MLFlow
         mlflow.sklearn.log_model(model, "model", input_example=x_train[:1])
     
-# Huấn luyện mô hình
-model.fit(x_train, y_train)
-joblib.dump(model, "model.joblib")
 
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
 st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
@@ -259,3 +256,4 @@ if st.sidebar.button("Kiểm tra"):
         st.sidebar.write("Chữ viết tay:", prediction[0])
     else:
         st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+
