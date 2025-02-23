@@ -33,8 +33,8 @@ def get_sampled_pixels(images, sample_size=100_000):
 def get_random_indices(num_images, total_images):
     return np.random.randint(0, total_images, size=num_images)
 
-# Cấu hình Streamlit
-st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
+# # Cấu hình Streamlit
+# st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
 # Định nghĩa hàm để đọc file .idx
 def load_mnist_images(filename):
     with open(filename, 'rb') as f:
