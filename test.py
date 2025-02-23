@@ -211,26 +211,27 @@ if st.sidebar.button("Train Model"):
     # Huấn luyện mô hình
     model.fit(x_train, y_train)
     joblib.dump(model, "model.joblib")
+    st.sidebar.subheader("Demo dự đoán chữ viết tay")
+    st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
-st.sidebar.subheader("Demo dự đoán chữ viết tay")
-st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+    # Tạo phần nhập hình ảnh
+    uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
 
-# Tạo phần nhập hình ảnh
-uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
+    # Xử lý hình ảnh
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        image = image.resize((28, 28))
+        image = image.convert('L')
+        image = np.array(image)
+        image = image.reshape(1, 784)
 
-# Xử lý hình ảnh
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    image = image.resize((28, 28))
-    image = image.convert('L')
-    image = np.array(image)
-    image = image.reshape(1, 784)
-
-    # Dự đoán chữ viết tay
-    prediction = model.predict(image)
+        # Dự đoán chữ viết tay
+        prediction = model.predict(image)
 
 
-    # Hiển thị kết quả
-    st.sidebar.write("Kết quả dự đoán:")
-    st.sidebar.write("Chữ viết tay:", prediction[0])
+        # Hiển thị kết quả
+        st.sidebar.write("Kết quả dự đoán:")
+        st.sidebar.write("Chữ viết tay:", prediction[0])
+
+
 
