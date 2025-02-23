@@ -79,8 +79,8 @@ y_train = train_labels
 y_test = test_labels
 
 # Normalize the data
-X_train = X_train / 255.0
-X_test = X_test / 255.0
+X_train = X_train.astype("float32") / 255.0
+X_test = X_test.astype("float32") / 255.0
 
 # Tạo bộ dữ liệu
 train_data = (train_images, train_labels)
