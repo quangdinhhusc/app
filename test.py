@@ -206,7 +206,7 @@ if st.sidebar.button("Train Model"):
         # st.write("F1-score: {:.2f}".format(f1_score(y_test, y_pred)))
 
         # Save model to MLFlow
-        mlflow.sklearn.log_model(model, "model")
+        mlflow.sklearn.log_model(model, "model", input_example=x_train[:1])
 
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
 st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
