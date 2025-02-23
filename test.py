@@ -24,7 +24,7 @@ import kagglehub
 
 
 
-
+st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 
 # Streamlit app
 st.title("MNIST Classification with Streamlit & MLFlow")
@@ -42,7 +42,7 @@ def get_random_indices(num_images, total_images):
 #     st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
 
 # config_page()
-st.set_page_config(page_title="Phân loại ảnh", layout="wide")
+
 # st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
 # Định nghĩa hàm để đọc file .idx
 def load_mnist_images(filename):
