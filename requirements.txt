@@ -17,4 +17,3 @@ spacy
 transformers
 fastapi
 gradio
-struct
