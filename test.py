@@ -73,8 +73,8 @@ train_labels = load_mnist_labels(train_labels_path)
 test_images = load_mnist_images(test_images_path)
 test_labels = load_mnist_labels(test_labels_path)
 
-st.wirte("Số lượng ảnh trong tập train:", len(train_images))
-st.wirte("Số lượng ảnh trong tập test:", len(test_images))
+st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
+st.write(f"Số lượng ảnh trong tập train: {len(test_images)}")
 st.wirte("Hình ảnh minh họa đầu tiên trong dữ liệu:", train_images.head())
 
 # Flatten the images
