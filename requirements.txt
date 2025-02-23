@@ -5,7 +5,6 @@ seaborn
 streamlit
 mlflow
 numpy
-cv2
 scipy
 joblib
 tqdm
