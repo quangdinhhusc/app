@@ -75,7 +75,10 @@ test_labels = load_mnist_labels(test_labels_path)
 
 st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
 st.write(f"Số lượng ảnh trong tập train: {len(test_images)}")
-st.wirte("Hình ảnh minh họa đầu tiên trong dữ liệu:", train_images.head())
+st.write("Hình ảnh minh họa đầu tiên trong dữ liệu:")
+sns.set()
+plt.imshow(train_images[0], cmap='gray')
+st.pyplot(plt)
 
 # Flatten the images
 X_train = train_images.reshape(-1, 28 * 28)
