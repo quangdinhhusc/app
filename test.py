@@ -101,8 +101,6 @@ ax.set_xlabel("Nhãn")
 ax.set_ylabel("Số lượng")
 st.pyplot(fig)
 
-
-
 # Normalize the data
 X_train = X_train.astype("float32") / 255.0
 X_test = X_test.astype("float32") / 255.0
@@ -232,9 +230,10 @@ if st.button("Train Model"):
 
         # Save model to MLFlow
         mlflow.sklearn.log_model(model, "model", input_example=x_train[:1])
-    # Huấn luyện mô hình
-    model.fit(x_train, y_train)
-    joblib.dump(model, "model.joblib")
+    
+# Huấn luyện mô hình
+model.fit(x_train, y_train)
+joblib.dump(model, "model.joblib")
 
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
 st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
@@ -242,19 +241,21 @@ st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoá
 # Tạo phần nhập hình ảnh
 uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
 
-# Xử lý hình ảnh
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    image = image.resize((28, 28))
-    image = image.convert('L')
-    image = np.array(image)
-    image = image.reshape(1, 784)
+# Tạo nút kiểm tra
+if st.sidebar.button("Kiểm tra"):
+    # Xử lý hình ảnh
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        image = image.resize((28, 28))
+        image = image.convert('L')
+        image = np.array(image)
+        image = image.reshape(1, 784)
 
-    # Dự đoán chữ viết tay
-    prediction = model.predict(image)
+        # Dự đoán chữ viết tay
+        prediction = model.predict(image)
 
-
-    # Hiển thị kết quả
-    st.sidebar.write("Kết quả dự đoán:")
-    st.sidebar.write("Chữ viết tay:", prediction[0])
-
+        # Hiển thị kết quả
+        st.sidebar.write("Kết quả dự đoán:")
+        st.sidebar.write("Chữ viết tay:", prediction[0])
+    else:
+        st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
