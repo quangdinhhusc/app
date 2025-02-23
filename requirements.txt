@@ -17,3 +17,4 @@ spacy
 transformers
 fastapi
 gradio
+kagglehub
