@@ -1,19 +1,24 @@
-
-import os
-import struct
-import pickle
 import streamlit as st
-import mlflow
-import mlflow.sklearn
-from sklearn.datasets import fetch_openml
+import os
+import cv2
+import numpy as np
+import pandas as pd
+import pickle
+import seaborn as sns
+import random
+import struct
+import altair
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, confusion_matrix
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
+from sklearn.metrics import accuracy_score, classification_report, ConfusionMatrixDisplay
 from PIL import Image
+from collections import Counter
+import mlflow
+import mlflow.sklearn
+from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV
 import kagglehub
@@ -38,6 +43,7 @@ def get_random_indices(num_images, total_images):
 #     st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
 
 # config_page()
+st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 # st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
 # Định nghĩa hàm để đọc file .idx
 def load_mnist_images(filename):
@@ -144,7 +150,7 @@ if st.sidebar.button("Train Model"):
             }
             grid_search = GridSearchCV(SVC(), param_grid, cv=5)
             grid_search.fit(x_train, y_train)
-            model = grid_search.best_estimator_
+            model = SVC(kernel="linear", random_state=42)
     with mlflow.start_run():
         model.fit(x_train, y_train)
         y_pred = model.predict(x_test)
