@@ -16,7 +16,7 @@ from collections import Counter
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bouldin_score
 
-st.set_page_config(page_title="Phân loại ảnh", layout="wide")
+# st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 
 # Streamlit app
 st.title("MNIST Classification with Streamlit & MLFlow")
@@ -29,30 +29,10 @@ def get_sampled_pixels(images, sample_size=100_000):
 def get_random_indices(num_images, total_images):
     return np.random.randint(0, total_images, size=num_images)
 
-# # Cấu hình Streamlit
-# def config_page():
-#     st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
-
-# config_page()
-
-# st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
-# Định nghĩa hàm để đọc file .idx
-def load_mnist_images(filename):
-    with open(filename, 'rb') as f:
-        magic, num, rows, cols = struct.unpack('>IIII', f.read(16))
-        images = np.fromfile(f, dtype=np.uint8).reshape(num, rows, cols)
-    return images
-
-def load_mnist_labels(filename):
-    with open(filename, 'rb') as f:
-        magic, num = struct.unpack('>II', f.read(8))
-        labels = np.fromfile(f, dtype=np.uint8)
-    return labels
 
 # Định nghĩa đường dẫn đến các file MNIST
 # Download latest version
 # dataset_path = kagglehub.dataset_download("hojjatk/mnist-dataset")
-# dataset_path = os.path.dirname(os.path.abspath(__file__))
 # train_images_path = os.path.join(dataset_path, "train-images.idx3-ubyte")
 # train_labels_path = os.path.join(dataset_path, "train-labels.idx1-ubyte")
 # test_images_path = os.path.join(dataset_path, "t10k-images.idx3-ubyte")
