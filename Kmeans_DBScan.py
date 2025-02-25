@@ -144,7 +144,27 @@ st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
 
+# Đánh giá model K-means
+silhouette_kmeans = silhouette_score(x_train, KMeans.labels_)
+calinski_harabasz_kmeans = calinski_harabasz_score(x_train, KMeans.labels_)
+davies_bouldin_kmeans = davies_bouldin_score(x_train, KMeans.labels_)
 
+# Hiển thị kết quả lên Streamlit
+st.title("Kết quả phân cụm")
+
+st.subheader("K-means")
+st.write(f"Silhouette Score: {silhouette_kmeans}")
+st.write(f"Calinski-Harabasz Index: {calinski_harabasz_kmeans}")
+st.write(f"Davies-Bouldin Index: {davies_bouldin_kmeans}")
+
+# Hiển thị dữ liệu đã phân cụm lên Streamlit
+st.subheader("Dữ liệu đã phân cụm")
+plt.figure(figsize=(10, 10))
+plt.scatter(x_train[:, 0], x_train[:, 1], c=KMeans.labels_, cmap='viridis', s=15)
+plt.title('K-means Clustering')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+st.pyplot(plt)
 
 # # Huấn luyện model K-means
 # kmeans = KMeans(n_clusters=10, random_state=42)
