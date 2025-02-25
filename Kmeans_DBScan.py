@@ -64,14 +64,18 @@ def get_random_indices(num_images, total_images):
 # y_train = train_labels
 # y_test = test_labels
 
+def get_X_and_y(dataset):
+    X, y, categorical_indicator, attribute_names = dataset.get_data(
+        target=dataset.default_target_attribute,
+        dataset_format="array"
+    )
+    return X, y
+
 # Tải dữ liệu MNIST từ OpenML
 dataset = openml.datasets.get_dataset(554)
 
 # Tải dữ liệu
-X, y, categorical_indicator, attribute_names = dataset.get_data(
-    target=dataset.default_target_attribute,
-    dataset_format="array"
-)
+X, y = get_X_and_y(dataset)
 
 # Chia dữ liệu thành train và test
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
