@@ -144,71 +144,71 @@ st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
 
-# Huấn luyện model K-means
-kmeans = KMeans(n_clusters=10, random_state=42)
-kmeans.fit(X_train)
+# # Huấn luyện model K-means
+# kmeans = KMeans(n_clusters=10, random_state=42)
+# kmeans.fit(X_train)
 
-# Huấn luyện model DBSCAN
-dbscan = DBSCAN(eps=0.5, min_samples=5)
-dbscan.fit(X_train)
+# # Huấn luyện model DBSCAN
+# dbscan = DBSCAN(eps=0.5, min_samples=5)
+# dbscan.fit(X_train)
 
-# Đánh giá model K-means
-silhouette_kmeans = silhouette_score(X_train, kmeans.labels_)
-calinski_harabasz_kmeans = calinski_harabasz_score(X_train, kmeans.labels_)
-davies_bouldin_kmeans = davies_bouldin_score(X_train, kmeans.labels_)
+# # Đánh giá model K-means
+# silhouette_kmeans = silhouette_score(X_train, kmeans.labels_)
+# calinski_harabasz_kmeans = calinski_harabasz_score(X_train, kmeans.labels_)
+# davies_bouldin_kmeans = davies_bouldin_score(X_train, kmeans.labels_)
 
-# Đánh giá model DBSCAN
-silhouette_dbscan = silhouette_score(X_train, dbscan.labels_)
-calinski_harabasz_dbscan = calinski_harabasz_score(X_train, dbscan.labels_)
-davies_bouldin_dbscan = davies_bouldin_score(X_train, dbscan.labels_)
+# # Đánh giá model DBSCAN
+# silhouette_dbscan = silhouette_score(X_train, dbscan.labels_)
+# calinski_harabasz_dbscan = calinski_harabasz_score(X_train, dbscan.labels_)
+# davies_bouldin_dbscan = davies_bouldin_score(X_train, dbscan.labels_)
 
-# # Logging với MLFlow
-# mlflow.start_run()
-# mlflow.sklearn.log_model(kmeans, "kmeans_model")
-# mlflow.log_param("n_clusters", 10)
-# mlflow.log_metric("silhouette_score", silhouette_kmeans)
-# mlflow.log_metric("calinski_harabasz_score", calinski_harabasz_kmeans)
-# mlflow.log_metric("davies_bouldin_score", davies_bouldin_kmeans)
-# mlflow.end_run()
+# # # Logging với MLFlow
+# # mlflow.start_run()
+# # mlflow.sklearn.log_model(kmeans, "kmeans_model")
+# # mlflow.log_param("n_clusters", 10)
+# # mlflow.log_metric("silhouette_score", silhouette_kmeans)
+# # mlflow.log_metric("calinski_harabasz_score", calinski_harabasz_kmeans)
+# # mlflow.log_metric("davies_bouldin_score", davies_bouldin_kmeans)
+# # mlflow.end_run()
 
-# mlflow.start_run()
-# mlflow.sklearn.log_model(dbscan, "dbscan_model")
-# mlflow.log_param("eps", 0.5)
-# mlflow.log_param("min_samples", 5)
-# mlflow.log_metric("silhouette_score", silhouette_dbscan)
-# mlflow.log_metric("calinski_harabasz_score", calinski_harabasz_dbscan)
-# mlflow.log_metric("davies_bouldin_score", davies_bouldin_dbscan)
-# mlflow.end_run()
+# # mlflow.start_run()
+# # mlflow.sklearn.log_model(dbscan, "dbscan_model")
+# # mlflow.log_param("eps", 0.5)
+# # mlflow.log_param("min_samples", 5)
+# # mlflow.log_metric("silhouette_score", silhouette_dbscan)
+# # mlflow.log_metric("calinski_harabasz_score", calinski_harabasz_dbscan)
+# # mlflow.log_metric("davies_bouldin_score", davies_bouldin_dbscan)
+# # mlflow.end_run()
 
-# Hiển thị kết quả lên Streamlit
-st.title("Kết quả phân cụm")
+# # Hiển thị kết quả lên Streamlit
+# st.title("Kết quả phân cụm")
 
-st.subheader("K-means")
-st.write(f"Silhouette Score: {silhouette_kmeans}")
-st.write(f"Calinski-Harabasz Index: {calinski_harabasz_kmeans}")
-st.write(f"Davies-Bouldin Index: {davies_bouldin_kmeans}")
+# st.subheader("K-means")
+# st.write(f"Silhouette Score: {silhouette_kmeans}")
+# st.write(f"Calinski-Harabasz Index: {calinski_harabasz_kmeans}")
+# st.write(f"Davies-Bouldin Index: {davies_bouldin_kmeans}")
 
-st.subheader("DBSCAN")
-st.write(f"Silhouette Score: {silhouette_dbscan}")
-st.write(f"Calinski-Harabasz Index: {calinski_harabasz_dbscan}")
-st.write(f"Davies-Bouldin Index: {davies_bouldin_dbscan}")
+# st.subheader("DBSCAN")
+# st.write(f"Silhouette Score: {silhouette_dbscan}")
+# st.write(f"Calinski-Harabasz Index: {calinski_harabasz_dbscan}")
+# st.write(f"Davies-Bouldin Index: {davies_bouldin_dbscan}")
 
-# Hiển thị dữ liệu đã phân cụm lên Streamlit
-st.subheader("Dữ liệu đã phân cụm")
-col1, col2 = st.columns(2)
+# # Hiển thị dữ liệu đã phân cụm lên Streamlit
+# st.subheader("Dữ liệu đã phân cụm")
+# col1, col2 = st.columns(2)
 
-with col1:
-    plt.figure(figsize=(10, 10))
-    plt.scatter(X_train[:, 0], X_train[:, 1], c=kmeans.labels_, cmap='viridis', s=15)
-    plt.title('K-means Clustering')
-    plt.xlabel('Feature 1')
-    plt.ylabel('Feature 2')
-    st.pyplot(plt)
+# with col1:
+#     plt.figure(figsize=(10, 10))
+#     plt.scatter(X_train[:, 0], X_train[:, 1], c=kmeans.labels_, cmap='viridis', s=15)
+#     plt.title('K-means Clustering')
+#     plt.xlabel('Feature 1')
+#     plt.ylabel('Feature 2')
+#     st.pyplot(plt)
 
-with col2:
-    plt.figure(figsize=(10, 10))
-    plt.scatter(X_train[:, 0], X_train[:, 1], c=dbscan.labels_, cmap='viridis', s=15)
-    plt.title('DBSCAN Clustering')
-    plt.xlabel('Feature 1')
-    plt.ylabel('Feature 2')
-    st.pyplot(plt)
+# with col2:
+#     plt.figure(figsize=(10, 10))
+#     plt.scatter(X_train[:, 0], X_train[:, 1], c=dbscan.labels_, cmap='viridis', s=15)
+#     plt.title('DBSCAN Clustering')
+#     plt.xlabel('Feature 1')
+#     plt.ylabel('Feature 2')
+#     st.pyplot(plt)
