@@ -18,3 +18,5 @@ transformers
 fastapi
 gradio
 kagglehub
+openml
+pycaret
