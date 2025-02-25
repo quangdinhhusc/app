@@ -68,8 +68,11 @@ def get_random_indices(num_images, total_images):
 mnist = openml.datasets.get_dataset(554)
 
 # Lấy dữ liệu train và test
-X_train, y_train = mnist.get_X_and_y()
-X_test, y_test = mnist.get_X_and_y(target=mnist.default_target_attribute, split='test')
+# Lấy dữ liệu train và test
+X = mnist.get_X()
+y = mnist.get_y()
+# Chia dữ liệu thành train và test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Hiển thị 10 ảnh đầu tiên của tập dữ liệu
 fig, axes = plt.subplots(2, 5, figsize=(15, 6))
