@@ -144,18 +144,18 @@ st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
 
-# # Huấn luyện model K-means
-# kmeans = KMeans(n_clusters=10, random_state=42)
-# kmeans.fit(X_train)
+# Huấn luyện model K-means
+kmeans = KMeans(n_clusters=10, random_state=42)
+kmeans.fit(X_train)
 
 # # Huấn luyện model DBSCAN
 # dbscan = DBSCAN(eps=0.5, min_samples=5)
 # dbscan.fit(X_train)
 
-# # Đánh giá model K-means
-# silhouette_kmeans = silhouette_score(X_train, kmeans.labels_)
-# calinski_harabasz_kmeans = calinski_harabasz_score(X_train, kmeans.labels_)
-# davies_bouldin_kmeans = davies_bouldin_score(X_train, kmeans.labels_)
+# Đánh giá model K-means
+silhouette_kmeans = silhouette_score(X_train, kmeans.labels_)
+calinski_harabasz_kmeans = calinski_harabasz_score(X_train, kmeans.labels_)
+davies_bouldin_kmeans = davies_bouldin_score(X_train, kmeans.labels_)
 
 # # Đánh giá model DBSCAN
 # silhouette_dbscan = silhouette_score(X_train, dbscan.labels_)
