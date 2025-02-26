@@ -207,11 +207,9 @@ if st.button("Huấn luyện mô hình"):
         
     # Hiển thị ma trận độ chính xác
     st.session_state["models"].append({"name": model_name, "model": model})
-    cm = confusion_matrix(y_train, labels)
+    cm = confusion_matrix.from_predictions(y_train, labels)
     st.write("Ma trận độ chính xác:")
     st.write(cm)
-    
-    
         
     st.sidebar.subheader("Demo dự đoán chữ viết tay")
     st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
