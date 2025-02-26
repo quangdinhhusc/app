@@ -157,41 +157,42 @@ st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
 
-# Chọn model
-st.header("Model Selection")
-model_name = st.radio("", ["K-means", "DBSCAN"])
+st.header("Chọn mô hình & Huấn luyện")
 
-# Train and evaluate model
-if st.button("Train Model"):
+    # 📌 **Chọn mô hình**
+model_choice = st.radio("Chọn mô hình:", ["K-Means", "DBSCAN"])
 
-    if model_name == "K-means":
-        st.markdown("""
-        - **🔹 K-Means** là thuật toán phân cụm phổ biến, chia dữ liệu thành K cụm dựa trên khoảng cách.
-        - **Tham số cần chọn:**  
-            - **n_clusters**: Số lượng cụm (k).  
-        """)
+if model_choice == "K-Means":
+    st.markdown("""
+    - **🔹 K-Means** là thuật toán phân cụm phổ biến, chia dữ liệu thành K cụm dựa trên khoảng cách.
+    - **Tham số cần chọn:**  
+        - **n_clusters**: Số lượng cụm (k).  
+    """)
         
-        n_clusters = st.slider("n_clusters", 2, 20, 10)
-        model = KMeans(n_clusters=n_clusters, random_state=42)
+    n_clusters = st.slider("n_clusters", 2, 20, 10)
+    model = KMeans(n_clusters=n_clusters, random_state=42)
+    
+elif model_choice == "DBSCAN":
+    st.markdown("""
+    - **🛠️ DBSCAN (Density-Based Spatial Clustering of Applications with Noise)** là thuật toán phân cụm dựa trên mật độ.
+    - **Tham số cần chọn:**  
+        - **eps**: Bán kính lân cận.  
+        - **min_samples**: Số lượng điểm tối thiểu để tạo cụm.  
+    """)
+    eps = st.slider("eps", 0.1, 10.0, 0.5)
+    min_samples = st.slider("min_samples", 2, 20, 5)
+    model = DBSCAN(eps=eps, min_samples=min_samples)
 
-    elif model_name == "DBSCAN":
-        st.markdown("""
-        - **🛠️ DBSCAN (Density-Based Spatial Clustering of Applications with Noise)** là thuật toán phân cụm dựa trên mật độ.
-        - **Tham số cần chọn:**  
-            - **eps**: Bán kính lân cận.  
-            - **min_samples**: Số lượng điểm tối thiểu để tạo cụm.  
-        """)
-        eps = st.slider("eps", 0.1, 10.0, 0.5)
-        min_samples = st.slider("min_samples", 2, 20, 5)
-        model = DBSCAN(eps=eps, min_samples=min_samples)
-
+if st.button("Huấn luyện mô hình"):
+    model.fit(X_train)
+    labels = model.labels_
     st.success("✅ Huấn luyện thành công!")
 
-        # Lưu mô hình vào session_state dưới dạng danh sách nếu chưa có
+    # Lưu mô hình vào session_state dưới dạng danh sách nếu chưa có
     if "models" not in st.session_state:
         st.session_state["models"] = []
 
-    model_name = model_name.lower().replace(" ", "_")
+    model_name = model_choice.lower().replace(" ", "_")
 
     existing_model = next((item for item in st.session_state["models"] if item["name"] == model_name), None)
         
@@ -202,15 +203,14 @@ if st.button("Train Model"):
             count += 1
             new_model_name = f"{model_name}_{count}"
         model_name = new_model_name
-    st.warning(f"⚠️ Mô hình được lưu với tên là: {model_name}")
+        st.warning(f"⚠️ Mô hình được lưu với tên là: {model_name}")
 
     st.session_state["models"].append({"name": model_name, "model": model})
     st.write(f"🔹 Mô hình đã được lưu với tên: {model_name}")
     st.write(f"Tổng số mô hình hiện tại: {len(st.session_state['models'])}")
-
     st.write("📋 Danh sách các mô hình đã lưu:")
     model_names = [model["name"] for model in st.session_state["models"]]
-    st.write(", ".join(model_names))    
+    st.write(", ".join(model_names))
     
 
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
