@@ -70,7 +70,7 @@ test_labels = load_mnist_labels(test_labels_path)
 st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
 st.write(f"Số lượng ảnh trong tập test: {len(test_images)}")
 
-st.subheader("10 ảnh từ tập huấn luyện ")
+st.subheader("Mô tả dữ liệu")
 num_images = 10
 num_labels = len(np.unique(train_labels))
 
@@ -78,10 +78,10 @@ for label in np.unique(train_labels):
     st.write(f"Label: {label}")
     indices = np.where(train_labels == label)[0]
     random_indices = random.sample(list(indices), num_images)
-    fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
+    fig, axes = plt.subplots(2, 5, figsize=(15, 10))
     for i, idx in enumerate(random_indices):
-        axes[i].imshow(train_images[idx], cmap='gray')
-        axes[i].axis("off")
+        axes[i//5, i%5].imshow(train_images[idx], cmap='gray')
+        axes[i//5, i%5].axis("off")
     st.pyplot(fig)
 
 # Flatten the images
