@@ -88,7 +88,7 @@ y_train = train_labels
 y_test = test_labels
 
 # Biểu đồ phân phối nhãn dữ liệu
-st.widget("Biểu đồ phân phối nhãn dữ liệu")
+st.write("Biểu đồ phân phối nhãn dữ liệu")     
 fig, ax = plt.subplots(figsize=(6, 4))
 sns.barplot(x=list(Counter(y_train).keys()), y=list(Counter(y_train).values()), palette="Blues", ax=ax)
 ax.set_title("Phân phối nhãn trong tập huấn luyện")
