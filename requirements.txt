@@ -20,3 +20,4 @@ gradio
 kagglehub
 openml
 pycaret
+tensorflow
