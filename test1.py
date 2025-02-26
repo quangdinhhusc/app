@@ -74,17 +74,15 @@ st.subheader("10 ảnh từ tập huấn luyện ")
 num_images = 10
 num_labels = len(np.unique(train_labels))
 
-fig, axes = plt.subplots(num_labels, num_images, figsize=(15, 5*num_labels))
-
-for i, label in enumerate(np.unique(train_labels)):
+for label in np.unique(train_labels):
+    st.write(f"Label: {label}")
     indices = np.where(train_labels == label)[0]
     random_indices = random.sample(list(indices), num_images)
-    for j, idx in enumerate(random_indices):
-        axes[i, j].imshow(train_images[idx], cmap='gray')
-        axes[i, j].axis("off")
-        axes[i, j].set_title(f"Label: {label}")
-
-st.pyplot(fig)
+    fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
+    for i, idx in enumerate(random_indices):
+        axes[i].imshow(train_images[idx], cmap='gray')
+        axes[i].axis("off")
+    st.pyplot(fig)
 
 # Flatten the images
 X_train = train_images.reshape(-1, 28 * 28)
