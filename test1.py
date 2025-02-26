@@ -76,7 +76,7 @@ test_images = load_mnist_images(test_images_path)
 test_labels = load_mnist_labels(test_labels_path)
 
 st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
-st.write(f"Số lượng ảnh trong tập train: {len(test_images)}")
+st.write(f"Số lượng ảnh trong tập test: {len(test_images)}")
 st.subheader("Chọn ngẫu nhiên 10 ảnh từ tập huấn luyện để hiển thị")
 num_images = 10
 random_indices = random.sample(range(len(train_images)), num_images)
@@ -204,12 +204,6 @@ if st.button("Huấn luyện mô hình"):
             count += 1
             new_model_name = f"{model_name}_{count}"
         model_name = new_model_name
-        
-    # Hiển thị ma trận độ chính xác
-    st.session_state["models"].append({"name": model_name, "model": model})
-    cm = confusion_matrix.from_predictions(y_train, labels)
-    st.write("Ma trận độ chính xác:")
-    st.write(cm)
         
     st.sidebar.subheader("Demo dự đoán chữ viết tay")
     st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
