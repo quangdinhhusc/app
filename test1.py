@@ -159,14 +159,14 @@ st.write("Số lượng dữ liệu test: ", len(x_test))
 
 st.header("Chọn mô hình & Huấn luyện")
 
-    # 📌 **Chọn mô hình**
+# Chọn mô hình
 model_choice = st.radio("Chọn mô hình:", ["K-Means", "DBSCAN"])
 
 if model_choice == "K-Means":
     st.markdown("""
-    - **🔹 K-Means** là thuật toán phân cụm phổ biến, chia dữ liệu thành K cụm dựa trên khoảng cách.
-    - **Tham số cần chọn:**  
-        - **n_clusters**: Số lượng cụm (k).  
+    - **K-Means** là thuật toán phân cụm phổ biến, chia dữ liệu thành K cụm dựa trên khoảng cách.
+    - **Tham số cần chọn:
+        - Số lượng cụm (k).  
     """)
         
     n_clusters = st.slider("n_clusters", 2, 20, 10)
@@ -174,10 +174,10 @@ if model_choice == "K-Means":
     
 elif model_choice == "DBSCAN":
     st.markdown("""
-    - **🛠️ DBSCAN (Density-Based Spatial Clustering of Applications with Noise)** là thuật toán phân cụm dựa trên mật độ.
+    - **DBSCAN (Density-Based Spatial Clustering of Applications with Noise)** là thuật toán phân cụm dựa trên mật độ.
     - **Tham số cần chọn:**  
-        - **eps**: Bán kính lân cận.  
-        - **min_samples**: Số lượng điểm tối thiểu để tạo cụm.  
+        - Bán kính lân cận.  
+        - Số lượng điểm tối thiểu để tạo cụm.  
     """)
     eps = st.slider("eps", 0.1, 10.0, 0.5)
     min_samples = st.slider("min_samples", 2, 20, 5)
@@ -207,34 +207,31 @@ if st.button("Huấn luyện mô hình"):
 
     st.session_state["models"].append({"name": model_name, "model": model})
     st.write(f"🔹 Mô hình đã được lưu với tên: {model_name}")
-    st.write(f"Tổng số mô hình hiện tại: {len(st.session_state['models'])}")
-    st.write("📋 Danh sách các mô hình đã lưu:")
-    model_names = [model["name"] for model in st.session_state["models"]]
-    st.write(", ".join(model_names))
     
+        
+    st.sidebar.subheader("Demo dự đoán chữ viết tay")
+    st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
-st.sidebar.subheader("Demo dự đoán chữ viết tay")
-st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+    # Tạo phần nhập hình ảnh
+    uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
 
-# Tạo phần nhập hình ảnh
-uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
+    # Tạo nút kiểm tra
+    if st.sidebar.button("Kiểm tra"):
+        # Xử lý hình ảnh
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file)
+            image = image.resize((28, 28))
+            image = image.convert('L')
+            image = np.array(image)
+            image = image.reshape(1, 784)
 
-# Tạo nút kiểm tra
-if st.sidebar.button("Kiểm tra"):
-    # Xử lý hình ảnh
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        image = image.resize((28, 28))
-        image = image.convert('L')
-        image = np.array(image)
-        image = image.reshape(1, 784)
+            # Dự đoán chữ viết tay
+            prediction = model.predict(image)
 
-        # Dự đoán chữ viết tay
-        prediction = model.predict(image)
+            # Hiển thị kết quả
+            st.sidebar.write("Kết quả dự đoán:")
+            st.sidebar.write("Chữ viết tay:", prediction[0])
+        else:
+            st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
-        # Hiển thị kết quả
-        st.sidebar.write("Kết quả dự đoán:")
-        st.sidebar.write("Chữ viết tay:", prediction[0])
-    else:
-        st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
