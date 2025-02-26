@@ -184,6 +184,13 @@ elif model_choice == "DBSCAN":
     min_samples = st.slider("min_samples", 2, 20, 5)
     model = DBSCAN(eps=eps, min_samples=min_samples)
 
+st.sidebar.subheader("Demo dự đoán chữ viết tay")
+st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+
+# Tạo phần nhập hình ảnh
+uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
+
+
 if st.button("Huấn luyện mô hình"):
     model.fit(X_train)
     labels = model.labels_
@@ -205,12 +212,7 @@ if st.button("Huấn luyện mô hình"):
             new_model_name = f"{model_name}_{count}"
         model_name = new_model_name
         
-    st.sidebar.subheader("Demo dự đoán chữ viết tay")
-    st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
-
-    # Tạo phần nhập hình ảnh
-    uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
-
+    
     # Tạo nút kiểm tra
     if st.sidebar.button("Kiểm tra"):
         # Xử lý hình ảnh
