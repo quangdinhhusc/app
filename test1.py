@@ -1,6 +1,7 @@
 from sklearn.cluster import KMeans, DBSCAN
 import joblib
 import streamlit as st
+import tensorflow as tf
 import os
 import numpy as np
 import pandas as pd
@@ -24,6 +25,7 @@ from sklearn.metrics import classification_report, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
 import kagglehub
 from sklearn.metrics import confusion_matrix
+
 
 
 
@@ -70,19 +72,28 @@ test_labels = load_mnist_labels(test_labels_path)
 st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
 st.write(f"Số lượng ảnh trong tập test: {len(test_images)}")
 
-st.subheader("Mô tả dữ liệu")
-num_images = 10
-num_labels = len(np.unique(train_labels))
+def display_mnist_grid():
+    # Tải tập dữ liệu MNIST
+    (x_train, y_train), _ = tf.keras.datasets.mnist.load_data()
+    
+    # Số hàng và cột
+    num_rows, num_cols = 10, 10
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(10, 10))
+    fig.suptitle("Một số hình ảnh từ MNIST Dataset", fontsize=14, fontweight='bold')
+    
+    for i in range(num_rows):
+        for j in range(num_cols):
+            index = np.where(y_train == i)[0][j]  # Lấy ảnh thứ j của số i
+            axes[i, j].imshow(x_train[index], cmap='gray')
+            axes[i, j].axis('off')
+            axes[i, j].set_title(str(i), fontsize=8)
+    
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.92)
+    return fig
 
-for label in np.unique(train_labels):
-    st.write(f"Label: {label}")
-    indices = np.where(train_labels == label)[0]
-    random_indices = random.sample(list(indices), num_images)
-    fig, axes = plt.subplots(2, 5, figsize=(15, 10))
-    for i, idx in enumerate(random_indices):
-        axes[i//5, i%5].imshow(train_images[idx], cmap='gray')
-        axes[i//5, i%5].axis("off")
-    st.pyplot(fig)
+st.subheader("Hiển thị MNIST Dataset trên Streamlit")
+st.pyplot(display_mnist_grid())
 
 # Flatten the images
 X_train = train_images.reshape(-1, 28 * 28)
@@ -91,7 +102,7 @@ y_train = train_labels
 y_test = test_labels
 
 # Biểu đồ phân phối nhãn dữ liệu
-st.write("Biểu đồ phân phối nhãn dữ liệu")     
+st.subheader("Biểu đồ phân phối nhãn dữ liệu")     
 fig, ax = plt.subplots(figsize=(6, 4))
 sns.barplot(x=list(Counter(y_train).keys()), y=list(Counter(y_train).values()), palette="Blues", ax=ax)
 ax.set_title("Phân phối nhãn trong tập huấn luyện")
