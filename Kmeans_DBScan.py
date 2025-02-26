@@ -1,25 +1,38 @@
-import os
-import random
+from sklearn.cluster import KMeans, DBSCAN
+import joblib
 import streamlit as st
-import pandas as pd
+import tensorflow as tf
+import os
 import numpy as np
-import struct
+import pandas as pd
+import pickle
 import seaborn as sns
+import random
+import struct
+import altair
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report, ConfusionMatrixDisplay
+from PIL import Image
+from collections import Counter
 import mlflow
 import mlflow.sklearn
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
+from sklearn.model_selection import GridSearchCV
 import kagglehub
-import openml
-import matplotlib.pyplot as plt
-from sklearn.datasets import fetch_openml
-from sklearn.cluster import KMeans, DBSCAN
-from collections import Counter
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bouldin_score
+from sklearn.metrics import confusion_matrix
 
-# st.set_page_config(page_title="Phân loại ảnh", layout="wide")
+
+
+
+st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 
 # Streamlit app
-st.title("MNIST Classification with Streamlit & MLFlow")
+st.title("MNIST Assignment - Clustering Algorithms with Streamlit & MLFlow")
 
 @st.cache_data  # Lưu cache để tránh load lại dữ liệu mỗi lần chạy lại Streamlit
 def get_sampled_pixels(images, sample_size=100_000):
@@ -29,86 +42,67 @@ def get_sampled_pixels(images, sample_size=100_000):
 def get_random_indices(num_images, total_images):
     return np.random.randint(0, total_images, size=num_images)
 
+def load_mnist_images(filename):
+    with open(filename, 'rb') as f:
+        magic, num, rows, cols = struct.unpack('>IIII', f.read(16))
+        images = np.fromfile(f, dtype=np.uint8).reshape(num, rows, cols)
+    return images
+
+def load_mnist_labels(filename):
+    with open(filename, 'rb') as f:
+        magic, num = struct.unpack('>II', f.read(8))
+        labels = np.fromfile(f, dtype=np.uint8)
+    return labels
 
 # Định nghĩa đường dẫn đến các file MNIST
 # Download latest version
-# dataset_path = kagglehub.dataset_download("hojjatk/mnist-dataset")
-# train_images_path = os.path.join(dataset_path, "train-images.idx3-ubyte")
-# train_labels_path = os.path.join(dataset_path, "train-labels.idx1-ubyte")
-# test_images_path = os.path.join(dataset_path, "t10k-images.idx3-ubyte")
-# test_labels_path = os.path.join(dataset_path, "t10k-labels.idx1-ubyte")
-
-# # Tải dữ liệu
-# train_images = load_mnist_images(train_images_path)
-# train_labels = load_mnist_labels(train_labels_path)
-# test_images = load_mnist_images(test_images_path)
-# test_labels = load_mnist_labels(test_labels_path)
-
-# st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
-# st.write(f"Số lượng ảnh trong tập train: {len(test_images)}")
-# st.subheader("Chọn ngẫu nhiên 10 ảnh từ tập huấn luyện để hiển thị")
-# num_images = 10
-# random_indices = random.sample(range(len(train_images)), num_images)
-# fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
-
-# for ax, idx in zip(axes, random_indices):
-#         ax.imshow(train_images[idx], cmap='gray')
-#         ax.axis("off")
-#         ax.set_title(f"Label: {train_labels[idx]}")
-
-# st.pyplot(fig)
-
-# # Flatten the images
-# X_train = train_images.reshape(-1, 28 * 28)
-# X_test = test_images.reshape(-1, 28 * 28)
-# y_train = train_labels
-# y_test = test_labels
-
-def get_X_and_y(dataset):
-    X, y, categorical_indicator, attribute_names = dataset.get_data(
-        target=dataset.default_target_attribute,
-        dataset_format="array"
-    )
-    return X, y
-
-# Tải dữ liệu MNIST từ OpenML
-dataset = openml.datasets.get_dataset(554)
+dataset_path = kagglehub.dataset_download("hojjatk/mnist-dataset")
+# dataset_path = os.path.dirname(os.path.abspath(__file__))
+train_images_path = os.path.join(dataset_path, "train-images.idx3-ubyte")
+train_labels_path = os.path.join(dataset_path, "train-labels.idx1-ubyte")
+test_images_path = os.path.join(dataset_path, "t10k-images.idx3-ubyte")
+test_labels_path = os.path.join(dataset_path, "t10k-labels.idx1-ubyte")
 
 # Tải dữ liệu
-X, y = get_X_and_y(dataset)
+train_images = load_mnist_images(train_images_path)
+train_labels = load_mnist_labels(train_labels_path)
+test_images = load_mnist_images(test_images_path)
+test_labels = load_mnist_labels(test_labels_path)
 
-# Chia dữ liệu thành train và test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
+st.write(f"Số lượng ảnh trong tập test: {len(test_images)}")
 
-# Hiển thị dữ liệu trên Streamlit
-st.write("Dữ liệu train:")
-st.write(X_train)
-st.write("Dữ liệu test:")
-st.write(X_test)
+def display_mnist_grid():
+    # Tải tập dữ liệu MNIST
+    (x_train, y_train), _ = tf.keras.datasets.mnist.load_data()
+    
+    # Số hàng và cột
+    num_rows, num_cols = 10, 10
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(10, 10))
+    fig.suptitle("Một số hình ảnh từ MNIST Dataset", fontsize=14, fontweight='bold')
+    
+    for i in range(num_rows):
+        for j in range(num_cols):
+            index = np.where(y_train == i)[0][j]  # Lấy ảnh thứ j của số i
+            axes[i, j].imshow(x_train[index], cmap='gray')
+            axes[i, j].axis('off')
+            axes[i, j].set_title(str(i), fontsize=8)
+    
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.92)
+    return fig
 
-# Hiển thị dữ liệu trên matplotlib
-plt.figure(figsize=(10, 10))
-plt.imshow(X_train[0].reshape(28, 28), cmap='gray')
-plt.show()
-# Hiển thị 10 ảnh đầu tiên của tập dữ liệu
-fig, axes = plt.subplots(2, 5, figsize=(15, 6))
-for i in range(10):
-    axes[i // 5, i % 5].imshow(X_train[i].reshape(28, 28), cmap='gray')
-    axes[i // 5, i % 5].set_title(f"Label: {y_train[i]}")
-    axes[i // 5, i % 5].axis('off')
-
-st.pyplot(fig)
+st.subheader("Hiển thị MNIST Dataset trên Streamlit")
+st.pyplot(display_mnist_grid())
 
 # Flatten the images
-X_train = X_train.reshape(-1, 28 * 28)
-X_test = X_test.reshape(-1, 28 * 28)
-
-mlflow.start_run()
-mlflow.sklearn.log_model(KMeans, "kmeans_model")
-mlflow.log_param("n_clusters", 10)
-mlflow.end_run()
+X_train = train_images.reshape(-1, 28 * 28)
+X_test = test_images.reshape(-1, 28 * 28)
+y_train = train_labels
+y_test = test_labels
 
 # Biểu đồ phân phối nhãn dữ liệu
+st.subheader("Biểu đồ phân phối nhãn dữ liệu")     
 fig, ax = plt.subplots(figsize=(6, 4))
 sns.barplot(x=list(Counter(y_train).keys()), y=list(Counter(y_train).values()), palette="Blues", ax=ax)
 ax.set_title("Phân phối nhãn trong tập huấn luyện")
@@ -120,9 +114,9 @@ st.pyplot(fig)
 X_train = X_train.astype("float32") / 255.0
 X_test = X_test.astype("float32") / 255.0
 
-# # Tạo bộ dữ liệu
-# train_data = (train_images, train_labels)
-# test_data = (test_images, test_labels)
+# Tạo bộ dữ liệu
+train_data = (train_images, train_labels)
+test_data = (test_images, test_labels)
 
 st.subheader("Tùy chọn chia dữ liệu train")
 train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=1)
@@ -144,93 +138,81 @@ st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
 
-# Đánh giá model K-means
-silhouette_kmeans = silhouette_score(x_train, KMeans.labels_)
-calinski_harabasz_kmeans = calinski_harabasz_score(x_train, KMeans.labels_)
-davies_bouldin_kmeans = davies_bouldin_score(x_train, KMeans.labels_)
+st.header("Chọn mô hình & Huấn luyện")
 
-# Hiển thị kết quả lên Streamlit
-st.title("Kết quả phân cụm")
+# Chọn mô hình
+model_choice = st.radio("Chọn mô hình:", ["K-Means", "DBSCAN"])
 
-st.subheader("K-means")
-st.write(f"Silhouette Score: {silhouette_kmeans}")
-st.write(f"Calinski-Harabasz Index: {calinski_harabasz_kmeans}")
-st.write(f"Davies-Bouldin Index: {davies_bouldin_kmeans}")
+if model_choice == "K-Means":
+    st.markdown("""
+    - **K-Means** là thuật toán phân cụm phổ biến, chia dữ liệu thành K cụm dựa trên khoảng cách.
+    - **Tham số cần chọn:
+        - Số lượng cụm (k).  
+    """)
+        
+    n_clusters = st.slider("n_clusters", 2, 20, 10)
+    model = KMeans(n_clusters=n_clusters, random_state=42)
+    
+elif model_choice == "DBSCAN":
+    st.markdown("""
+    - **DBSCAN (Density-Based Spatial Clustering of Applications with Noise)** là thuật toán phân cụm dựa trên mật độ.
+    - **Tham số cần chọn:**  
+        - Bán kính lân cận.  
+        - Số lượng điểm tối thiểu để tạo cụm.  
+    """)
+    eps = st.slider("eps", 0.1, 10.0, 0.5)
+    min_samples = st.slider("min_samples", 2, 20, 5)
+    model = DBSCAN(eps=eps, min_samples=min_samples)
 
-# Hiển thị dữ liệu đã phân cụm lên Streamlit
-st.subheader("Dữ liệu đã phân cụm")
-plt.figure(figsize=(10, 10))
-plt.scatter(x_train[:, 0], x_train[:, 1], c=KMeans.labels_, cmap='viridis', s=15)
-plt.title('K-means Clustering')
-plt.xlabel('Feature 1')
-plt.ylabel('Feature 2')
-st.pyplot(plt)
+st.sidebar.subheader("Demo dự đoán chữ viết tay")
+st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
-# # Huấn luyện model K-means
-# kmeans = KMeans(n_clusters=10, random_state=42)
-# kmeans.fit(X_train)
+# Tạo phần nhập hình ảnh
+uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
 
-# # # Huấn luyện model DBSCAN
-# # dbscan = DBSCAN(eps=0.5, min_samples=5)
-# # dbscan.fit(X_train)
 
-# # Đánh giá model K-means
-# silhouette_kmeans = silhouette_score(X_train, kmeans.labels_)
-# calinski_harabasz_kmeans = calinski_harabasz_score(X_train, kmeans.labels_)
-# davies_bouldin_kmeans = davies_bouldin_score(X_train, kmeans.labels_)
+if st.button("Huấn luyện mô hình"):
+    model.fit(X_train)
+    labels = model.labels_
+    st.success("✅ Huấn luyện thành công!")
 
-# # Đánh giá model DBSCAN
-# silhouette_dbscan = silhouette_score(X_train, dbscan.labels_)
-# calinski_harabasz_dbscan = calinski_harabasz_score(X_train, dbscan.labels_)
-# davies_bouldin_dbscan = davies_bouldin_score(X_train, dbscan.labels_)
+    # Lưu mô hình vào session_state dưới dạng danh sách nếu chưa có
+    if "models" not in st.session_state:
+        st.session_state["models"] = []
 
-# # # Logging với MLFlow
-# # mlflow.start_run()
-# # mlflow.sklearn.log_model(kmeans, "kmeans_model")
-# # mlflow.log_param("n_clusters", 10)
-# # mlflow.log_metric("silhouette_score", silhouette_kmeans)
-# # mlflow.log_metric("calinski_harabasz_score", calinski_harabasz_kmeans)
-# # mlflow.log_metric("davies_bouldin_score", davies_bouldin_kmeans)
-# # mlflow.end_run()
+    model_name = model_choice.lower().replace(" ", "_")
 
-# # mlflow.start_run()
-# # mlflow.sklearn.log_model(dbscan, "dbscan_model")
-# # mlflow.log_param("eps", 0.5)
-# # mlflow.log_param("min_samples", 5)
-# # mlflow.log_metric("silhouette_score", silhouette_dbscan)
-# # mlflow.log_metric("calinski_harabasz_score", calinski_harabasz_dbscan)
-# # mlflow.log_metric("davies_bouldin_score", davies_bouldin_dbscan)
-# # mlflow.end_run()
+    existing_model = next((item for item in st.session_state["models"] if item["name"] == model_name), None)
+        
+    if existing_model:
+        count = 1
+        new_model_name = f"{model_name}_{count}"
+        while any(item["name"] == new_model_name for item in st.session_state["models"]):
+            count += 1
+            new_model_name = f"{model_name}_{count}"
+        model_name = new_model_name
+        
+    
+    # Tạo nút kiểm tra
+    if st.sidebar.button("Kiểm tra"):
+        # Xử lý hình ảnh
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file)
+            image = image.resize((28, 28))
+            image = image.convert('L')
+            image = np.array(image)
+            image = image.reshape(1, 784)
 
-# # Hiển thị kết quả lên Streamlit
-# st.title("Kết quả phân cụm")
+            # Dự đoán chữ viết tay
+            prediction = model.predict(image)
 
-# st.subheader("K-means")
-# st.write(f"Silhouette Score: {silhouette_kmeans}")
-# st.write(f"Calinski-Harabasz Index: {calinski_harabasz_kmeans}")
-# st.write(f"Davies-Bouldin Index: {davies_bouldin_kmeans}")
+            # Hiển thị hình ảnh
+            st.sidebar.image(image.reshape(28, 28), caption="Hình ảnh chữ viết tay")
 
-# st.subheader("DBSCAN")
-# st.write(f"Silhouette Score: {silhouette_dbscan}")
-# st.write(f"Calinski-Harabasz Index: {calinski_harabasz_dbscan}")
-# st.write(f"Davies-Bouldin Index: {davies_bouldin_dbscan}")
+            # Hiển thị kết quả
+            st.sidebar.write("Kết quả dự đoán:")
+            st.sidebar.write("Chữ viết tay:", prediction[0])
+        else:
+            st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
-# # Hiển thị dữ liệu đã phân cụm lên Streamlit
-# st.subheader("Dữ liệu đã phân cụm")
-# col1, col2 = st.columns(2)
 
-# with col1:
-#     plt.figure(figsize=(10, 10))
-#     plt.scatter(X_train[:, 0], X_train[:, 1], c=kmeans.labels_, cmap='viridis', s=15)
-#     plt.title('K-means Clustering')
-#     plt.xlabel('Feature 1')
-#     plt.ylabel('Feature 2')
-#     st.pyplot(plt)
-
-# with col2:
-#     plt.figure(figsize=(10, 10))
-#     plt.scatter(X_train[:, 0], X_train[:, 1], c=dbscan.labels_, cmap='viridis', s=15)
-#     plt.title('DBSCAN Clustering')
-#     plt.xlabel('Feature 1')
-#     plt.ylabel('Feature 2')
-#     st.pyplot(plt)
