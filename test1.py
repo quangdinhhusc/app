@@ -166,22 +166,32 @@ if st.button("Train Model"):
         from sklearn.cluster import KMeans
         model = KMeans(n_clusters=5, random_state=42)
         model.fit(x_train)
-        y_pred = model.labels_
+        y_pred_train = model.labels_
+        y_pred = model.fit_predict(x_test)
         from sklearn.metrics import silhouette_score
-        silhouette = silhouette_score(x_train, y_pred)
-        st.write("Kết quả phân cụm:")
+        silhouette_train = silhouette_score(x_train, y_pred_train)
+        silhouette_test = silhouette_score(x_test, y_pred)
+        st.write("Kết quả phân cụm trên dữ liệu huấn luyện:")
+        st.write("Số lượng cụm:", len(np.unique(y_pred_train)))
+        st.write("Điểm silhouette:", silhouette_train)
+        st.write("Kết quả phân cụm trên dữ liệu thử nghiệm:")
         st.write("Số lượng cụm:", len(np.unique(y_pred)))
-        st.write("Điểm silhouette:", silhouette)
+        st.write("Điểm silhouette:", silhouette_test)
     elif model_name == "DBSCAN":
         from sklearn.cluster import DBSCAN
         model = DBSCAN(eps=0.5, min_samples=10)
         model.fit(x_train)
-        y_pred = model.labels_
+        y_pred_train = model.labels_
+        y_pred = model.fit_predict(x_test)
         from sklearn.metrics import silhouette_score
-        silhouette = silhouette_score(x_train, y_pred)
-        st.write("Kết quả phân cụm:")
+        silhouette_train = silhouette_score(x_train, y_pred_train)
+        silhouette_test = silhouette_score(x_test, y_pred)
+        st.write("Kết quả phân cụm trên dữ liệu huấn luyện:")
+        st.write("Số lượng cụm:", len(np.unique(y_pred_train)))
+        st.write("Điểm silhouette:", silhouette_train)
+        st.write("Kết quả phân cụm trên dữ liệu thử nghiệm:")
         st.write("Số lượng cụm:", len(np.unique(y_pred)))
-        st.write("Điểm silhouette:", silhouette)
+        st.write("Điểm silhouette:", silhouette_test)
     
 
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
