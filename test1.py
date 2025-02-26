@@ -226,6 +226,9 @@ if st.button("Huấn luyện mô hình"):
             # Dự đoán chữ viết tay
             prediction = model.predict(image)
 
+            # Hiển thị hình ảnh
+            st.sidebar.image(image.reshape(28, 28), caption="Hình ảnh chữ viết tay")
+
             # Hiển thị kết quả
             st.sidebar.write("Kết quả dự đoán:")
             st.sidebar.write("Chữ viết tay:", prediction[0])
