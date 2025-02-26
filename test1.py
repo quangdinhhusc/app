@@ -23,6 +23,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV
 import kagglehub
+from sklearn.metrics import confusion_matrix
 
 
 
@@ -203,10 +204,13 @@ if st.button("Huấn luyện mô hình"):
             count += 1
             new_model_name = f"{model_name}_{count}"
         model_name = new_model_name
-        st.warning(f"⚠️ Mô hình được lưu với tên là: {model_name}")
-
+        
+    # Hiển thị ma trận độ chính xác
     st.session_state["models"].append({"name": model_name, "model": model})
-    st.write(f"🔹 Mô hình đã được lưu với tên: {model_name}")
+    cm = confusion_matrix(y_train, labels)
+    st.write("Ma trận độ chính xác:")
+    st.write(cm)
+    
     
         
     st.sidebar.subheader("Demo dự đoán chữ viết tay")
