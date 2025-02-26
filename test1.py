@@ -30,7 +30,7 @@ from sklearn.metrics import confusion_matrix
 st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 
 # Streamlit app
-st.title("MNIST Classification with Streamlit & MLFlow")
+st.title("MNIST Assignment - Clustering Algorithms with Streamlit & MLFlow")
 
 @st.cache_data  # Lưu cache để tránh load lại dữ liệu mỗi lần chạy lại Streamlit
 def get_sampled_pixels(images, sample_size=100_000):
@@ -40,14 +40,6 @@ def get_sampled_pixels(images, sample_size=100_000):
 def get_random_indices(num_images, total_images):
     return np.random.randint(0, total_images, size=num_images)
 
-# # Cấu hình Streamlit
-# def config_page():
-#     st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
-
-# config_page()
-
-# st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
-# Định nghĩa hàm để đọc file .idx
 def load_mnist_images(filename):
     with open(filename, 'rb') as f:
         magic, num, rows, cols = struct.unpack('>IIII', f.read(16))
@@ -77,7 +69,7 @@ test_labels = load_mnist_labels(test_labels_path)
 
 st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
 st.write(f"Số lượng ảnh trong tập test: {len(test_images)}")
-st.subheader("Chọn ngẫu nhiên 10 ảnh từ tập huấn luyện để hiển thị")
+st.subheader("10 ảnh từ tập huấn luyện ")
 num_images = 10
 random_indices = random.sample(range(len(train_images)), num_images)
 fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
@@ -96,6 +88,7 @@ y_train = train_labels
 y_test = test_labels
 
 # Biểu đồ phân phối nhãn dữ liệu
+st.widget("Biểu đồ phân phối nhãn dữ liệu")
 fig, ax = plt.subplots(figsize=(6, 4))
 sns.barplot(x=list(Counter(y_train).keys()), y=list(Counter(y_train).values()), palette="Blues", ax=ax)
 ax.set_title("Phân phối nhãn trong tập huấn luyện")
@@ -110,33 +103,6 @@ X_test = X_test.astype("float32") / 255.0
 # Tạo bộ dữ liệu
 train_data = (train_images, train_labels)
 test_data = (test_images, test_labels)
-
-# # Kiểm tra giá trị null hoặc NaN trong dữ liệu
-# na_counts = X.isna().sum()
-# st.write("Số lượng giá trị null hoặc NaN trong dữ liệu:", na_counts)
-
-# # Kiểm tra giá trị vô hạn trong dữ liệu
-# inf_counts = X.isinf().sum()
-# st.write("Số lượng giá trị vô hạn trong dữ liệu:", inf_counts)
-
-# # Đếm số lượng của mỗi giá trị trong dữ liệu
-# value_counts = X.apply(lambda x: x.value_counts())
-# st.write("Số lượng của mỗi giá trị trong dữ liệu:", value_counts)
-
-# # Tạo phần tùy chọn chia dữ liệu train
-# st.subheader("Tùy chọn chia dữ liệu train")
-# train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=70, step=1)
-# test_ratio = 100 - train_ratio
-# a = 100 - train_ratio
-
-# # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
-# x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=test_ratio/100, random_state=42)
-
-# # Tạo phần tùy chọn chia dữ liệu test thành validation và test
-# st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
-# val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=0, max_value=a, value=10, step=1)
-
-# x_val, x_test, y_val, y_test = train_test_split(x_test, y_test, test_size=(100-val_ratio)/100, random_state=42)
 
 st.subheader("Tùy chọn chia dữ liệu train")
 train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=1)
