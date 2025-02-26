@@ -165,69 +165,23 @@ if st.button("Train Model"):
     if model_name == "K-means":
         from sklearn.cluster import KMeans
         model = KMeans(n_clusters=5, random_state=42)
+        model.fit(x_train)
+        y_pred = model.labels_
+        from sklearn.metrics import silhouette_score
+        silhouette = silhouette_score(x_train, y_pred)
+        st.write("Kết quả phân cụm:")
+        st.write("Số lượng cụm:", len(np.unique(y_pred)))
+        st.write("Điểm silhouette:", silhouette)
     elif model_name == "DBSCAN":
         from sklearn.cluster import DBSCAN
         model = DBSCAN(eps=0.5, min_samples=10)
-
-
-    with mlflow.start_run():
-        #train model
-        model.fit(x_train, y_train)
-        y_pred = model.predict(x_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        cm = confusion_matrix(y_test, y_pred)
-
-        # Log parameters and metrics to MLFlow
-        mlflow.log_param("model", model_name)
-        mlflow.log_metric("accuracy", accuracy)
-
-        # Display MLFlow logs in Streamlit
-        st.subheader("MLFlow Logs")
-        st.write("Run ID:", mlflow.active_run().info.run_id)
-        st.write("Experiment ID:", mlflow.active_run().info.experiment_id)
-        st.write(f"Model: {model_name}")
-        st.write(f"Accuracy: {accuracy:.2f}")
-
-        st.write("Confusion Matrix:")
-        # st.write(cm)
-
-        # Plot confusion matrix
-        fig, ax = plt.subplots()
-        ax.matshow(cm, cmap=plt.cm.Blues)
-        for i in range(cm.shape[0]):
-            for j in range(cm.shape[1]):
-                ax.text(j, i, cm[i, j], ha="center", va="center")
-        plt.xlabel("Predicted label")
-        plt.ylabel("True label")
-        st.pyplot(fig)
-
-        # Display MLFlow metrics in Streamlit
-        # st.subheader("MLFlow Metrics")
-        # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy"])
-        # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy:" + mlflow.active_run().info.run_id])
-
-        # Display MLFlow parameters in Streamlit
-        # st.subheader("MLFlow Parameters")
-        # st.write("Model:", mlflow.get_param("model"))
-
-        # # Save model to MLFlow
-        # mlflow.sklearn.log_model(model, "model")
-
-        # # Display MLFlow model in Streamlit
-        # st.subheader("MLFlow Model")
-        # st.write("Model:", mlflow.get_model("model"))
-
-        # # Display classification report
-        # st.write("Classification Report:")
-        # st.write(classification_report(y_test, y_pred))
-
-        # # Display precision, recall, f1-score
-        # st.write("Precision: {:.2f}".format(precision_score(y_test, y_pred)))
-        # st.write("Recall: {:.2f}".format(recall_score(y_test, y_pred)))
-        # st.write("F1-score: {:.2f}".format(f1_score(y_test, y_pred)))
-
-        # Save model to MLFlow
-        mlflow.sklearn.log_model(model, "model", input_example=x_train[:1])
+        model.fit(x_train)
+        y_pred = model.labels_
+        from sklearn.metrics import silhouette_score
+        silhouette = silhouette_score(x_train, y_pred)
+        st.write("Kết quả phân cụm:")
+        st.write("Số lượng cụm:", len(np.unique(y_pred)))
+        st.write("Điểm silhouette:", silhouette)
     
 
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
