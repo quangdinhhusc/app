@@ -1,3 +1,4 @@
+from sklearn.cluster import KMeans, DBSCAN
 import joblib
 import streamlit as st
 import os
@@ -162,36 +163,54 @@ model_name = st.radio("", ["K-means", "DBSCAN"])
 
 # Train and evaluate model
 if st.button("Train Model"):
+
     if model_name == "K-means":
-        from sklearn.cluster import KMeans
-        model = KMeans(n_clusters=5, random_state=42)
-        model.fit(x_train)
-        y_pred_train = model.labels_
-        y_pred = model.fit_predict(x_test)
-        from sklearn.metrics import silhouette_score
-        silhouette_train = silhouette_score(x_train, y_pred_train)
-        silhouette_test = silhouette_score(x_test, y_pred)
-        st.write("Kết quả phân cụm trên dữ liệu huấn luyện:")
-        st.write("Số lượng cụm:", len(np.unique(y_pred_train)))
-        st.write("Điểm silhouette:", silhouette_train)
-        st.write("Kết quả phân cụm trên dữ liệu thử nghiệm:")
-        st.write("Số lượng cụm:", len(np.unique(y_pred)))
-        st.write("Điểm silhouette:", silhouette_test)
+        st.markdown("""
+        - **🔹 K-Means** là thuật toán phân cụm phổ biến, chia dữ liệu thành K cụm dựa trên khoảng cách.
+        - **Tham số cần chọn:**  
+            - **n_clusters**: Số lượng cụm (k).  
+        """)
+        
+        n_clusters = st.slider("n_clusters", 2, 20, 10)
+        model = KMeans(n_clusters=n_clusters, random_state=42)
+
     elif model_name == "DBSCAN":
-        from sklearn.cluster import DBSCAN
-        model = DBSCAN(eps=0.5, min_samples=10)
-        model.fit(x_train)
-        y_pred_train = model.labels_
-        y_pred = model.fit_predict(x_test)
-        from sklearn.metrics import silhouette_score
-        silhouette_train = silhouette_score(x_train, y_pred_train)
-        silhouette_test = silhouette_score(x_test, y_pred)
-        st.write("Kết quả phân cụm trên dữ liệu huấn luyện:")
-        st.write("Số lượng cụm:", len(np.unique(y_pred_train)))
-        st.write("Điểm silhouette:", silhouette_train)
-        st.write("Kết quả phân cụm trên dữ liệu thử nghiệm:")
-        st.write("Số lượng cụm:", len(np.unique(y_pred)))
-        st.write("Điểm silhouette:", silhouette_test)
+        st.markdown("""
+        - **🛠️ DBSCAN (Density-Based Spatial Clustering of Applications with Noise)** là thuật toán phân cụm dựa trên mật độ.
+        - **Tham số cần chọn:**  
+            - **eps**: Bán kính lân cận.  
+            - **min_samples**: Số lượng điểm tối thiểu để tạo cụm.  
+        """)
+        eps = st.slider("eps", 0.1, 10.0, 0.5)
+        min_samples = st.slider("min_samples", 2, 20, 5)
+        model = DBSCAN(eps=eps, min_samples=min_samples)
+
+    st.success("✅ Huấn luyện thành công!")
+
+        # Lưu mô hình vào session_state dưới dạng danh sách nếu chưa có
+    if "models" not in st.session_state:
+        st.session_state["models"] = []
+
+    model_name = model_name.lower().replace(" ", "_")
+
+    existing_model = next((item for item in st.session_state["models"] if item["name"] == model_name), None)
+        
+    if existing_model:
+        count = 1
+        new_model_name = f"{model_name}_{count}"
+        while any(item["name"] == new_model_name for item in st.session_state["models"]):
+            count += 1
+            new_model_name = f"{model_name}_{count}"
+        model_name = new_model_name
+    st.warning(f"⚠️ Mô hình được lưu với tên là: {model_name}")
+
+    st.session_state["models"].append({"name": model_name, "model": model})
+    st.write(f"🔹 Mô hình đã được lưu với tên: {model_name}")
+    st.write(f"Tổng số mô hình hiện tại: {len(st.session_state['models'])}")
+
+    st.write("📋 Danh sách các mô hình đã lưu:")
+    model_names = [model["name"] for model in st.session_state["models"]]
+    st.write(", ".join(model_names))    
     
 
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
