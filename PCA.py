@@ -180,15 +180,19 @@ if val_ratio == test_ratio:
     y_test_add = 0
 elif val_ratio < test_ratio:
     x_val, x_test_add, y_val, y_test_add = train_test_split(val_x, val_y, test_size=(test_ratio-val_ratio)/test_ratio, random_state=42)
+    # Cộng thêm dữ liệu tập test
+    x_test = np.concatenate((X_test, x_test_add))
+    y_test = np.concatenate((y_test, y_test_add))
 else:
     x_val = np.array([])
     y_val = np.array([])
     x_test_add = val_x
     y_test_add = val_y
+    # Cộng thêm dữ liệu tập test
+    x_test = np.concatenate((X_test, x_test_add))
+    y_test = np.concatenate((y_test, y_test_add))
 
-# Cộng thêm dữ liệu tập test
-x_test = np.concatenate((X_test, x_test_add))
-y_test = np.concatenate((y_test, y_test_add))
+
 
 # In ra số lượng của các tập train, test và val
 st.subheader("Số lượng của các tập dữ liệu")
