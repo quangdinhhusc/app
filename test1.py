@@ -166,11 +166,24 @@ test_ratio = 100 - train_ratio
 # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
 x_train, val_x, y_train, val_y = train_test_split(X_train, y_train, test_size=test_ratio/100, random_state=42)
 
+# Tạo phần lựa chọn dữ liệu tập val
+st.subheader("Tùy chọn dữ liệu tập val")
+val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_value=100, value=50, step=1)
+
+# Chia tách dữ liệu tập val thành tập val và tập test
+val_size = int(len(val_x) * val_ratio / 100)
+x_val, x_test_add = val_x[:val_size], val_x[val_size:]
+y_val, y_test_add = val_y[:val_size], val_y[val_size:]
+
+# Cộng thêm dữ liệu tập test
+x_test = np.concatenate((X_test, x_test_add))
+y_test = np.concatenate((y_test, y_test_add))
+
 # In ra số lượng của các tập train, test và val
 st.subheader("Số lượng của các tập dữ liệu")
 st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(val_x))
-st.write("Số lượng dữ liệu test: ", len(X_test))
+st.write("Số lượng dữ liệu test: ", len(x_test))
 
 # Lựa chọn phương pháp xử lý dữ liệu
 method = st.radio("Chọn phương pháp xử lý dữ liệu:", ["PCA", "t-SNE"])
