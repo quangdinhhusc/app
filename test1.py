@@ -25,6 +25,8 @@ from sklearn.metrics import classification_report, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
 import kagglehub
 from sklearn.metrics import confusion_matrix
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
 
 
@@ -132,11 +134,36 @@ val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=0, max_v
 
 x_val, x_test, y_val, y_test = train_test_split(x_val_test, y_val_test, test_size=(100-val_ratio)/100, random_state=42)
 
+# Dữ liệu MNIST
+X_train = train_images.reshape(-1, 28 * 28)
+X_test = test_images.reshape(-1, 28 * 28)
+
 # In ra số lượng của các tập train, test và val
 st.subheader("Số lượng của các tập dữ liệu")
 st.write("Số lượng dữ liệu train: ", len(x_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
 st.write("Số lượng dữ liệu test: ", len(x_test))
+
+# Lựa chọn phương pháp xử lý dữ liệu
+method = st.radio("Chọn phương pháp xử lý dữ liệu:", ["PCA", "t-SNE"])
+
+if method == "PCA":
+    # Lựa chọn số chiều giảm xuống
+    n_components = st.slider("Chọn số chiều giảm xuống", 1, 784, 150)
+
+    # Tạo đối tượng PCA với số chiều giảm xuống
+    pca = PCA(n_components=n_components)
+    # Giảm chiều dữ liệu train và test
+    X_train_pca = pca.transform(X_train)
+    X_test_pca = pca.transform(X_test)
+    st.write("Số chiều dữ liệu sau khi giảm:", X_train_pca.shape[1])
+elif method == "t-SNE":
+    n_components = st.slider("Chọn số chiều giảm xuống", 1, 3, 2)
+    tsne = TSNE(n_components=n_components, random_state=42)
+    # Giảm chiều dữ liệu train và test
+    X_train_tsne = tsne.fit_transform(X_train)
+    X_test_tsne = tsne.fit_transform(X_test)
+    st.write("Số chiều dữ liệu sau khi giảm:", X_train_tsne.shape[1])
 
 st.header("Chọn mô hình & Huấn luyện")
 
