@@ -133,9 +133,6 @@ test_data = (test_images, test_labels)
 # val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=0, max_value=a, value=a, step=1)
 
 # x_val, x_test, y_val, y_test = train_test_split(x_val_test, y_val_test, test_size=(100-val_ratio)/100, random_state=42)
-# Tạo bộ dữ liệu
-train_data = (train_images, train_labels)
-test_data = (test_images, test_labels)
 
 st.subheader("Tùy chọn chia dữ liệu train")
 train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=1)
@@ -151,9 +148,9 @@ X_test = test_images.reshape(-1, 28 * 28)
 
 # In ra số lượng của các tập train, test và val
 st.subheader("Số lượng của các tập dữ liệu")
-st.write("Số lượng dữ liệu train: ", len(x_train))
+st.write("Số lượng dữ liệu train: ", len(X_train))
 st.write("Số lượng dữ liệu validation: ", len(x_val))
-st.write("Số lượng dữ liệu test: ", len(x_test))
+st.write("Số lượng dữ liệu test: ", len(X_test))
 
 # Lựa chọn phương pháp xử lý dữ liệu
 method = st.radio("Chọn phương pháp xử lý dữ liệu:", ["PCA", "t-SNE"])
