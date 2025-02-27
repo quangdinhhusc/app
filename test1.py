@@ -171,7 +171,10 @@ st.subheader("Tùy chọn dữ liệu tập val")
 val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_value=test_ratio, value=test_ratio, step=1)
 
 # Chia tách dữ liệu tập val thành tập val và tập test
-if val_ratio != 0:
+if val_ratio == test_ratio:
+    x_test_add = 0
+    y_test_add = 0
+elif val_ratio < test_ratio:
     x_val, x_test_add, y_val, y_test_add = train_test_split(val_x, val_y, test_size=(test_ratio-val_ratio)/test_ratio, random_state=42)
 else:
     x_val = np.array([])
