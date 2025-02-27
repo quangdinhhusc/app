@@ -35,6 +35,11 @@ st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 
 # Streamlit app
 st.title("MNIST Assignment - Clustering Algorithms with Streamlit & MLFlow")
+st.markdown(""""Tập dữ liệu MNIST (Modified National Institute of Standards and Technology database) là một bộ dữ liệu kinh điển trong lĩnh vực học máy, đặc biệt là trong thị giác máy tính. 
+            - Bộ dữ liệu này được "modified" từ bộ dữ liệu gốc của NIST, nhằm mục đích làm cho nó phù hợp hơn cho các thí nghiệm học máy.
+            - Bộ dữ liệu gồm 60.000 ảnh dùng để hun luyện và 10.000 ảnh dùng để kiểm tra. 
+            - Mỗi ảnh là một chữ số viết tay từ 0 đến 9 với kích thước 28x28 pixel.
+            - MNIST được tạo ra để huấn luyện và đánh giá các thuật toán nhận dạng chữ số viết tay.""")
 
 @st.cache_data  # Lưu cache để tránh load lại dữ liệu mỗi lần chạy lại Streamlit
 def get_sampled_pixels(images, sample_size=100_000):
@@ -96,7 +101,7 @@ def display_mnist_grid():
 
 # Demo dự đoán chữ viết tay
 st.sidebar.subheader("Demo dự đoán chữ viết tay")
-st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+st.sidebar.write("Vui lòng chuyển hình ảnh chữ viết tay cần dự đoán:")
 
 # Tạo phần nhập hình ảnh
 uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
@@ -113,10 +118,11 @@ y_test = test_labels
 
 # Biểu đồ phân phối nhãn dữ liệu
 st.subheader("Biểu đồ phân phối nhãn dữ liệu")     
+st.markdown("Biểu đồ dưới đây thể hiện phân phối của các nhãn trong tập huấn luyện. Có thể thấy rằng dữ liệu được phân phối đều nhau giữa các nhãn.")
 fig, ax = plt.subplots(figsize=(6, 4))
 sns.barplot(x=list(Counter(train_labels).keys()), y=list(Counter(train_labels).values()), palette="Blues", ax=ax)
 ax.set_title("Phân phối nhãn trong tập huấn luyện")
-ax.set_xlabel("Nhãn")
+ax.set_xlabel("Label")
 ax.set_ylabel("Số lượng")
 st.pyplot(fig)
 
