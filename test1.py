@@ -35,11 +35,13 @@ st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 
 # Streamlit app
 st.title("MNIST Assignment - Clustering Algorithms with Streamlit & MLFlow")
-st.markdown(""""Tập dữ liệu MNIST (Modified National Institute of Standards and Technology database) là một bộ dữ liệu kinh điển trong lĩnh vực học máy, đặc biệt là trong thị giác máy tính. 
+st.markdown("""
+            **Tập dữ liệu MNIST (Modified National Institute of Standards and Technology database)** là một bộ dữ liệu kinh điển trong lĩnh vực học máy, đặc biệt là trong thị giác máy tính. 
             - Bộ dữ liệu này được "modified" từ bộ dữ liệu gốc của NIST, nhằm mục đích làm cho nó phù hợp hơn cho các thí nghiệm học máy.
             - Bộ dữ liệu gồm 60.000 ảnh dùng để hun luyện và 10.000 ảnh dùng để kiểm tra. 
             - Mỗi ảnh là một chữ số viết tay từ 0 đến 9 với kích thước 28x28 pixel.
-            - MNIST được tạo ra để huấn luyện và đánh giá các thuật toán nhận dạng chữ số viết tay.""")
+            - MNIST được tạo ra để huấn luyện và đánh giá các thuật toán nhận dạng chữ số viết tay.
+            """)
 
 @st.cache_data  # Lưu cache để tránh load lại dữ liệu mỗi lần chạy lại Streamlit
 def get_sampled_pixels(images, sample_size=100_000):
