@@ -36,6 +36,12 @@ st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 # Streamlit app
 st.title("MNIST Assignment - Clustering Algorithms with Streamlit & MLFlow")
 
+st.sidebar.subheader("Demo dự đoán chữ viết tay")
+st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+
+# Tạo phần nhập hình ảnh
+uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
+
 @st.cache_data  # Lưu cache để tránh load lại dữ liệu mỗi lần chạy lại Streamlit
 def get_sampled_pixels(images, sample_size=100_000):
     return np.random.choice(images.flatten(), sample_size, replace=False)
@@ -222,11 +228,7 @@ elif model_choice == "DBSCAN":
     min_samples = st.slider("min_samples", 2, 20, 5)
     model = DBSCAN(eps=eps, min_samples=min_samples)
 
-st.sidebar.subheader("Demo dự đoán chữ viết tay")
-st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
 
-# Tạo phần nhập hình ảnh
-uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
 
 
 if st.button("Huấn luyện mô hình"):
