@@ -151,11 +151,15 @@ if method == "PCA":
     # Lựa chọn số chiều giảm xuống
     n_components = st.slider("Chọn số chiều giảm xuống", 1, 784, 150)
 
-    # Tạo đối tượng PCA với số chiều giảm xuống
+    # Chuẩn hóa dữ liệu X_train
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    x_test_scaled = scaler.transform(X_test)
+
+    # Áp dụng PCA
     pca = PCA(n_components=n_components)
-    # Giảm chiều dữ liệu train và test
-    X_train_pca = pca.transform(X_train)
-    X_test_pca = pca.transform(X_test)
+    X_train_pca = pca.fit_transform(X_train_scaled)
+    X_test_pca = pca.fit_transform(x_test_scaled)
     st.write("Số chiều dữ liệu sau khi giảm:", X_train_pca.shape[1])
 elif method == "t-SNE":
     n_components = st.slider("Chọn số chiều giảm xuống", 1, 3, 2)
