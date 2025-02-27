@@ -160,7 +160,7 @@ train_data = (train_images, train_labels)
 test_data = (test_images, test_labels)
 
 st.subheader("Tùy chọn chia dữ liệu train")
-train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=1)
+train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=100, value=90, step=1)
 test_ratio = 100 - train_ratio
 
 # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
@@ -168,7 +168,7 @@ x_train, val_x, y_train, val_y = train_test_split(X_train, y_train, test_size=te
 
 # Tạo phần lựa chọn dữ liệu tập val
 st.subheader("Tùy chọn dữ liệu tập val")
-val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_value=100, value=50, step=1)
+val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_value=test_ratio, value=test_ratio, step=1)
 
 # Chia tách dữ liệu tập val thành tập val và tập test
 val_size = int(len(val_x) * val_ratio / 100)
