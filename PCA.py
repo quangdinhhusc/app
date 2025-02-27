@@ -173,7 +173,8 @@ else:
 # Tạo phần lựa chọn dữ liệu tập val
 st.subheader("Tùy chọn dữ liệu tập val")
 val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_value=test_ratio, value=test_ratio, step=1)
-
+x_test = X_test
+y_test = y_test
 # Chia tách dữ liệu tập val thành tập val và tập test
 if val_ratio == test_ratio:
     x_test_add = 0
