@@ -87,7 +87,7 @@ def display_mnist_grid():
     
     # Số hàng và cột
     num_rows, num_cols = 10, 10
-    fig, axes = plt.subplots(num_rows, num_cols, figsize=(6, 6))
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(10, 10))
     fig.suptitle("Một số hình ảnh từ MNIST Dataset", fontsize=14, fontweight='bold')
     
     for i in range(num_rows):
@@ -120,7 +120,7 @@ y_test = test_labels
 
 # Biểu đồ phân phối nhãn dữ liệu
 st.subheader("Biểu đồ phân phối nhãn dữ liệu")     
-fig, ax = plt.subplots(figsize=(4, 3))
+fig, ax = plt.subplots(figsize=(6, 4))
 sns.barplot(x=list(Counter(train_labels).keys()), y=list(Counter(train_labels).values()), palette="Blues", ax=ax)
 ax.set_title("Phân phối nhãn trong tập huấn luyện")
 ax.set_xlabel("Label")
