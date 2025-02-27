@@ -120,7 +120,6 @@ y_test = test_labels
 
 # Biểu đồ phân phối nhãn dữ liệu
 st.subheader("Biểu đồ phân phối nhãn dữ liệu")     
-st.markdown("Biểu đồ dưới đây thể hiện phân phối của các nhãn trong tập huấn luyện. Có thể thấy rằng dữ liệu được phân phối đều nhau giữa các nhãn.")
 fig, ax = plt.subplots(figsize=(6, 4))
 sns.barplot(x=list(Counter(train_labels).keys()), y=list(Counter(train_labels).values()), palette="Blues", ax=ax)
 ax.set_title("Phân phối nhãn trong tập huấn luyện")
