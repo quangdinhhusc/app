@@ -171,11 +171,16 @@ st.subheader("Tùy chọn dữ liệu tập val")
 val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_value=test_ratio, value=test_ratio, step=1)
 
 # Chia tách dữ liệu tập val thành tập val và tập test
-x_val, x_test_add, y_val, y_test_add = train_test_split(val_x, val_y, test_size=(test_ratio-val_ratio)/test_ratio, random_state=42)
+if val_ratio < test_ratio:
+    x_val, x_test_add, y_val, y_test_add = train_test_split(val_x, val_y, test_size=(test_ratio-val_ratio)/test_ratio, random_state=42)
+else:
+    x_val = np.array([])
+    y_val = np.array([])
+    x_test_add = val_x
+    y_test_add = val_y
+
 st.write("Số lượng dữ liệu tập test:", len(x_test_add))
-st.write("Số lượng dữ liệu tập val:", len(y_test_add))
-
-
+st.write("Số lượng dữ liệu tập val:", len(y_val))
 # Cộng thêm dữ liệu tập test
 x_test = np.concatenate((X_test, x_test_add))
 y_test = np.concatenate((y_test, y_test_add))
