@@ -94,8 +94,22 @@ def display_mnist_grid():
     plt.subplots_adjust(top=0.92)
     return fig
 
+# Demo dự đoán chữ viết tay
+st.sidebar.subheader("Demo dự đoán chữ viết tay")
+st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+
+# Tạo phần nhập hình ảnh
+uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
+
+# Hiển thị hình ảnh
 st.subheader("Hiển thị MNIST Dataset trên Streamlit")
 st.pyplot(display_mnist_grid())
+
+# Flatten the images
+X_train = train_images.reshape(-1, 28 * 28)
+X_test = test_images.reshape(-1, 28 * 28)
+y_train = train_labels
+y_test = test_labels
 
 # Biểu đồ phân phối nhãn dữ liệu
 st.subheader("Biểu đồ phân phối nhãn dữ liệu")     
@@ -105,51 +119,6 @@ ax.set_title("Phân phối nhãn trong tập huấn luyện")
 ax.set_xlabel("Nhãn")
 ax.set_ylabel("Số lượng")
 st.pyplot(fig)
-
-
-# # Flatten the images
-# X_train = train_images.reshape(-1, 28 * 28)
-# X_test = test_images.reshape(-1, 28 * 28)
-# y_train = train_labels
-# y_test = test_labels
-
-# # Normalize the data
-# X_train = X_train.astype("float32") / 255.0
-# X_test = X_test.astype("float32") / 255.0
-
-# # Tạo bộ dữ liệu
-# train_data = (train_images, train_labels)
-# test_data = (test_images, test_labels)
-
-# st.subheader("Tùy chọn chia dữ liệu train")
-# train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=1)
-# test_ratio = 100 - train_ratio
-# a = 100 - train_ratio
-
-# # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
-# x_train, x_val_test, y_train, y_val_test = train_test_split(X_train, y_train, test_size=test_ratio/100, random_state=42)
-
-# # Tạo phần tùy chọn chia dữ liệu test thành validation và test
-# st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
-# val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=0, max_value=a, value=a, step=1)
-
-# x_val, x_test, y_val, y_test = train_test_split(x_val_test, y_val_test, test_size=(100-val_ratio)/100, random_state=42)
-
-# # Dữ liệu MNIST
-# X_train = train_images.reshape(-1, 28 * 28)
-# X_test = test_images.reshape(-1, 28 * 28)
-
-# # In ra số lượng của các tập train, test và val
-# st.subheader("Số lượng của các tập dữ liệu")
-# st.write("Số lượng dữ liệu train: ", len(x_train))
-# st.write("Số lượng dữ liệu validation: ", len(x_val))
-# st.write("Số lượng dữ liệu test: ", len(x_test))
-
-# Flatten the images
-X_train = train_images.reshape(-1, 28 * 28)
-X_test = test_images.reshape(-1, 28 * 28)
-y_train = train_labels
-y_test = test_labels
 
 # Normalize the data
 X_train = X_train.astype("float32") / 255.0
@@ -162,6 +131,8 @@ test_data = (test_images, test_labels)
 st.subheader("Tùy chọn chia dữ liệu train")
 train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=100, value=90, step=1)
 test_ratio = 100 - train_ratio
+x_test = X_test
+y_test = y_test
 
 if train_ratio == 100:
     x_train = X_train
@@ -170,28 +141,27 @@ else:
     # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
     x_train, val_x, y_train, val_y = train_test_split(X_train, y_train, test_size=test_ratio/100, random_state=42)
 
-# Tạo phần lựa chọn dữ liệu tập val
-st.subheader("Tùy chọn dữ liệu tập val")
-val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_value=test_ratio, value=test_ratio, step=1)
-x_test = X_test
-y_test = y_test
-# Chia tách dữ liệu tập val thành tập val và tập test
-if val_ratio == test_ratio:
-    x_test_add = 0
-    y_test_add = 0
-elif val_ratio < test_ratio:
-    x_val, x_test_add, y_val, y_test_add = train_test_split(val_x, val_y, test_size=(test_ratio-val_ratio)/test_ratio, random_state=42)
-    # Cộng thêm dữ liệu tập test
-    x_test = np.concatenate((X_test, x_test_add))
-    y_test = np.concatenate((y_test, y_test_add))
-else:
-    x_val = np.array([])
-    y_val = np.array([])
-    x_test_add = val_x
-    y_test_add = val_y
-    # Cộng thêm dữ liệu tập test
-    x_test = np.concatenate((X_test, x_test_add))
-    y_test = np.concatenate((y_test, y_test_add))
+    # Tạo phần lựa chọn dữ liệu tập val
+    st.subheader("Tùy chọn dữ liệu tập val")
+    val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_value=test_ratio, value=test_ratio, step=1)
+    
+    # Chia tách dữ liệu tập val thành tập val và tập test
+    if val_ratio == test_ratio:
+        x_test_add = 0
+        y_test_add = 0
+    elif val_ratio < test_ratio:
+        x_val, x_test_add, y_val, y_test_add = train_test_split(val_x, val_y, test_size=(test_ratio-val_ratio)/test_ratio, random_state=42)
+        # Cộng thêm dữ liệu tập test
+        x_test = np.concatenate((X_test, x_test_add))
+        y_test = np.concatenate((y_test, y_test_add))
+    else:
+        x_val = np.array([])
+        y_val = np.array([])
+        x_test_add = val_x
+        y_test_add = val_y
+        # Cộng thêm dữ liệu tập test
+        x_test = np.concatenate((X_test, x_test_add))
+        y_test = np.concatenate((y_test, y_test_add))
 
 
 
@@ -205,6 +175,11 @@ st.write("Số lượng dữ liệu test: ", len(x_test))
 method = st.radio("Chọn phương pháp xử lý dữ liệu:", ["PCA", "t-SNE"])
 
 if method == "PCA":
+    st.markdown("""
+    - **PCA (Principal Component Analysis)** là một phương pháp chuyển đổi một tập hợp các biến có tương quan thành một tập hợp các biến không tương quan tuyến tính, được gọi là các thành phần chính, đồng thời giữ lại càng nhiều thông tin quan trọng của dữ liệu gốc càng tốt.
+    - **Tham số cần chọn:**
+        - Số chiều giảm xuống.  
+    """)
     # Lựa chọn số chiều giảm xuống
     n_components = st.slider("Chọn số chiều giảm xuống", 1, 784, 150)
 
@@ -218,6 +193,12 @@ if method == "PCA":
     X_test_pca = pca.transform(X_test)
     st.write("Số chiều dữ liệu sau khi giảm:", X_train_pca.shape[1])
 elif method == "t-SNE":
+    st.markdown("""
+    - **t-SNE (t-distributed Stochastic Neighbor Embedding)** là một phương pháp giảm chiều dữ liệu không tuyến tính, giữ lại cấu trúc của dữ liệu gốc. Đặc biệt hiệu quả trong việc trực quan hóa dữ liệu có số chiều cao.
+    - **Tham số cần chọn:**
+        - Số chiều giảm xuống.  
+    """)
+    # Lựa chọn số chiều giảm xuống
     n_components = st.slider("Chọn số chiều giảm xuống", 1, 3, 2)
     tsne = TSNE(n_components=n_components, random_state=42)
     # Giảm chiều dữ liệu train và test
@@ -232,8 +213,8 @@ model_choice = st.radio("Chọn mô hình:", ["K-Means", "DBSCAN"])
 
 if model_choice == "K-Means":
     st.markdown("""
-    - **K-Means** là thuật toán phân cụm phổ biến, chia dữ liệu thành K cụm dựa trên khoảng cách.
-    - **Tham số cần chọn:
+    - **K-means clustering** là thuật toán phân cụm phổ biến, chia dữ liệu thành K cụm dựa trên khoảng cách.
+    - **Tham số cần chọn:**
         - Số lượng cụm (k).  
     """)
         
@@ -251,11 +232,6 @@ elif model_choice == "DBSCAN":
     min_samples = st.slider("min_samples", 2, 20, 5)
     model = DBSCAN(eps=eps, min_samples=min_samples)
 
-st.sidebar.subheader("Demo dự đoán chữ viết tay")
-st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
-
-# Tạo phần nhập hình ảnh
-uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
 
 
 if st.button("Huấn luyện mô hình"):
