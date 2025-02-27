@@ -172,6 +172,10 @@ val_ratio = st.slider("Tỷ lệ dữ liệu tập val (%)", min_value=0, max_va
 
 # Chia tách dữ liệu tập val thành tập val và tập test
 x_val, x_test_add, y_val, y_test_add = train_test_split(val_x, val_y, test_size=(100-val_ratio)/100, random_state=42)
+st.write("Số lượng dữ liệu tập test:", len(x_test_add))
+st.write("Số lượng dữ liệu tập val:", len(y_test_add))
+
+
 
 # Cộng thêm dữ liệu tập test
 x_test = np.concatenate((X_test, x_test_add))
