@@ -186,8 +186,6 @@ else:
     x_test_add = val_x
     y_test_add = val_y
 
-st.write("Số lượng dữ liệu tập test:", len(x_test_add))
-st.write("Số lượng dữ liệu tập val:", len(y_val))
 # Cộng thêm dữ liệu tập test
 x_test = np.concatenate((X_test, x_test_add))
 y_test = np.concatenate((y_test, y_test_add))
