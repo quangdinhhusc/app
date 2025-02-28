@@ -177,13 +177,20 @@ if st.button("Huấn luyện mô hình"):
     if model_choice == "Multiple_Regression":
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
+        y_pred_train = model.predict(train_df.drop("Survived", axis=1))
+        y_pred_val = model.predict(val_df.drop("Survived", axis=1))
+        y_pred_test = model.predict(test_df.drop("Survived", axis=1))
         
 
     elif model_choice == "Polynomial_Regression":
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
+        y_pred_train = model.predict(train_df.drop("Survived", axis=1))
+        y_pred_val = model.predict(val_df.drop("Survived", axis=1))
+        y_pred_test = model.predict(test_df.drop("Survived", axis=1))
 
-y_pred = model.predict(val_df.drop("Survived", axis=1).values.astype(float))
+y_pred = y_pred_val
+# Đánh giá mô hình
 mse = mean_squared_error(val_df["Survived"].astype(int), y_pred)
 r2 = r2_score(val_df["Survived"].astype(int), y_pred.round())
 st.write("Đánh giá mô hình trên tập xác thực:")
