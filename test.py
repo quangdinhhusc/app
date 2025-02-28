@@ -172,6 +172,10 @@ elif model_choice == "Polynomial_Regression":
     model = make_pipeline(PolynomialFeatures(degree=degree, interaction_only=interaction_only), LinearRegression())
 
 
+y_pred_val = None
+y_pred_test = None
+y_pred_train = None
+
 
 if st.button("Huấn luyện mô hình"):
     if model_choice == "Multiple_Regression":
