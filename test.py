@@ -183,6 +183,14 @@ if st.button("Huấn luyện mô hình"):
         st.write("Đánh giá mô hình trên tập xác thực:")
         st.write("MSE:", mse)
         st.write("R2:", r2)
+        # Cross-validation
+        cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1).values, train_df["Survived"].astype(int), cv=5, scoring="neg_mean_squared_error")
+
+        st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
+
+        # Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
+        train_features = train_df.drop("Survived", axis=1).columns.tolist()
+
     elif model_choice == "Polynomial_Regression":
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
@@ -192,17 +200,17 @@ if st.button("Huấn luyện mô hình"):
         st.write("Đánh giá mô hình trên tập xác thực:")
         st.write("MSE:", mse)
         st.write("R2:", r2)
+        # Cross-validation
+        cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1).values, train_df["Survived"].astype(int), cv=5, scoring="neg_mean_squared_error")
 
+        st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
 
+        # Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
+        train_features = train_df.drop("Survived", axis=1).columns.tolist()
 
-# Cross-validation
-cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1).values, train_df["Survived"].astype(int), cv=5, scoring="neg_mean_squared_error")
-
-st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
-
-# Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
-train_features = train_df.drop("Survived", axis=1).columns.tolist()
-
+# Lưu mô hình vào session_state dưới dạng danh sách nếu chưa có
+if "models" not in st.session_state:
+    st.session_state["models"] = []
 # # ...existing code...
 st.sidebar.title("Titanic Survival Prediction")
 
