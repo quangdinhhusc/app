@@ -181,16 +181,15 @@ if st.button("Huấn luyện mô hình"):
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
 
-
-# Đánh giá mô hình trên tập validation
-y_pred = model.predict(val_df.drop("Survived", axis=1))
-mse = mean_squared_error(val_df["Survived"], y_pred)
-r2 = r2_score(val_df["Survived"], y_pred)
-
 # Đánh giá mô hình trên tập kiểm tra
 y_pred_test = model.predict(test_df.drop("Survived", axis=1))
 mse_test = mean_squared_error(test_df["Survived"], y_pred_test)
 r2_test = r2_score(test_df["Survived"], y_pred_test)
+
+# Đánh giá mô hình trên tập xác thực
+y_pred = model.predict(val_df.drop("Survived", axis=1))
+mse = mean_squared_error(val_df["Survived"], y_pred)
+r2 = r2_score(val_df["Survived"], y_pred)
 
 # Cross-validation
 cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
