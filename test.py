@@ -195,7 +195,7 @@ if st.button("Huấn luyện mô hình"):
 
 y_pred = y_pred_val
 # Đánh giá mô hình
-mse= mean_squared_error(val_df["Survived"].astype(int), y_pred_val)
+# mse= mean_squared_error(val_df["Survived"].astype(int), y_pred_val)
 r2 = r2_score(val_df["Survived"].astype(int), y_pred_val.round())
 st.write("Đánh giá mô hình trên tập xác thực:")
 st.write("MSE:", mse)
