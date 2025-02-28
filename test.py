@@ -182,7 +182,7 @@ if st.button("Huấn luyện mô hình"):
         st.success("✅ Huấn luyện thành công!")
 
 # Đánh giá mô hình trên tập kiểm tra
-y_pred_test = model.predict(test_df.drop("Survived", axis=1))
+y_pred_test = model.predict(test_df.drop("Survived", axis=1).values)
 mse_test = mean_squared_error(test_df["Survived"].astype(int), y_pred_test)
 r2_test = r2_score(test_df["Survived"].astype(int), y_pred_test)
 
