@@ -183,7 +183,7 @@ if st.button("Huấn luyện mô hình"):
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
 
-y_pred = model.predict(val_df.drop("Survived", axis=1).values)
+y_pred = model.predict(val_df.drop("Survived", axis=1).values.astype(float))
 mse = mean_squared_error(val_df["Survived"].astype(int), y_pred)
 r2 = r2_score(val_df["Survived"].astype(int), y_pred.round())
 st.write("Đánh giá mô hình trên tập xác thực:")
