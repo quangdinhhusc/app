@@ -11,6 +11,10 @@ from sklearn.model_selection import cross_val_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import zscore
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+
 
 
 # Tiêu đề ứng dụng
@@ -129,13 +133,10 @@ val_ratio = st.slider("Tập xác thực", 0, a, 5)
 # Tính toán tỉ lệ của tập kiểm tra
 test_ratio = 100 - train_ratio - val_ratio
 
-# Đảm bảo rằng tổng tỉ lệ không vượt quá 1
-# while train_ratio + val_ratio + test_ratio != 1:
-#     print("Tổng tỉ lệ vượt quá 1. Vui lòng nhập lại!")
-#     train_ratio = float(input("Nhập tỉ lệ của tập huấn luyện (0-1): "))
-#     val_ratio = float(input("Nhập tỉ lệ của tập xác thực (0-1): "))
-#     test_ratio = float(input("Nhập tỉ lệ của tập kiểm tra (0-1): "))
-# Tính toán số lượng của mỗi tập
+# Chia dữ liệu
+train_df, val_test_df = train_test_split(data, test_size=(100 - train_ratio) / 100, random_state=42)
+val_df, test_df = train_test_split(val_test_df, test_size=test_ratio / (100 - train_ratio), random_state=42)
+
 total_data = len(data_cleaned)
 train_size = int(total_data * train_ratio / 100)
 val_size = int(total_data * val_ratio / 100)
@@ -146,55 +147,66 @@ st.write("Tập huấn luyện:", train_size)
 st.write("Tập xác thực:", val_size)
 st.write("Tập kiểm tra:", test_size)
 
-def split_data(df, train_ratio, val_ratio, test_ratio, random_state):
-    train_val_df, test_df = train_test_split(df, test_size=test_ratio, random_state=random_state)
-    train_df, val_df = train_test_split(train_val_df, test_size=val_ratio/(train_ratio+val_ratio), random_state=random_state)
-    return train_df, val_df, test_df
-
-# Chia tập dữ liệu
-train_ratio = 0.7
-val_ratio = 0.15
-test_ratio = 0.15
-random_state = 42
-train_df, val_df, test_df = split_data(data_cleaned, train_ratio, val_ratio, test_ratio, random_state)
-
-# Định nghĩa các tham số
-params = {
-    "fit_intercept": True
-}
-
-# Huấn luyện mô hình
 def train_model(train_df, val_df, params):
-    # with mlflow.start_run():
-    #     # Ghi lại các tham số
-    #     mlflow.log_params(params)
+    # Lựa chọn mô hình huấn luyện
+    if params['model_type'] == 'multiple_regression':
+        model = LinearRegression(**params['multiple_regression_params'])
+    elif params['model_type'] == 'polynomial_regression':
+        model = make_pipeline(PolynomialFeatures(**params['polynomial_features_params']), LinearRegression(**params['linear_regression_params']))
+    else:
+        raise ValueError("Mô hình không được hỗ trợ")
 
-        # Huấn luyện mô hình
-        model = LinearRegression(**params)
-        model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
+    # Huấn luyện mô hình
+    model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
 
-        # # Đánh giá mô hình trên tập validation
-        # y_pred = model.predict(val_df.drop("Survived", axis=1))
-        # mse = mean_squared_error(val_df["Survived"], y_pred)
-        # r2 = r2_score(val_df["Survived"], y_pred)
+    # Đánh giá mô hình trên tập validation
+    y_pred = model.predict(val_df.drop("Survived", axis=1))
+    mse = mean_squared_error(val_df["Survived"], y_pred)
+    r2 = r2_score(val_df["Survived"], y_pred)
 
-        # # Ghi lại các metrics
-        # mlflow.log_metric("mse", mse)
-        # mlflow.log_metric("r2", r2)
+    # Ghi lại các metrics
+    mlflow.log_metric("mse", mse)
+    mlflow.log_metric("r2", r2)
 
-        # # Lưu mô hình
-        # mlflow.sklearn.log_model(model, "model")
+    # Lưu mô hình
+    mlflow.sklearn.log_model(model, "model")
 
-        # # Cross-validation
-        # cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
-        # mlflow.log_metric("cv_mse", -cv_scores.mean())
+    # Cross-validation
+    cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
+    mlflow.log_metric("cv_mse", -cv_scores.mean())
 
-        return model
+    return model
 
-# Khởi tạo MLflow
-# mlflow.set_tracking_uri("runs:/mlruns") # Lưu trữ logs tại thư mục mlruns
+# Lựa chọn mô hình huấn luyện
+st.subheader("Lựa chọn mô hình huấn luyện")
+st.write("1. Multiple Regression")
+st.write("2. Polynomial Regression")
+choice = st.selectbox("Nhập số lựa chọn", ["1", "2"])
 
-# Huấn luyện mô hình
+if choice == "1":
+    model_type = "multiple_regression"
+    params = {
+        'model_type': model_type,
+        'multiple_regression_params': {
+            'fit_intercept': True
+        }
+    }
+elif choice == "2":
+    model_type = "polynomial_regression"
+    params = {
+        'model_type': model_type,
+        'polynomial_features_params': {
+            'degree': 2,
+            'interaction_only': True
+        },
+        'linear_regression_params': {
+            'fit_intercept': True
+        }
+    }
+else:
+    st.error("Lựa chọn không hợp lệ")
+    st.stop()
+
 try:
     model = train_model(train_df, val_df, params)
 except Exception as e:
@@ -231,35 +243,6 @@ st.write("- Mô hình Multiple Regression có thể chưa phải là mô hình t
 fig, ax = plt.subplots()
 sns.heatmap(data_cleaned.corr(), annot=True, cmap='coolwarm', ax=ax)
 st.pyplot(fig)
-
-# Chọn model từ MLflow
-# model_uri = "runs:/mlruns/0/model" # Thay đổi ID của run nếu cần
-# model = mlflow.sklearn.load_model(model_uri)
-
-# Hiển thị các metrics
-# run = mlflow.get_run(model_uri.split("/")[2])
-# metrics = run.data.metrics
-# st.write("Metrics:")
-# st.write(metrics)
-
-# # Demo dự đoán
-# st.subheader("Prediction")
-
-# # ...existing code...
-
-# # Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
-# input_df = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
-
-# # Đảm bảo các cột của input_df khớp với các cột của train_df
-# missing_cols = set(train_df.drop("Survived", axis=1).columns) - set(input_df.columns)
-# for col in missing_cols:
-#     input_df[col] = 0
-# input_df = input_df[train_df.drop("Survived", axis=1).columns]
-
-# # Dự đoán kết quả
-# if st.button("Predict"):
-#     prediction = model.predict(input_df)
-#     st.write(f"Prediction: {prediction[0]}")
 
 # Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
 train_features = train_df.drop("Survived", axis=1).columns.tolist()  # Giả sử "Survived" là cột mục tiêu
