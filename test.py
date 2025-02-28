@@ -147,52 +147,40 @@ st.write("Tập huấn luyện:", train_size)
 st.write("Tập xác thực:", val_size)
 st.write("Tập kiểm tra:", test_size)
 
-# Lựa chọn mô hình huấn luyện
-st.subheader("Lựa chọn mô hình huấn luyện")
-st.write("1. Multiple Regression")
-st.write("2. Polynomial Regression")
-choice = st.selectbox("Nhập số lựa chọn", ["1", "2"])
+# Chọn mô hình
+model_choice = st.radio("Chọn mô hình:", ["Multiple_Regression", "Polynomial_Regression"])
 
-if choice == "1":
-    model_type = "multiple_regression"
-    params = {
-        'model_type': model_type,
-        'multiple_regression_params': {
-            'fit_intercept': True
-        }
-    }
-elif choice == "2":
-    model_type = "polynomial_regression"
-    params = {
-        'model_type': model_type,
-        'polynomial_features_params': {
-            'degree': 2,
-            'interaction_only': True
-        },
-        'linear_regression_params': {
-            'fit_intercept': True
-        }
-    }
-else:
-    st.error("Lựa chọn không hợp lệ")
-    st.stop()
+if model_choice == "Multiple_Regression":
+    st.markdown("""
+    - **Multiple Regression** là thuật toán hồi quy tuyến tính đa biến, dự đoán giá trị của biến phụ thuộc dựa trên các biến độc lập.
+    - **Tham số cần chọn:**
+        - Fit Intercept (có hoặc không).  
+    """)
+        
+    fit_intercept = st.selectbox("Fit Intercept", [True, False])
+    model = LinearRegression(fit_intercept=fit_intercept)
+    
+elif model_choice == "Polynomial_Regression":
+    st.markdown("""
+    - **Polynomial Regression** là thuật toán hồi quy tuyến tính đa biến, dự đoán giá trị của biến phụ thuộc dựa trên các biến độc lập và các bậc của chúng.
+    - **Tham số cần chọn:**  
+        - Bậc của đa thức (degree).  
+        - Interaction Only (có hoặc không).  
+    """)
+    degree = st.slider("Degree", 1, 10, 2)
+    interaction_only = st.selectbox("Interaction Only", [True, False])
+    model = make_pipeline(PolynomialFeatures(degree=degree, interaction_only=interaction_only), LinearRegression())
 
-# Huấn luyện mô hình
-def train_model(train_df, val_df, params):
-    # Lựa chọn mô hình huấn luyện
-    if params['model_type'] == 'multiple_regression':
-        model = LinearRegression(**params['multiple_regression_params'])
-    elif params['model_type'] == 'polynomial_regression':
-        model = make_pipeline(PolynomialFeatures(**params['polynomial_features_params']), LinearRegression(**params['linear_regression_params']))
-    else:
-        raise ValueError("Mô hình không được hỗ trợ")
 
-    # Huấn luyện mô hình
-    model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
 
-    return model
+if st.button("Huấn luyện mô hình"):
+    if model_choice == "Multiple_Regression":
+        model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
+        st.success("✅ Huấn luyện thành công!")
+    elif model_choice == "Polynomial_Regression":
+        model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
+        st.success("✅ Huấn luyện thành công!")
 
-model = train_model(train_df, val_df, params)
 
 # Đánh giá mô hình trên tập validation
 y_pred = model.predict(val_df.drop("Survived", axis=1))
