@@ -196,7 +196,7 @@ if st.button("Huấn luyện mô hình"):
         st.success("✅ Huấn luyện thành công!")
         y_pred = model.predict(val_df.drop("Survived", axis=1).values)
         mse = mean_squared_error(val_df["Survived"].astype(int), y_pred)
-        r2 = r2_score(val_df["Survived"].astype(int), y_pred)
+        r2 = r2_score(val_df["Survived"].astype(int), y_pred, multioutput='uniform_average')
         st.write("Đánh giá mô hình trên tập xác thực:")
         st.write("MSE:", mse)
         st.write("R2:", r2)
