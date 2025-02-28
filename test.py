@@ -196,10 +196,10 @@ if st.button("Huấn luyện mô hình"):
 y_pred = y_pred_val
 # Đánh giá mô hình
 # mse= mean_squared_error(val_df["Survived"].astype(int), y_pred_val)
-r2 = r2_score(val_df["Survived"].astype(int), y_pred_val.round())
-st.write("Đánh giá mô hình trên tập xác thực:")
-st.write("MSE:", mse)
-st.write("R2:", r2)
+# r2 = r2_score(val_df["Survived"].astype(int), y_pred_val.round())
+# st.write("Đánh giá mô hình trên tập xác thực:")
+# st.write("MSE:", mse)
+# st.write("R2:", r2)
 cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1).values, train_df["Survived"].astype(int), cv=5, scoring="neg_mean_squared_error")
 st.write("Đánh giá mô hình trên tập huấn luyện:")
 st.write("MSE trung bình:", -cv_scores.mean())
