@@ -203,6 +203,9 @@ st.write("MSE trên tập kiểm tra:", mse_test)
 st.write("R2 trên tập kiểm tra:", r2_test)
 st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
 
+# Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
+train_features = train_df.drop("Survived", axis=1).columns.tolist()
+
 # # ...existing code...
 st.sidebar.title("Titanic Survival Prediction")
 
