@@ -177,29 +177,27 @@ if st.button("Huấn luyện mô hình"):
     if model_choice == "Multiple_Regression":
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
+        y_pred = model.predict(val_df.drop("Survived", axis=1).values)
+        mse = mean_squared_error(val_df["Survived"].astype(int), y_pred)
+        r2 = r2_score(val_df["Survived"].astype(int), y_pred)
+        st.write("Đánh giá mô hình trên tập xác thực:")
+        st.write("MSE:", mse)
+        st.write("R2:", r2)
     elif model_choice == "Polynomial_Regression":
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
+        y_pred = model.predict(val_df.drop("Survived", axis=1).values)
+        mse = mean_squared_error(val_df["Survived"].astype(int), y_pred)
+        r2 = r2_score(val_df["Survived"].astype(int), y_pred)
+        st.write("Đánh giá mô hình trên tập xác thực:")
+        st.write("MSE:", mse)
+        st.write("R2:", r2)
 
-# Đánh giá mô hình trên tập kiểm tra
-y_pred_test = model.predict(test_df.drop("Survived", axis=1).values)
-mse_test = mean_squared_error(test_df["Survived"].astype(int), y_pred_test)
-r2_test = r2_score(test_df["Survived"].astype(int), y_pred_test)
 
-# Đánh giá mô hình trên tập xác thực
-y_pred = model.predict(val_df.drop("Survived", axis=1))
-mse = mean_squared_error(val_df["Survived"], y_pred)
-r2 = r2_score(val_df["Survived"], y_pred)
 
 # Cross-validation
 cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
 
-# Hiển thị kết quả
-st.write("Kết quả:")
-st.write("MSE trên tập validation:", mse)
-st.write("R2 trên tập validation:", r2)
-st.write("MSE trên tập kiểm tra:", mse_test)
-st.write("R2 trên tập kiểm tra:", r2_test)
 st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
 
 # Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
