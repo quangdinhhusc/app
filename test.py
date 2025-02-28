@@ -196,7 +196,7 @@ if st.button("Huấn luyện mô hình"):
 
 
 # Cross-validation
-cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
+cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1).values, train_df["Survived"].astype(int), cv=5, scoring="neg_mean_squared_error")
 
 st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
 
