@@ -1,259 +1,270 @@
-import joblib
+
 import streamlit as st
-import os
-import numpy as np
+import mlflow.sklearn
 import pandas as pd
-import pickle
-import seaborn as sns
-import random
-import struct
-import altair
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, classification_report, ConfusionMatrixDisplay
-from PIL import Image
-from collections import Counter
 import mlflow
 import mlflow.sklearn
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
-from sklearn.model_selection import GridSearchCV
-import kagglehub
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import cross_val_score
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy.stats import zscore
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
 
 
 
-st.set_page_config(page_title="Phân loại ảnh", layout="wide")
 
-# Streamlit app
-st.title("MNIST Classification with Streamlit & MLFlow")
+# Tiêu đề ứng dụng
+st.title("Ứng dụng Titanic với Streamlit")
 
-@st.cache_data  # Lưu cache để tránh load lại dữ liệu mỗi lần chạy lại Streamlit
-def get_sampled_pixels(images, sample_size=100_000):
-    return np.random.choice(images.flatten(), sample_size, replace=False)
+st.write("""
+## Phân tích dữ liệu và huấn luyện mô hình Multiple Rgresstion
+""")
 
-@st.cache_data  # Cache danh sách ảnh ngẫu nhiên
-def get_random_indices(num_images, total_images):
-    return np.random.randint(0, total_images, size=num_images)
 
-# # Cấu hình Streamlit
-# def config_page():
-#     st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
+url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+data = pd.read_csv(url)
 
-# config_page()
+st.subheader("Thay đổi dữ liệu")
 
-# st.set_page_config(page_title="Phân loại ảnh", layout="wide", initial_sidebar_state="expanded")
-# Định nghĩa hàm để đọc file .idx
-def load_mnist_images(filename):
-    with open(filename, 'rb') as f:
-        magic, num, rows, cols = struct.unpack('>IIII', f.read(16))
-        images = np.fromfile(f, dtype=np.uint8).reshape(num, rows, cols)
-    return images
+# Tạo một phần upload dữ liệu
+uploaded_file = st.file_uploader("Chọn file dữ liệu", type=["csv", "xlsx", "xls"])
 
-def load_mnist_labels(filename):
-    with open(filename, 'rb') as f:
-        magic, num = struct.unpack('>II', f.read(8))
-        labels = np.fromfile(f, dtype=np.uint8)
-    return labels
-
-# Định nghĩa đường dẫn đến các file MNIST
-# Download latest version
-dataset_path = kagglehub.dataset_download("hojjatk/mnist-dataset")
-# dataset_path = os.path.dirname(os.path.abspath(__file__))
-train_images_path = os.path.join(dataset_path, "train-images.idx3-ubyte")
-train_labels_path = os.path.join(dataset_path, "train-labels.idx1-ubyte")
-test_images_path = os.path.join(dataset_path, "t10k-images.idx3-ubyte")
-test_labels_path = os.path.join(dataset_path, "t10k-labels.idx1-ubyte")
-
-# Tải dữ liệu
-train_images = load_mnist_images(train_images_path)
-train_labels = load_mnist_labels(train_labels_path)
-test_images = load_mnist_images(test_images_path)
-test_labels = load_mnist_labels(test_labels_path)
-
-st.write(f"Số lượng ảnh trong tập train: {len(train_images)}")
-st.write(f"Số lượng ảnh trong tập train: {len(test_images)}")
-st.subheader("Chọn ngẫu nhiên 10 ảnh từ tập huấn luyện để hiển thị")
-num_images = 10
-random_indices = random.sample(range(len(train_images)), num_images)
-fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
-
-for ax, idx in zip(axes, random_indices):
-        ax.imshow(train_images[idx], cmap='gray')
-        ax.axis("off")
-        ax.set_title(f"Label: {train_labels[idx]}")
-
-st.pyplot(fig)
-
-# Flatten the images
-X_train = train_images.reshape(-1, 28 * 28)
-X_test = test_images.reshape(-1, 28 * 28)
-y_train = train_labels
-y_test = test_labels
-
-# Biểu đồ phân phối nhãn dữ liệu
-fig, ax = plt.subplots(figsize=(6, 4))
-sns.barplot(x=list(Counter(y_train).keys()), y=list(Counter(y_train).values()), palette="Blues", ax=ax)
-ax.set_title("Phân phối nhãn trong tập huấn luyện")
-ax.set_xlabel("Nhãn")
-ax.set_ylabel("Số lượng")
-st.pyplot(fig)
-
-# Normalize the data
-X_train = X_train.astype("float32") / 255.0
-X_test = X_test.astype("float32") / 255.0
-
-# Tạo bộ dữ liệu
-train_data = (train_images, train_labels)
-test_data = (test_images, test_labels)
-
-# # Kiểm tra giá trị null hoặc NaN trong dữ liệu
-# na_counts = X.isna().sum()
-# st.write("Số lượng giá trị null hoặc NaN trong dữ liệu:", na_counts)
-
-# # Kiểm tra giá trị vô hạn trong dữ liệu
-# inf_counts = X.isinf().sum()
-# st.write("Số lượng giá trị vô hạn trong dữ liệu:", inf_counts)
-
-# # Đếm số lượng của mỗi giá trị trong dữ liệu
-# value_counts = X.apply(lambda x: x.value_counts())
-# st.write("Số lượng của mỗi giá trị trong dữ liệu:", value_counts)
-
-# # Tạo phần tùy chọn chia dữ liệu train
-# st.subheader("Tùy chọn chia dữ liệu train")
-# train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=70, step=1)
-# test_ratio = 100 - train_ratio
-# a = 100 - train_ratio
-
-# # Chia tách dữ liệu thành tập huấn luyện và kiểm tra
-# x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=test_ratio/100, random_state=42)
-
-# # Tạo phần tùy chọn chia dữ liệu test thành validation và test
-# st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
-# val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=0, max_value=a, value=10, step=1)
-
-# x_val, x_test, y_val, y_test = train_test_split(x_test, y_test, test_size=(100-val_ratio)/100, random_state=42)
-
-st.subheader("Tùy chọn chia dữ liệu train")
-train_ratio = st.slider("Tỷ lệ dữ liệu train (%)", min_value=10, max_value=90, value=80, step=1)
-test_ratio = 100 - train_ratio
-a = 100 - train_ratio
-
-# Chia tách dữ liệu thành tập huấn luyện và kiểm tra
-x_train, x_val_test, y_train, y_val_test = train_test_split(X_train, y_train, test_size=test_ratio/100, random_state=42)
-
-# Tạo phần tùy chọn chia dữ liệu test thành validation và test
-st.subheader("Tùy chọn chia dữ liệu test thành validation và test")
-val_ratio = st.slider("Tỷ lệ dữ liệu validation (%)", min_value=0, max_value=a, value=a, step=1)
-
-x_val, x_test, y_val, y_test = train_test_split(x_val_test, y_val_test, test_size=(100-val_ratio)/100, random_state=42)
-
-# In ra số lượng của các tập train, test và val
-st.subheader("Số lượng của các tập dữ liệu")
-st.write("Số lượng dữ liệu train: ", len(x_train))
-st.write("Số lượng dữ liệu validation: ", len(x_val))
-st.write("Số lượng dữ liệu test: ", len(x_test))
-
-# Chọn model
-st.header("Model Selection")
-model_name = st.radio("", ["Decision Tree", "SVM"])
-
-# Train and evaluate model
-if st.button("Train Model"):
-    if model_name == "Decision Tree":
-            model = DecisionTreeClassifier()
-    elif model_name == "SVM":
-            param_grid = {
-                'C': [0.1],
-                'kernel': ['linear'],
-                'gamma': [0.1]
-            }
-            grid_search = GridSearchCV(SVC(), param_grid, cv=5)
-            grid_search.fit(x_train, y_train)
-            model = SVC(kernel="linear", random_state=42)
-    with mlflow.start_run():
-        model.fit(x_train, y_train)
-        y_pred = model.predict(x_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        cm = confusion_matrix(y_test, y_pred)
-
-        # Log parameters and metrics to MLFlow
-        mlflow.log_param("model", model_name)
-        mlflow.log_metric("accuracy", accuracy)
-
-        # Display MLFlow logs in Streamlit
-        st.subheader("MLFlow Logs")
-        st.write("Run ID:", mlflow.active_run().info.run_id)
-        st.write("Experiment ID:", mlflow.active_run().info.experiment_id)
-        st.write(f"Model: {model_name}")
-        st.write(f"Accuracy: {accuracy:.2f}")
-
-        st.write("Confusion Matrix:")
-        # st.write(cm)
-
-        # Plot confusion matrix
-        fig, ax = plt.subplots()
-        ax.matshow(cm, cmap=plt.cm.Blues)
-        for i in range(cm.shape[0]):
-            for j in range(cm.shape[1]):
-                ax.text(j, i, cm[i, j], ha="center", va="center")
-        plt.xlabel("Predicted label")
-        plt.ylabel("True label")
-        st.pyplot(fig)
-
-        # Display MLFlow metrics in Streamlit
-        # st.subheader("MLFlow Metrics")
-        # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy"])
-        # st.write("Accuracy:", mlflow.active_run().data.metrics["accuracy:" + mlflow.active_run().info.run_id])
-
-        # Display MLFlow parameters in Streamlit
-        # st.subheader("MLFlow Parameters")
-        # st.write("Model:", mlflow.get_param("model"))
-
-        # # Save model to MLFlow
-        # mlflow.sklearn.log_model(model, "model")
-
-        # # Display MLFlow model in Streamlit
-        # st.subheader("MLFlow Model")
-        # st.write("Model:", mlflow.get_model("model"))
-
-        # # Display classification report
-        # st.write("Classification Report:")
-        # st.write(classification_report(y_test, y_pred))
-
-        # # Display precision, recall, f1-score
-        # st.write("Precision: {:.2f}".format(precision_score(y_test, y_pred)))
-        # st.write("Recall: {:.2f}".format(recall_score(y_test, y_pred)))
-        # st.write("F1-score: {:.2f}".format(f1_score(y_test, y_pred)))
-
-        # Save model to MLFlow
-        mlflow.sklearn.log_model(model, "model", input_example=x_train[:1])
-    
-
-st.sidebar.subheader("Demo dự đoán chữ viết tay")
-st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
-
-# Tạo phần nhập hình ảnh
-uploaded_file = st.sidebar.file_uploader("Chọn hình ảnh", type=["png", "jpg", "jpeg"])
-
-# Tạo nút kiểm tra
-if st.sidebar.button("Kiểm tra"):
-    # Xử lý hình ảnh
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        image = image.resize((28, 28))
-        image = image.convert('L')
-        image = np.array(image)
-        image = image.reshape(1, 784)
-
-        # Dự đoán chữ viết tay
-        prediction = model.predict(image)
-
-        # Hiển thị kết quả
-        st.sidebar.write("Kết quả dự đoán:")
-        st.sidebar.write("Chữ viết tay:", prediction[0])
+# Nếu người dùng chọn upload dữ liệu
+if uploaded_file is not None:
+    # Đọc dữ liệu từ file
+    if uploaded_file.type == "text/csv":
+        data = pd.read_csv(uploaded_file)
+    elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        data = pd.read_excel(uploaded_file)
+    elif uploaded_file.type == "application/vnd.ms-excel":
+        data = pd.read_excel(uploaded_file)
     else:
-        st.sidebar.write("Vui lòng nhập hình ảnh chữ viết tay để dự đoán:")
+        st.error("Loại file không được hỗ trợ")
+        st.stop()
 
+    # Hiển thị dữ liệu
+    st.write("Dữ liệu đã được upload thành công!")
+
+# Hiển thị dữ liệu gốc
+st.subheader("Dữ liệu Titanic gốc")
+st.write(data)
+
+# Hiển thị bảng chứa số lượng dữ liệu bị thiếu hoặc null của các cột
+st.subheader("Kiểm tra lỗi dữ liệu")
+
+# Kiểm tra giá trị thiếu
+missing_values = data.isnull().sum()
+
+# Kiểm tra dữ liệu trùng lặp
+duplicate_count = data.duplicated().sum()
+                # Kiểm tra giá trị quá lớn (outlier) bằng Z-score
+outlier_count = {
+        col: (abs(zscore(data[col], nan_policy='omit')) > 3).sum()
+        for col in data.select_dtypes(include=['number']).columns
+    }
+
+# Tạo báo cáo lỗi
+error_report = pd.DataFrame({
+    'Cột': data.columns,
+    'Giá trị thiếu': missing_values,
+    'Outlier': [outlier_count.get(col, 0) for col in data.columns]
+})
+                # Hiển thị báo cáo lỗi
+st.table(error_report)
+
+                # Hiển thị số lượng dữ liệu trùng lặp
+st.write(f"**Số lượng dòng bị trùng lặp:** {duplicate_count}")      
+st.write(len(data))  
+
+
+# Tiền xử lý dữ liệu
+st.subheader("Tiền xử lý dữ liệu")
+
+# Xóa các dòng có ít nhất 2 cột chứa giá trị null
+thresh_value = data.shape[1] - 1
+df_cleaned = data.dropna(thresh=thresh_value)
+st.write("- Xóa các dòng có ít nhất 2 cột chứa giá trị null.")
+st.write(f"Số dòng sau khi xóa: {df_cleaned.shape[0]}")
+
+st.write("- Xóa một số cột giá trị có thể gây ảnh hưởng (như chứa nhiều dữ liệu bị nhiễu, dữ liệu không nhất quá,...) đến quá trình huấn luyện model")
+data_cleaned = data.drop(['PassengerId', 'Name', 'Ticket', 'Cabin'], axis=1)
+st.write(f"""1. PassengerId:
+- Đây là một định danh duy nhất cho mỗi hành khách và không mang thông tin có giá trị dự đoán về khả năng sống sót.
+- Việc đưa PassengerId vào mô hình có thể gây nhầm lẫn hoặc làm giảm hiệu suất của mô hình.
+
+2. Name:
+- Tên hành khách thường là dữ liệu dạng text và rất đa dạng.
+- Mặc dù có thể trích xuất một số thông tin (ví dụ: tước hiệu), nhưng việc xử lý tên phức tạp và không chắc chắn mang lại lợi ích đáng kể cho mô hình.
+- Trong trường hợp này, chúng ta đơn giản hóa bằng cách loại bỏ cột Name.
+
+3. Ticket:
+- Số vé cũng là một định danh và không có mối quan hệ rõ ràng với khả năng sống sót.
+
+4. Cabin:
+- Cột Cabin chứa nhiều giá trị bị thiếu (NaN).
+- Việc xử lý các giá trị thiếu này có thể phức tạp.
+- Hơn nữa, thông tin về cabin có thể không phải là yếu tố quyết định đến khả năng sống sót""")
+
+st.write("- Điền dữ liệu tuổi null thành giá trị trung bình của tuổi.")
+data_cleaned['Age'] = data_cleaned['Age'].fillna(data_cleaned['Age'].median())
+
+st.write("- Điền dữ liệu Embarked null thành giá trị mode của Embarked.")
+data_cleaned['Embarked'] = data_cleaned['Embarked'].fillna(data_cleaned['Embarked'].mode()[0])
+
+st.write("- Chuẩn hóa các cột về các giá trị để giúp cho quá trình huấn luyện.")
+data_cleaned = pd.get_dummies(data_cleaned, columns=['Sex', 'Embarked'], drop_first=True)
+
+# Hiển thị dữ liệu sau khi tiền xử lý
+st.write("Dữ liệu sau khi tiền xử lý:")
+st.write(data_cleaned)
+
+# Chia tập dữ liệu
+# Tự chọn tỉ lệ của các tập dữ liệu
+st.title("Chọn tỉ lệ của các tập dữ liệu")
+
+train_ratio = st.slider("Tập huấn luyện", 0, 90, 70)
+a = 100 - train_ratio
+val_ratio = st.slider("Tập xác thực", 0, a, 5)
+
+# Tính toán tỉ lệ của tập kiểm tra
+test_ratio = 100 - train_ratio - val_ratio
+
+# Chia dữ liệu
+train_df, val_test_df = train_test_split(data, test_size=(100 - train_ratio) / 100, random_state=42)
+val_df, test_df = train_test_split(val_test_df, test_size=test_ratio / (100 - train_ratio), random_state=42)
+
+total_data = len(data_cleaned)
+train_size = int(total_data * train_ratio / 100)
+val_size = int(total_data * val_ratio / 100)
+test_size = total_data - train_size - val_size
+
+st.write("Số lượng của các tập dữ liệu:")
+st.write("Tập huấn luyện:", train_size)
+st.write("Tập xác thực:", val_size)
+st.write("Tập kiểm tra:", test_size)
+
+# Lựa chọn mô hình huấn luyện
+st.subheader("Lựa chọn mô hình huấn luyện")
+st.write("1. Multiple Regression")
+st.write("2. Polynomial Regression")
+choice = st.selectbox("Nhập số lựa chọn", ["1", "2"])
+
+if choice == "1":
+    model_type = "multiple_regression"
+    params = {
+        'model_type': model_type,
+        'multiple_regression_params': {
+            'fit_intercept': True
+        }
+    }
+elif choice == "2":
+    model_type = "polynomial_regression"
+    params = {
+        'model_type': model_type,
+        'polynomial_features_params': {
+            'degree': 2,
+            'interaction_only': True
+        },
+        'linear_regression_params': {
+            'fit_intercept': True
+        }
+    }
+else:
+    st.error("Lựa chọn không hợp lệ")
+    st.stop()
+
+# Huấn luyện mô hình
+def train_model(train_df, val_df, params):
+    # Lựa chọn mô hình huấn luyện
+    if params['model_type'] == 'multiple_regression':
+        model = LinearRegression(**params['multiple_regression_params'])
+    elif params['model_type'] == 'polynomial_regression':
+        model = make_pipeline(PolynomialFeatures(**params['polynomial_features_params']), LinearRegression(**params['linear_regression_params']))
+    else:
+        raise ValueError("Mô hình không được hỗ trợ")
+
+    # Huấn luyện mô hình
+    model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
+
+    return model
+
+model = train_model(train_df, val_df, params)
+
+# Đánh giá mô hình trên tập validation
+y_pred = model.predict(val_df.drop("Survived", axis=1))
+mse = mean_squared_error(val_df["Survived"], y_pred)
+r2 = r2_score(val_df["Survived"], y_pred)
+
+# Đánh giá mô hình trên tập kiểm tra
+y_pred_test = model.predict(test_df.drop("Survived", axis=1))
+mse_test = mean_squared_error(test_df["Survived"], y_pred_test)
+r2_test = r2_score(test_df["Survived"], y_pred_test)
+
+# Cross-validation
+cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="neg_mean_squared_error")
+
+# Hiển thị kết quả
+st.write("Kết quả:")
+st.write("MSE trên tập validation:", mse)
+st.write("R2 trên tập validation:", r2)
+st.write("MSE trên tập kiểm tra:", mse_test)
+st.write("R2 trên tập kiểm tra:", r2_test)
+st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
+
+# # ...existing code...
+st.sidebar.title("Titanic Survival Prediction")
+
+# Tạo form nhập liệu trong sidebar
+
+with st.sidebar.form("input_form"):
+    pclass = st.selectbox("Hạng Vé", [1, 2, 3])
+    sex = st.selectbox("Giới Tính", ["male", "female"])
+    age = st.number_input("Tuổi", min_value=0, max_value=100, value=25)
+    sibsp = st.number_input("Anh Chị Em", min_value=0, value=0)
+    parch = st.number_input("Bố Mẹ Con Cái", min_value=0, value=0)
+    fare = st.number_input("Giá Vé", min_value=0, value=0)  # Đã sửa lỗi ở đây
+    embarked = st.selectbox("Cảng", ["Southampton", "Cherbourg", "Queenstown"])
+    submit_button = st.form_submit_button("Dự Đoán")
+
+if submit_button:
+    # Tạo DataFrame từ dữ liệu nhập vào
+    data = {
+        "Pclass": [pclass],
+        "Sex": [sex],
+        "Age": [age],
+        "SibSp": [sibsp],
+        "Parch": [parch],
+        "Fare": [fare],
+        "Embarked": [embarked],
+    }
+    input_df = pd.DataFrame(data)
+
+    # Chuyển đổi dữ liệu (ví dụ: one-hot encoding cho biến categorical)
+    # ... (bạn cần thực hiện các bước tiền xử lý tương tự như khi huấn luyện mô hình)
+    # ... (trong Streamlit app)
+    # Xử lý giá trị mới (nếu có)
+    for col in train_features:
+        if col not in input_df.columns:
+            input_df[col] = 0
+
+    input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True) #one-hot encoding
+
+    # Đảm bảo thứ tự cột giống như khi train
+    input_df = input_df[train_features] # Sắp xếp theo thứ tự khi train
+
+    # Dự đoán kết quả
+    prediction = model.predict(input_df)[0]
+
+    if prediction > 0.5:
+        prodiction = 1
+        message = "Sống sót 😇"
+    else:
+        prodiction = 0
+        message = "Không sống sót ☠️"
+
+    st.sidebar.write(f"Kết quả: {message}")
+    # st.sidebar.write(f"Xác suất sống sót: {prediction}")
