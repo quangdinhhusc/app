@@ -177,36 +177,21 @@ if st.button("Huấn luyện mô hình"):
     if model_choice == "Multiple_Regression":
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
-        y_pred = model.predict(val_df.drop("Survived", axis=1).values)
-        mse = mean_squared_error(val_df["Survived"].astype(int), y_pred)
-        r2 = r2_score(val_df["Survived"].astype(int), y_pred)
-        st.write("Đánh giá mô hình trên tập xác thực:")
-        st.write("MSE:", mse)
-        st.write("R2:", r2)
-        # Cross-validation
-        cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1).values, train_df["Survived"].astype(int), cv=5, scoring="neg_mean_squared_error")
-
-        st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
-
-        # Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
-        train_features = train_df.drop("Survived", axis=1).columns.tolist()
+        
 
     elif model_choice == "Polynomial_Regression":
         model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
         st.success("✅ Huấn luyện thành công!")
-        y_pred = model.predict(val_df.drop("Survived", axis=1).values)
-        mse = mean_squared_error(val_df["Survived"].astype(int), y_pred)
-        r2 = r2_score(val_df["Survived"].astype(int), y_pred, multioutput='uniform_average')
-        st.write("Đánh giá mô hình trên tập xác thực:")
-        st.write("MSE:", mse)
-        st.write("R2:", r2)
-        # Cross-validation
-        cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1).values, train_df["Survived"].astype(int), cv=5, scoring="neg_mean_squared_error")
 
-        st.write("Độ chính xác trung bình sau Cross-Validation:", -cv_scores.mean())
-
-        # Lấy tên đặc trưng huấn luyện (bạn cần đoạn code này khi train model)
-        train_features = train_df.drop("Survived", axis=1).columns.tolist()
+y_pred = model.predict(val_df.drop("Survived", axis=1).values)
+mse = mean_squared_error(val_df["Survived"].astype(int), y_pred)
+r2 = r2_score(val_df["Survived"].astype(int), y_pred.round())
+st.write("Đánh giá mô hình trên tập xác thực:")
+st.write("MSE:", mse)
+st.write("R2:", r2)
+cv_scores = cross_val_score(model, train_df.drop("Survived", axis=1).values, train_df["Survived"].astype(int), cv=5, scoring="neg_mean_squared_error")
+st.write("Đánh giá mô hình trên tập huấn luyện:")
+st.write("MSE trung bình:", -cv_scores.mean())
 
 # Lưu mô hình vào session_state dưới dạng danh sách nếu chưa có
 if "models" not in st.session_state:
