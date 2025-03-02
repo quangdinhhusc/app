@@ -89,13 +89,12 @@ def choose_model():
     return model
 
 # Hàm huấn luyện mô hình
-def train_model(model, train_df):
+def train_model(model, train_df, val_df, test_df):
     model.fit(train_df.drop("Survived", axis=1), train_df["Survived"])
     st.success("✅ Huấn luyện thành công!")
     y_pred_train = model.predict(train_df.drop("Survived", axis=1))
     y_pred_val = model.predict(val_df.drop("Survived", axis=1))
     y_pred_test = model.predict(test_df.drop("Survived", axis=1))
-    
     return y_pred_train, y_pred_val, y_pred_test
 
 # Hàm dự đoán kết quả
@@ -158,7 +157,7 @@ def main():
     model = choose_model()
     
     # Huấn luyện mô hình
-    y_pred_train, y_pred_val, y_pred_test = train_model(model, train_df)
+    y_pred_train, y_pred_val, y_pred_test = train_model(model, train_df, val_df, test_df)
     
     # Tạo form nhập liệu
     pclass, sex, age, sibsp, parch, fare, embarked = create_input_form()
