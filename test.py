@@ -120,7 +120,6 @@ def create_input_form():
         parch = st.number_input("Bố Mẹ Con Cái", min_value=0, value=0)
         fare = st.number_input("Giá Vé", min_value=0, value=0)  # Đã sửa lỗi ở đây
         embarked = st.selectbox("Cảng", ["Southampton", "Cherbourg", "Queenstown"])
-
     
     return pclass, sex, age, sibsp, parch, fare, embarked
 
@@ -161,7 +160,7 @@ y_pred_train, y_pred_val, y_pred_test = train_model(model, train_df, val_df, tes
 pclass, sex, age, sibsp, parch, fare, embarked = create_input_form()
 
 # Dự đoán kết quả
-if st.form_submit_button.button("Dự Đoán"):
+if st.sidebar.button("Dự Đoán"):
     input_df = pd.DataFrame({
         "Pclass": [pclass],
         "Sex": [sex],
