@@ -10,6 +10,7 @@ import seaborn as sns
 import random
 import struct
 import altair
+import kagglehub
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -23,7 +24,6 @@ import mlflow.sklearn
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV
-import kagglehub
 from sklearn.metrics import confusion_matrix
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
