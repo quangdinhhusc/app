@@ -120,65 +120,60 @@ def create_input_form():
         parch = st.number_input("Bố Mẹ Con Cái", min_value=0, value=0)
         fare = st.number_input("Giá Vé", min_value=0, value=0)  # Đã sửa lỗi ở đây
         embarked = st.selectbox("Cảng", ["Southampton", "Cherbourg", "Queenstown"])
-        submit_button = st.form_submit_button("Dự Đoán")
+
     
     return pclass, sex, age, sibsp, parch, fare, embarked
 
-# Main
-def main():
-    st.title("Ứng dụng Titanic với Streamlit")
-    st.write("""
-    ## Phân tích dữ liệu và huấn luyện mô hình Multiple Rgresstion
-    """)
-    
-    # Tải dữ liệu
-    data = load_data()
-    
-    # Kiểm tra lỗi dữ liệu
-    error_report, duplicate_count = check_error(data)
-    st.subheader("Kiểm tra lỗi dữ liệu")
-    st.table(error_report)
-    st.write(f"**Số lượng dòng bị trùng lặp:** {duplicate_count}")
-    
-    # Tiền xử lý dữ liệu
-    data_cleaned = preprocess_data(data)
-    st.subheader("Tiền xử lý dữ liệu")
-    st.write(data_cleaned)
-    
-    # Chia tập dữ liệu
-    train_df, val_df, test_df = split_data(data_cleaned)
-    st.title("Chọn tỉ lệ của các tập dữ liệu")
-    st.write("Số lượng của các tập dữ liệu:")
-    st.write("Tập huấn luyện:", len(train_df))
-    st.write("Tập xác thực:", len(val_df))
-    st.write("Tập kiểm tra:", len(test_df))
-    
-    # Chọn mô hình
-    model = choose_model()
-    
-    # Huấn luyện mô hình
-    y_pred_train, y_pred_val, y_pred_test = train_model(model, train_df, val_df, test_df)
-    
-    # Tạo form nhập liệu
-    pclass, sex, age, sibsp, parch, fare, embarked = create_input_form()
-    
-    # Dự đoán kết quả
-    if st.button("Dự Đoán"):
-        input_df = pd.DataFrame({
-            "Pclass": [pclass],
-            "Sex": [sex],
-            "Age": [age],
-            "SibSp": [sibsp],
-            "Parch": [parch],
-            "Fare": [fare],
-            "Embarked": [embarked],
-        })
-        
-        input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True)
-        input_df = input_df[train_df.drop("Survived", axis=1).columns]
-        
-        message = predict_result(model, input_df)
-        st.sidebar.write(f"Kết quả: {message}")
+st.title("Ứng dụng Titanic với Streamlit")
+st.write("""
+## Phân tích dữ liệu và huấn luyện mô hình Multiple Rgresstion
+""")
 
-if __name__ == "__main__":
-    main()
+# Tải dữ liệu
+data = load_data()
+
+# Kiểm tra lỗi dữ liệu
+error_report, duplicate_count = check_error(data)
+st.subheader("Kiểm tra lỗi dữ liệu")
+st.table(error_report)
+st.write(f"**Số lượng dòng bị trùng lặp:** {duplicate_count}")
+
+# Tiền xử lý dữ liệu
+data_cleaned = preprocess_data(data)
+st.subheader("Tiền xử lý dữ liệu")
+st.write(data_cleaned)
+
+# Chia tập dữ liệu
+train_df, val_df, test_df = split_data(data_cleaned)
+st.title("Chọn tỉ lệ của các tập dữ liệu")
+st.write("Số lượng của các tập dữ liệu:")
+st.write("Tập huấn luyện:", len(train_df))
+st.write("Tập xác thực:", len(val_df))
+st.write("Tập kiểm tra:", len(test_df))
+
+# Chọn mô hình
+model = choose_model()
+
+# Huấn luyện mô hình
+y_pred_train, y_pred_val, y_pred_test = train_model(model, train_df, val_df, test_df)
+
+# Tạo form nhập liệu
+pclass, sex, age, sibsp, parch, fare, embarked = create_input_form()
+
+# Dự đoán kết quả
+if st.form_submit_button.button("Dự Đoán"):
+    input_df = pd.DataFrame({
+        "Pclass": [pclass],
+        "Sex": [sex],
+        "Age": [age],
+        "SibSp": [sibsp],
+        "Parch": [parch],
+        "Fare": [fare],
+        "Embarked": [embarked],
+    })
+    
+    input_df = pd.get_dummies(input_df, columns=["Sex", "Embarked"], drop_first=True)
+    input_df = input_df[train_df.drop("Survived", axis=1).columns]
+    
+    message = predict_result(model, input_df)
+    st.sidebar.write(f"Kết quả: {message}")
