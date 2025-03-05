@@ -147,6 +147,7 @@ st.write("Tập huấn luyện:", train_size)
 st.write("Tập xác thực:", val_size)
 st.write("Tập kiểm tra:", test_size)
 
+
 def train_model(train_df, val_df, params):
     # Lựa chọn mô hình huấn luyện
     if params['model_type'] == 'multiple_regression':
@@ -177,35 +178,26 @@ def train_model(train_df, val_df, params):
 
     return model
 
-# Lựa chọn mô hình huấn luyện
-st.subheader("Lựa chọn mô hình huấn luyện")
-st.write("1. Multiple Regression")
-st.write("2. Polynomial Regression")
-choice = st.selectbox("Nhập số lựa chọn", ["1", "2"])
+# Ví dụ về cách sử dụng
+params = {
+    'model_type': 'polynomial_regression',
+    'polynomial_features_params': {
+        'degree': 2,
+        'interaction_only': True
+    },
+    'linear_regression_params': {
+        'fit_intercept': True
+    }
+}
 
-if choice == "1":
-    model_type = "multiple_regression"
-    params = {
-        'model_type': model_type,
-        'multiple_regression_params': {
-            'fit_intercept': True
-        }
+# Hoặc
+params = {
+    'model_type': 'multiple_regression',
+    'multiple_regression_params': {
+        'fit_intercept': True
     }
-elif choice == "2":
-    model_type = "polynomial_regression"
-    params = {
-        'model_type': model_type,
-        'polynomial_features_params': {
-            'degree': 2,
-            'interaction_only': True
-        },
-        'linear_regression_params': {
-            'fit_intercept': True
-        }
-    }
-else:
-    st.error("Lựa chọn không hợp lệ")
-    st.stop()
+}
+
 
 try:
     model = train_model(train_df, val_df, params)
