@@ -66,7 +66,7 @@ def check_error(data):
 def split_data(data):
     train_ratio = st.slider("Tập huấn luyện", 0, 90, 70)
     a = 100 - train_ratio
-    val_ratio = st.slider("Tập xác thực", 0, a, 5)
+    val_ratio = st.slider("Tập xác thực", 0, a, a/2)
     test_ratio = 100 - train_ratio - val_ratio
     
     train_df, val_test_df = train_test_split(data, test_size=(100 - train_ratio) / 100, random_state=42)
