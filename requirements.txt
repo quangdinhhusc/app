@@ -21,3 +21,9 @@ kagglehub
 openml
 pycaret
 tensorflow
+streamlit-drawable-canvas==0.9.3
+opencv-python-headless
+langchain-openai
+dagshub
+plotly
+kaleido
