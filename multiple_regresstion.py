@@ -133,8 +133,11 @@ val_ratio = st.slider("Tập xác thực", 0, a, 5)
 # Tính toán tỉ lệ của tập kiểm tra
 test_ratio = 100 - train_ratio - val_ratio
 
+# # Chia dữ liệu
+# train_df, val_test_df = train_test_split(data, test_size=(100 - train_ratio) / 100, random_state=42)
+# val_df, test_df = train_test_split(val_test_df, test_size=test_ratio / (100 - train_ratio), random_state=42)
 # Chia dữ liệu
-train_df, val_test_df = train_test_split(data, test_size=(100 - train_ratio) / 100, random_state=42)
+train_df, val_test_df = train_test_split(data_cleaned, test_size=(100 - train_ratio) / 100, random_state=42)
 val_df, test_df = train_test_split(val_test_df, test_size=test_ratio / (100 - train_ratio), random_state=42)
 
 total_data = len(data_cleaned)
