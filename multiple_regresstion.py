@@ -180,27 +180,29 @@ def train_model(train_df, val_df, params):
     mlflow.log_metric("cv_mse", -cv_scores.mean())
 
     return model
+# Lựa chọn mô hình huấn luyện
+st.subheader("Lựa chọn mô hình huấn luyện")
+model_type = st.radio("Mô hình huấn luyện", ["Multiple Regression", "Polynomial Regression"])
 
-# Ví dụ về cách sử dụng
-params = {
-    'model_type': 'polynomial_regression',
-    'polynomial_features_params': {
-        'degree': 2,
-        'interaction_only': True
-    },
-    'linear_regression_params': {
-        'fit_intercept': True
+# Tạo tham số mô hình
+if model_type == "Multiple Regression":
+    params = {
+        'model_type': 'multiple_regression',
+        'multiple_regression_params': {
+            'fit_intercept': True
+        }
     }
-}
-
-# Hoặc
-params = {
-    'model_type': 'multiple_regression',
-    'multiple_regression_params': {
-        'fit_intercept': True
+elif model_type == "Polynomial Regression":
+    params = {
+        'model_type': 'polynomial_regression',
+        'polynomial_features_params': {
+            'degree': 2,
+            'interaction_only': True
+        },
+        'linear_regression_params': {
+            'fit_intercept': True
+        }
     }
-}
-
 
 try:
     model = train_model(train_df, val_df, params)
