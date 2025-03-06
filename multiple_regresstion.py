@@ -208,12 +208,10 @@ except Exception as e:
     print(f"params: {params}")
 
 
-# Cross-validation
-cv_scores = cross_val_score(train_model(train_df, val_df, params), 
-                            train_df.drop("Survived", axis=1), 
-                            train_df["Survived"], cv=5, 
-                            scoring="neg_mean_squared_error")
-st.write(f"Độ chính xác trung bình sau Cross-Validation: {cv_scores.mean():.2f}")
+# # Cross-validation
+# cv_scores = cross_val_score(train_model(train_df, val_df, params), train_df.drop("Survived", axis=1), train_df["Survived"], cv=5, scoring="r2")
+
+# st.write(f"Độ chính xác trung bình sau Cross-Validation: {cv_scores.mean():.2f}")
 
 # Đánh giá mô hình trên tập validation
 y_pred = model.predict(val_df.drop("Survived", axis=1))
